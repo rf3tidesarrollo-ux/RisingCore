@@ -25,10 +25,10 @@
         </header>
         
         <div id="main-container">
-        <?php if ($Rol!="USUARIO") { ?> <a title="Merma" href="RegistrarM.php"><div class="back"><i class="fa-solid fa-store fa-xl" style="color: #ffffff;"></i></div></a> <?php } ?>
+        <?php if ($Rol!="USUARIO") { ?> <a title="Registro merma" href="RegistrarM.php"><div class="back"><i class="fa-solid fa-store fa-xl" style="color: #ffffff;"></i></div></a> <?php } ?>
 
         <section class="Registro">
-            <h4>Registro</h4>
+            <h4>Registro pesaje</h4>
             <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST" name="octavo" id="">
                 <div class="FAD">
                 <label class="FAL">
@@ -193,7 +193,7 @@
                 <div class="FAD">
                     <label class="FAL">
                         <span class="FAS">Cantidad de cajas</span>
-                        <input class="FAI" autocomplete="off" id="6" type="Number" name="NoCajas" <?php if (isset($_POST['NoCajas']) != ''): ?> value="<?php echo $NoCajas; ?>"<?php endif; ?> size="15" maxLength="4">
+                        <input class="FAI" autocomplete="off" id="6" type="Number" name="NoCajas" <?php if (isset($_POST['NoCajas']) != ''): ?> value="<?php echo $NoCaja; ?>"<?php endif; ?> size="15" maxLength="4">
                     </label>
                 </div>
 
@@ -265,7 +265,7 @@
             <script type="module">
             var error="<?php echo $Finalizado;?>";
             import { Eggy } from '../../js/eggy.js';
-            await Eggy({title: 'Correcto!', message: error, type: 'success', position: 'top-right', duration: 50000});
+            await Eggy({title: 'Correcto!', message: error, type: 'success', position: 'top-right', duration: 10000});
             </script>
         <?php } ?>
 

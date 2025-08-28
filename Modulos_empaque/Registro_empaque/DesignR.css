@@ -49,6 +49,7 @@ body {
     /* background-image: url("../../Images/Logo_rising.png");
     background-repeat: repeat;
     background-size: 125px 50px; */
+    background-color: #8d8989b0;
     width: 100%;
     min-height: 100vh;
 }
@@ -541,7 +542,7 @@ footer {
 }
 
 .btn-up:hover {
-    background: #b7793a;
+    background: #c2bab3;
 }
 
 .back {
@@ -549,7 +550,7 @@ footer {
     position: fixed;
     width: 50px;
     height: 50px;
-    background: #b7793a;
+    background: #30d12b;
     cursor: pointer;
     padding: 0;
     border-radius: 50%;

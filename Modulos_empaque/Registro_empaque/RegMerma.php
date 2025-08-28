@@ -24,7 +24,7 @@
         </header>
         
         <div id="main-container">
-        <?php if ($Rol!="USUARIO") { ?> <a title="Regresar" href="CatalogoR.php"><div class="back"><i class="fa-solid fa-left-long fa-xl" style="color: #ffffff;"></i></div></a> <?php } ?>
+        <?php if ($Rol!="USUARIO") { ?> <a title="Registro pesaje" href="RegistrarR.php"><div class="back"><i class="fa-solid fa-scale-balanced fa-xl" style="color: #ffffff;"></i></div></a> <?php } ?>
 
         <section class="Registro">
             <h4>Registro merma</h4>
@@ -181,7 +181,7 @@
                 <div class="FAD">
                     <label class="FAL">
                         <span class="FAS">Cantidad de cajas</span>
-                        <input class="FAI" autocomplete="off" id="6" type="Number" name="NoCajas" <?php if (isset($_POST['NoCajas']) != ''): ?> value="<?php echo $NoCajas; ?>"<?php endif; ?> size="15" maxLength="4">
+                        <input class="FAI" autocomplete="off" id="6" type="Number" name="NoCajas" <?php if (isset($_POST['NoCajas']) != ''): ?> value="<?php echo $NoCaja; ?>"<?php endif; ?> size="15" maxLength="4">
                     </label>
                 </div>
 
@@ -205,9 +205,9 @@
             </section>
         </div>
 
-        <?php if ($Correcto < 9) {
+        <?php if ($Correcto < 10) {
                  if ($NumE>0) { 
-                    for ($i=1; $i <= 9; $i++) {
+                    for ($i=1; $i <= 10; $i++) {
                         $Error=${"Error".$i};
                         if (!empty($Error)) { ?>
                             <script type="module">

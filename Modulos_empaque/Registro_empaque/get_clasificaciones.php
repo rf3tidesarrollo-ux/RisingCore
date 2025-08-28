@@ -19,7 +19,7 @@ if (isset($mapa_tipos[$tipo])) {
     $resultado = $stmt->get_result();
 
     if ($resultado->num_rows > 0) {
-        echo '<option value="">Seleccione la clasificación</option>';
+        echo '<option value="0">Seleccione la clasificación</option>';
         while ($fila = $resultado->fetch_assoc()) {
             echo '<option value="'.$fila['id_merma'].'">'.htmlspecialchars($fila['motivo']).'</option>';
         }
@@ -33,5 +33,4 @@ if (isset($mapa_tipos[$tipo])) {
 }
 
 $Con->close();
-?>
 ?>

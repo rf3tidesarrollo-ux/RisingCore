@@ -24,13 +24,15 @@
     $Carro = isset($_POST['Carro']) ? $_POST['Carro'] : '';
     $Tarima = isset($_POST['Tarima']) ? $_POST['Tarima'] : '';
     $Caja = isset($_POST['Cajas']) ? $_POST['Cajas'] : '';
-    $NoCajas = isset($_POST['NoCajas']) ? $_POST['NoCajas'] : '';
+    $NoCaja = isset($_POST['NoCajas']) ? $_POST['NoCajas'] : '';
     $KilosB = isset($_POST['KilosB']) ? $_POST['KilosB'] : '';
     $Folio = isset($_POST['Folio']) ? $_POST['Folio'] : '';
+    $Caja = isset($_POST['Cajas']) ? $_POST['Cajas'] : '';
     $Folio="";
     $NoSerie="";
     $NS=false;
     $Tipo="NORMAL";
+    $Clasificacion=NULL;
 
     for ($i=1; $i <= 9; $i++) { 
         ${"Error".$i}="";
@@ -351,8 +353,8 @@
             $stmt->close();
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $stmt = $Con->prepare("INSERT INTO registro_empaque (id_codigo_r, id_presentacion_r, folio_r, id_tipo_caja , id_tipo_tarima, id_tipo_carro, p_bruto, p_taraje, p_neto, cantidad_caja, usuario_r, fecha_r, hora_r, activo_r, tipo_registro, no_serie_r, semana_r) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param('iisiiidddisssisss', $Codigo, $Presentacion, $FolioVal, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCaja, $Usuario, $FechaR, $HoraR, $Activo, $Tipo, $NoSerieVal, $SemanaR);
+                $stmt = $Con->prepare("INSERT INTO registro_empaque (id_codigo_r, id_presentacion_r, folio_r, id_tipo_caja , id_tipo_tarima, id_tipo_carro, p_bruto, p_taraje, p_neto, cantidad_caja, usuario_r, fecha_r, hora_r, activo_r, tipo_registro, id_tipo_merma, no_serie_r, semana_r) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param('iisiiidddisssisiss', $Codigo, $Presentacion, $FolioVal, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCaja, $Usuario, $FechaR, $HoraR, $Activo, $Tipo, $Clasificacion, $NoSerieVal, $SemanaR);
                 $stmt->execute();
                 $stmt->close();
                 $Limpiar = new Cleanner($Folio,$KilosB,$NoCaja,$Codigo,$Carro,$Tarima,$Caja,$Presentacion);
