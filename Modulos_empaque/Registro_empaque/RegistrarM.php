@@ -30,6 +30,7 @@
     $Clasificacion = isset($_POST['Clasificacion']) ? $_POST['Clasificacion'] : '';
     $NoSerie="";
     $NS=false;
+    $Tipo="NORMAL";
 
     for ($i=1; $i <= 9; $i++) { 
         ${"Error".$i}="";
@@ -190,7 +191,6 @@
 
     if (isset($_POST['Insertar'])) {
         $Codigo=$_POST['Codigo'];
-        $Presentacion=$_POST['Presentacion'];
         $Carro=$_POST['Carro'];
         $Tarima=$_POST['Tarima'];
         $Caja=$_POST['Cajas'];

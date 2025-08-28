@@ -10,7 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://kit.fontawesome.com/367278d2a4.js" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <script src="../../js/main.js"></script>
     <script src="../../js/select.js"></script>
     <link rel="stylesheet" href="../../css/eggy.css" />
     <link rel="stylesheet" href="../../css/progressbar.css" />
@@ -34,7 +33,7 @@
                     <label class="FAL">
                         <span class="FAS">Tipo de merma</span>
                         <select class="FAI prueba" id="tipo_registro" name="TipoRegistro" onchange="mostrarCampo()">
-                            <option value="">Seleccione un tipo de merma:</option>
+                            <option value="0">Seleccione un tipo de merma:</option>
                             <option value="A" <?php if ($Tipo == "Producción") echo 'selected'; ?>>Producción</option>
                             <option value="B" <?php if ($Tipo == "Nacional") echo 'selected'; ?>>Nacional</option>
                             <option value="C" <?php if ($Tipo == "Empaque") echo 'selected'; ?>>Empaque</option>
@@ -78,7 +77,7 @@
                     <label class="FAL">
                         <span class="FAS">Clasificación</span>
                         <select class="FAI prueba" name="Clasificacion" id="clasificacion">
-                            <option value="">Seleccione un tipo de merma primero</option>
+                            <option value="0">Seleccione un tipo de merma primero</option>
                         </select>
                     </label>
                 </div>

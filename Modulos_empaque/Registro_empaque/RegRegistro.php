@@ -11,7 +11,6 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://kit.fontawesome.com/367278d2a4.js" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <script src="../../js/main.js"></script>
     <script src="../../js/select.js"></script>
     <link rel="stylesheet" href="../../css/eggy.css" />
     <link rel="stylesheet" href="../../css/progressbar.css" />

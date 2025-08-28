@@ -1,3 +1,32 @@
+
+$(document).ready(function () {
+
+    $('#campo_clasificacion').hide();
+
+    $('#tipo_registro').on('change', function () {
+        const tipo = $(this).val();
+
+        if (tipo === '') {
+            $('#clasificacion').html('<option value="">Seleccione un tipo de merma primero</option>');
+            return;
+        }
+
+        $.ajax({
+            url: '/RisingCore/Modulos_empaque/Registro_empaque/get_clasificaciones.php',
+            method: 'GET',
+            data: { tipo: tipo },
+            success: function (data) {
+                $('#clasificacion').html(data);
+                $('#campo_clasificacion').show(); 
+            },
+            error: function (xhr, status, error) {
+                console.error('Error en AJAX:', status, error);
+            }
+        });
+    });
+});
+
+
 const inputs = document.querySelectorAll('.FAD .FAI');
 
 inputs.forEach(input => {
@@ -31,15 +60,15 @@ function mayus(e) {
 
 const pass = document.getElementById("2"), icon = document.querySelector("#eye");
 
-icon.addEventListener("click", () => {
-    if (pass.type === "password") {
-        pass.type = "text";
-        $('#eye').removeClass('fa-eye').addClass('fa-eye-slash');
-    }else{
-        pass.type = "password";
-        $('#eye').removeClass('fa-eye-slash').addClass('fa-eye');
-    }
-});
+// icon.addEventListener("click", () => {
+//     if (pass.type === "password") {
+//         pass.type = "text";
+//         $('#eye').removeClass('fa-eye').addClass('fa-eye-slash');
+//     }else{
+//         pass.type = "password";
+//         $('#eye').removeClass('fa-eye-slash').addClass('fa-eye');
+//     }
+// });
 
 function mostrarCampo() {
     const tipo = document.getElementById("tipo_registro").value;
@@ -52,52 +81,5 @@ function mostrarCampo() {
     }
 }
 
-$(document).ready(function () {
-  $('#tipo_registro').on('change', function () {
-    console.log("Cambio detectado - tipo:", $(this).val());
-  });
-});
-
-$(document).ready(function () {
-    $('#campo_clasificacion').hide(); // Ocultar al inicio
-
-    $('#tipo_registro').on('change', function () {
-        const tipo = $(this).val();
-
-        if (tipo !== '') {
-            // Mostrar el campo de clasificación
-            $('#campo_clasificacion').show();
-
-            // Llamada AJAX
-            $.ajax({
-                url: 'get_clasificaciones.php',
-                type: 'POST', // <-- Usa POST aquí
-                data: { tipo: tipo },
-                success: function (data) {
-                    try {
-                        const clasificaciones = JSON.parse(data);
-                        let opciones = '<option value="">Seleccione la clasificación</option>';
-
-                        clasificaciones.forEach(function (item) {
-                            opciones += `<option value="${item.id_clasificacion}">${item.motivo}</option>`;
-                        });
-
-                        $('#clasificacion').html(opciones);
-                    } catch (e) {
-                        console.error("Respuesta no es JSON:", data);
-                        $('#clasificacion').html('<option value="">Error al cargar clasificaciones</option>');
-                    }
-                },
-                error: function () {
-                    alert('Error al obtener las clasificaciones.');
-                }
-            });
-        } else {
-            // Ocultar y resetear el select
-            $('#campo_clasificacion').hide();
-            $('#clasificacion').html('<option value="">Seleccione un tipo de merma primero</option>');
-        }
-    });
-});
 
 
