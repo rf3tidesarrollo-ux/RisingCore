@@ -28,7 +28,7 @@
     $KilosB = isset($_POST['KilosB']) ? $_POST['KilosB'] : '';
     $Folio = isset($_POST['Folio']) ? $_POST['Folio'] : '';
     $Clasificacion = isset($_POST['Clasificacion']) ? $_POST['Clasificacion'] : '';
-    $NoSerie="";
+    $NoSerie=NULL;
     $NS=false;
     $Clase="MERMA";
     $Presentacion=NULL;
@@ -189,7 +189,7 @@
         }
 
         public function LimpiarTipo(){
-            return $this -> Tipo="Seleccione la clasificación:";
+            return $this -> Tipo="Seleccione el tipo de merma:";
         }
         
     }
@@ -205,9 +205,9 @@
         $Folio=$_POST['Folio'];
         $Clasificacion=$_POST['Clasificacion'];
         $Tipo=$_POST['TipoRegistro'];
-
+        
         if ($Codigo == "Seleccione el código:") {
-            if ($Tipo == "NACIONAL") {
+            if ($Tipo == "A") {
                 $Error1 = "Tienes que seleccionar un código";
                 $NumE += 1;
             } else {
@@ -301,14 +301,14 @@
                 break;    
         }
 
-        if ($Tipo == "Seleccione el tipo de merma:") {
+        if ($Tipo == "0") {
             $Error8 = "Tienes que seleccionar un tipo de merma";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
 
-        if ($Clasificacion == "Seleccione la clasificación:") {
+        if ($Clasificacion == "0") {
             $Error9 = "Tienes que seleccionar una clasificación";
             $NumE += 1;
         }else{
@@ -327,9 +327,8 @@
                                 (SELECT peso_caja FROM tipos_cajas WHERE id_caja = ?) AS cajas,
                                 (SELECT peso_tarima FROM tipos_tarimas WHERE id_tarima = ?) AS tarimas,
                                 (SELECT cantidad_t FROM tipos_tarimas WHERE id_tarima = ?) AS c_tarimas,
-                                (SELECT peso_carro FROM tipos_carros WHERE id_carro = ?) AS carros,
-                                (SELECT codigo FROM codigos WHERE id_codigo = ?) AS codigo;");
-            $stmt->bind_param("iiiii",$Caja,$Tarima,$Tarima,$Carro,$Codigo);
+                                (SELECT peso_carro FROM tipos_carros WHERE id_carro = ?) AS carros;");
+            $stmt->bind_param("iiii",$Caja,$Tarima,$Tarima,$Carro);
             $stmt->execute();
             $Registro = $stmt->get_result();
             $NumCol=$Registro->num_rows;
@@ -340,38 +339,16 @@
                         $PesoT = $Reg['tarimas'];
                         $CantT = $Reg['c_tarimas'];
                         $PesoC = $Reg['carros'];
-                        $CodigoR = $Reg['codigo'];
                     }
                     $stmt->close();
             }
             
             $KilosT = ($PesoB * $NoCajaVal) + ($PesoT * $CantT) + ($PesoC * 1);
             $KilosN = $KilosBVal - $KilosT;
-            
-            $Fecha = date("dmy");
-
-            $CodigoBase = $CodigoR . "-" . $Fecha;
-
-            $stmt = $Con->prepare("SELECT no_serie_r FROM registro_empaque WHERE fecha_r = ? AND no_serie_r LIKE CONCAT(?, '%') ORDER BY no_serie_r DESC LIMIT 1");
-            $stmt->bind_param("ss", $FechaR, $CodigoBase);
-            $stmt->execute();
-            $Registro = $stmt->get_result();
-
-            if ($Registro->num_rows > 0) {
-                $Reg = $Registro->fetch_assoc();
-                $UltimoCodigo = $Reg['no_serie_r'];
-                $Numero = (int)substr($UltimoCodigo, -3);
-                $NNS = str_pad($Numero + 1, 3, "0", STR_PAD_LEFT);
-                $NoSerieVal = $CodigoBase . "-" . $NNS;
-            } else {
-                $NoSerieVal = $CodigoBase . "-001";
-            }
-
-            $stmt->close();
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt = $Con->prepare("INSERT INTO registro_empaque (id_codigo_r, id_presentacion_r, folio_r, id_tipo_caja , id_tipo_tarima, id_tipo_carro, p_bruto, p_taraje, p_neto, cantidad_caja, usuario_r, fecha_r, hora_r, activo_r, tipo_registro, id_tipo_merma, no_serie_r, semana_r) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param('iisiiidddisssisiss', $Codigo, $Presentacion, $FolioVal, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCaja, $Usuario, $FechaR, $HoraR, $Activo, $Clase, $Clasificacion, $NoSerieVal, $SemanaR);
+                $stmt->bind_param('iisiiidddisssisiss', $Codigo, $Presentacion, $FolioVal, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCaja, $Usuario, $FechaR, $HoraR, $Activo, $Clase, $Clasificacion, $NoSerie, $SemanaR);
                 $stmt->execute();
                 $stmt->close();
                 $Limpiar = new Cleanner($Folio,$KilosB,$NoCaja,$Codigo,$Carro,$Tarima,$Caja,$Clasificacion,$Tipo);

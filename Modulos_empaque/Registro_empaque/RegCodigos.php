@@ -57,182 +57,107 @@
         <section class="Registro">
             <h4>Registro merma</h4>
             <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST" name="octavo" id="">
+                
                 <div class="FAD">
                     <label class="FAL">
-                        <span class="FAS">Tipo de merma</span>
-                        <select class="FAI prueba" id="tipo_registro" name="TipoRegistro" onchange="mostrarCampo()">
-                            <option value="0">Seleccione un tipo de merma:</option>
-                            <option value="A" <?php if ($Tipo == "Producción") echo 'selected'; ?>>Producción</option>
-                            <option value="B" <?php if ($Tipo == "Nacional") echo 'selected'; ?>>Nacional</option>
-                            <option value="C" <?php if ($Tipo == "Empaque") echo 'selected'; ?>>Empaque</option>
+                        <span class="FAS">Sede</span>
+                        <select class="FAI prueba" id="tipo_registro" name="TipoRegistro" onchange="mostrarCampo2()">
+                            <option value="0">Seleccione la sede:</option>
+                            <option value="A">RF1</option>
+                            <option value="B">RF2</option>
+                            <option value="C">RF3</option>
                         </select>
                     </label>
                 </div>
 
-                <div class="FAD" id="campo_codigo" style="display: none;">
+                <div class="FAD" id="campo_naves" style="display: none;">
                     <label class="FAL">
-                        <span class="FAS">Código</span>
-                        <select class="FAI prueba" id="1" name="Codigo">
-                            <option <?php if (($Codigo) != null): ?> value="<?php echo $Codigo; ?>"<?php endif; ?>>
-                                <?php if ($Codigo != null) { ?>
-                                    <?php 
-                                    $stmt = $Con->prepare("SELECT codigo FROM tipo_variaciones WHERE id_variedad=?");
-                                    $stmt->bind_param("i",$Codigo);
-                                    $stmt->execute();
-                                    $Registro = $stmt->get_result();
-                                    $Reg = $Registro->fetch_assoc();
-                                    $stmt->close();
-                                    if(isset($Reg['codigo'])){echo $Reg['codigo'];}else{?> Seleccione el código: <?php } ?>
-                                <?php } else {?>
-                                    Seleccione el código:
-                                <?php } ?>
-                            </option>
-                            <?php
-                            $stmt = $Con->prepare("SELECT id_variedad,codigo FROM tipo_variaciones ORDER BY id_variedad");
-                            $stmt->execute();
-                            $Registro = $stmt->get_result();
-                    
-                            while ($Reg = $Registro->fetch_assoc()){
-                                echo '<option value="'.$Reg['id_variedad'].'">'.$Reg['codigo'].'</option>';
-                            }
-                            $stmt->close();
-                            ?>
-                        </select>
-                    </label>
-                </div>
-                
-                <div class="FAD" id="campo_clasificacion">
-                    <label class="FAL">
-                        <span class="FAS">Clasificación</span>
-                        <select class="FAI prueba" name="Clasificacion" id="clasificacion">
-                            <option value="0">Seleccione un tipo de merma primero</option>
+                        <span class="FAS">Naves</span>
+                        <select class="FAI prueba" name="Nave" id="naves">
+                            <option value="0">Seleccione una sede primero</option>
                         </select>
                     </label>
                 </div>
 
                 <div class="FAD">
-                <label class="FAL">
-                    <span class="FAS">Carro</span>
-                    <select class="FAI prueba" id="3" name="Carro">
-                        <option <?php if (($Carro) != null): ?> value="<?php echo $Carro; ?>"<?php endif; ?>>
-                            <?php if ($Carro != null) { ?>
-                                <?php 
-                                $stmt = $Con->prepare("SELECT folio_carro FROM tipos_carros WHERE id_carro=?");
-                                $stmt->bind_param("i",$Carro);
-                                $stmt->execute();
-                                $Registro = $stmt->get_result();
-                                $Reg = $Registro->fetch_assoc();
-                                $stmt->close();
-                                if(isset($Reg['folio_carro'])){echo $Reg['folio_carro'];}else{?> Seleccione el carro: <?php } ?>
-                            <?php } else {?>
-                                Seleccione el carro:
-                            <?php } ?>
-                        </option>
-                        <?php
-                        $stmt = $Con->prepare("SELECT id_carro,folio_carro FROM tipos_carros ORDER BY id_carro");
-                        $stmt->execute();
-                        $Registro = $stmt->get_result();
-                
-                        while ($Reg = $Registro->fetch_assoc()){
-                            echo '<option value="'.$Reg['id_carro'].'">'.$Reg['folio_carro'].'</option>';
-                        }
-                        $stmt->close();
-                        ?>
-                    </select>
-                </label>
-                </div>
-
-                <div class="FAD">
-                <label class="FAL">
-                    <span class="FAS">Tipo de tarima</span>
-                    <select class="FAI prueba" id="4" name="Tarima">
-                        <option <?php if (($Tarima) != null): ?> value="<?php echo $Tarima; ?>"<?php endif; ?>>
-                            <?php if ($Tarima != null) { ?>
-                                <?php 
-                                $stmt = $Con->prepare("SELECT nombre_tarima FROM tipos_tarimas WHERE id_tarima=?");
-                                $stmt->bind_param("i",$Codigo);
-                                $stmt->execute();
-                                $Registro = $stmt->get_result();
-                                $Reg = $Registro->fetch_assoc();
-                                $stmt->close();
-                                if(isset($Reg['nombre_tarima'])){echo $Reg['nombre_tarima'];}else{?> Seleccione la tarima: <?php } ?>
-                            <?php } else {?>
-                                Seleccione la tarima:
-                            <?php } ?>
-                        </option>
-                        <?php
-                        $stmt = $Con->prepare("SELECT id_tarima,nombre_tarima FROM tipos_tarimas ORDER BY id_tarima");
-                        $stmt->execute();
-                        $Registro = $stmt->get_result();
-                
-                        while ($Reg = $Registro->fetch_assoc()){
-                            echo '<option value="'.$Reg['id_tarima'].'">'.$Reg['nombre_tarima'].'</option>';
-                        }
-                        $stmt->close();
-                        ?>
-                    </select>
-                </label>
-                </div>
-
-                <div class="FAD">
-                <label class="FAL">
-                    <span class="FAS">Tipo de caja</span>
-                    <select class="FAI prueba" id="5" name="Cajas">
-                        <option <?php if (($Caja) != null): ?> value="<?php echo $Caja; ?>"<?php endif; ?>>
-                            <?php if ($Caja != null) { ?>
-                                <?php 
-                                $stmt = $Con->prepare("SELECT tipo_caja FROM tipos_cajas WHERE id_caja=?");
-                                $stmt->bind_param("i",$Caja);
-                                $stmt->execute();
-                                $Registro = $stmt->get_result();
-                                $Reg = $Registro->fetch_assoc();
-                                $stmt->close();
-                                if(isset($Reg['tipo_caja'])){echo $Reg['tipo_caja'];}else{?> Seleccione la caja: <?php } ?>
-                            <?php } else {?>
-                                Seleccione la caja:
-                            <?php } ?>
-                        </option>
-                        <?php
-                        $stmt = $Con->prepare("SELECT id_caja,tipo_caja FROM tipos_cajas ORDER BY id_caja");
-                        $stmt->execute();
-                        $Registro = $stmt->get_result();
-                
-                        while ($Reg = $Registro->fetch_assoc()){
-                            echo '<option value="'.$Reg['id_caja'].'">'.$Reg['tipo_caja'].'</option>';
-                        }
-                        $stmt->close();
-                        ?>
-                    </select>
-                </label>
-                </div>
-
-                <div class="FAD">
                     <label class="FAL">
-                        <span class="FAS">Cantidad de cajas</span>
-                        <input class="FAI" autocomplete="off" id="6" type="Number" name="NoCajas" <?php if (isset($_POST['NoCajas']) != ''): ?> value="<?php echo $NoCaja; ?>"<?php endif; ?> size="15" maxLength="4">
+                        <span class="FAS">Variedad</span>
+                        <input class="FAI" autocomplete="off" id="2" type="Text" name="Variedad" <?php if (isset($_POST['Variedad']) != ''): ?> value="<?php echo $Variedad; ?>"<?php endif; ?> size="15" maxLength="50" onkeyup="mayus(this);">
                     </label>
                 </div>
 
                 <div class="FAD">
                     <label class="FAL">
-                        <span class="FAS">Kilos brutos</span>
-                        <input class="FAI" autocomplete="off" id="7" type="Number" step="0.01" name="KilosB" <?php if (isset($_POST['KilosB']) != ''): ?> value="<?php echo $KilosB; ?>"<?php endif; ?> size="15" maxLength="20">
+                        <span class="FAS">Tipo</span>
+                        <select class="FAI prueba" id="3" name="Tipo">
+                            <option value="0">Seleccione el tipo:</option>
+                            <option value="CHERRY">CHERRY</option>
+                            <option value="COOCKTAIL">COOCKTAIL</option>
+                            <option value="ROMA">ROMA</option>
+                            <option value="GRAPE">GRAPE</option>
+                        </select>
                     </label>
                 </div>
-                
-                 <div class="FAD">
+
+                <div class="FAD">
                     <label class="FAL">
-                        <span class="FAS">Folio</span>
-                        <input class="FAI" autocomplete="off" id="8" type="Text" name="Folio" <?php if (isset($_POST['Folio']) != ''): ?> value="<?php echo $Folio; ?>"<?php endif; ?> size="15" maxLength="50">
+                        <span class="FAS">Color</span>
+                        <select class="FAI prueba" id="4" name="Color">
+                            <option value="0">Seleccione el color:</option>
+                            <option value="AMARILLO">AMARILLO</option>
+                            <option value="ROJO">ROJO</option>
+                            <option value="CAFÉ">CAFÉ</option>
+                            <option value="NARANJA">NARANJA</option>
+                        </select>
                     </label>
+                </div>
+
+                <div class="FAD">
+                    <label class="FAL">
+                        <span class="FAS">Superficie</span>
+                        <input class="FAI" autocomplete="off" id="5" type="Number" step="0.01" name="Superficie" <?php if (isset($_POST['Superficie']) != ''): ?> value="<?php echo $Superficie; ?>"<?php endif; ?> size="15" maxLength="20">
+                    </label>
+                </div>
+
+                <div class="FAD">
+                <label class="FAL">
+                    <span class="FAS">Ciclo</span>
+                    <select class="FAI prueba" id="6" name="Ciclo">
+                        <option <?php if (($Ciclo) != null): ?> value="<?php echo $Ciclo; ?>"<?php endif; ?>>
+                            <?php if ($Ciclo != null) { ?>
+                                <?php 
+                                $stmt = $Con->prepare("SELECT ciclo FROM ciclos WHERE id_ciclo=? AND activo=1");
+                                $stmt->bind_param("i",$Ciclo);
+                                $stmt->execute();
+                                $Registro = $stmt->get_result();
+                                $Reg = $Registro->fetch_assoc();
+                                $stmt->close();
+                                if(isset($Reg['ciclo'])){echo $Reg['ciclo'];}else{?> Seleccione el ciclo: <?php } ?>
+                            <?php } else {?>
+                                Seleccione el ciclo:
+                            <?php } ?>
+                        </option>
+                        <?php
+                        $stmt = $Con->prepare("SELECT id_ciclo,ciclo FROM ciclos ORDER BY id_ciclo DESC");
+                        $stmt->execute();
+                        $Registro = $stmt->get_result();
+                
+                        while ($Reg = $Registro->fetch_assoc()){
+                            echo '<option value="'.$Reg['id_ciclo'].'">'.$Reg['ciclo'].'</option>';
+                        }
+                        $stmt->close();
+                        ?>
+                    </select>
+                </label>
                 </div>
 
             <div class=Center>
                 <input class="Boton" id="AB" type="Submit" value="Registrar" name="Insertar">
             </div>
             </section>
+        </div>
 
-        <?php if ($Correcto < 10) {
+        <?php if ($Correcto < 7) {
                  if ($NumE>0) { 
                     for ($i=1; $i <= 10; $i++) {
                         $Error=${"Error".$i};
@@ -276,7 +201,8 @@
             await Eggy({title: 'Correcto!', message: error, type: 'success', position: 'top-right', duration: 50000});
             </script>
         <?php } ?>
-        <script src="../../js/modulos.js"></script> 
+
+        <script src="../../js/modulos.js"></script>        
     </body>
     <footer>
         <div class="container_footer">

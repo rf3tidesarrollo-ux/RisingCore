@@ -21,45 +21,75 @@
 
 <body onload="validar()">
         <header id="header">
-            
+            <nav class="navbar">
+                <div class="navbar-container">
+                    <a href="#" class="logo">
+                    <img src="../../Images/Rising-core.png" alt="Logo">
+                    </a>
+                    <input type="checkbox" id="menu-toggle">
+                    <label for="menu-toggle" class="hamburger"><i class="fas fa-bars"></i></label>
+                    <ul class="menu">
+                    <li><a href="#">Inicio</a></li>
+                    <li class="submenu-parent">
+                        <a href="#">Registro <i class="fas fa-caret-down"></i></a>
+                        <ul class="submenu">
+                        <li><a href="RegistrarR.php"><i class="fas fa-balance-scale"></i> Pesaje</a></li>
+                        <li><a href="RegistrarM.php"><i class="fa-solid fa-store"></i> Merma</a></li>
+                        <li><a href="RegistrarMz.php"><i class="fa-solid fa-mortar-pestle"></i> Mezcla</a></li>
+                        <li><a href="RegistrarE.php"><i class="fa-solid fa-truck"></i> Embarque</a></li>
+                        <li><a href="RegistrarC.php"><i class="fa-solid fa-qrcode"></i></i> Códigos</a></li>
+                        </ul>
+                    </li>
+                    <li class="submenu-parent">
+                        <a href="#">Reportes <i class="fas fa-caret-down"></i></a>
+                        <ul class="submenu">
+                        <li><a href="RegistrarR.php"><i class="fas fa-balance-scale"></i> Pesaje</a></li>
+                        <li><a href="RegistrarM.php"><i class="fa-solid fa-store"></i> Merma</a></li>
+                        <li><a href="RegistrarMz.php"><i class="fa-solid fa-mortar-pestle"></i> Mezcla</a></li>
+                        <li><a href="RegistrarE.php"><i class="fa-solid fa-truck"></i> Embarque</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Cerrar sesión</a></li>
+                    </ul>
+                </div>
+            </nav>
         </header>
         
         <div id="main-container">
-        <?php if ($Rol!="USUARIO") { ?> <a title="Registro merma" href="RegistrarM.php"><div class="back"><i class="fa-solid fa-store fa-xl" style="color: #ffffff;"></i></div></a> <?php } ?>
 
         <section class="Registro">
             <h4>Registro pesaje</h4>
             <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST" name="octavo" id="">
                 <div class="FAD">
-                <label class="FAL">
-                    <span class="FAS">Código</span>
-                    <select class="FAI prueba" id="1" name="Codigo">
-                        <option <?php if (($Codigo) != null): ?> value="<?php echo $Codigo; ?>"<?php endif; ?>>
-                            <?php if ($Codigo != null) { ?>
-                                <?php 
-                                $stmt = $Con->prepare("SELECT codigo FROM codigos WHERE id_codigo=?");
-                                $stmt->bind_param("i",$Codigo);
-                                $stmt->execute();
-                                $Registro = $stmt->get_result();
-                                $Reg = $Registro->fetch_assoc();
-                                $stmt->close();
-                                if(isset($Reg['codigo'])){echo $Reg['codigo'];}else{?> Seleccione el código: <?php } ?>
-                            <?php } else {?>
-                                Seleccione el código:
-                            <?php } ?>
-                        </option>
-                        <?php
-                        $stmt = $Con->prepare("SELECT id_codigo,codigo FROM codigos ORDER BY id_codigo");
-                        $stmt->execute();
-                        $Registro = $stmt->get_result();
-                
-                        while ($Reg = $Registro->fetch_assoc()){
-                            echo '<option value="'.$Reg['id_codigo'].'">'.$Reg['codigo'].'</option>';
-                        }
-                        $stmt->close();
-                        ?>
-                    </select>
-                </label>
+                    <label class="FAL">
+                        <span class="FAS">Código</span>
+                        <select class="FAI prueba" id="1" name="Codigo">
+                            <option <?php if (($Codigo) != null): ?> value="<?php echo $Codigo; ?>"<?php endif; ?>>
+                                <?php if ($Codigo != null) { ?>
+                                    <?php 
+                                    $stmt = $Con->prepare("SELECT codigo FROM tipo_variaciones WHERE id_variedad=?");
+                                    $stmt->bind_param("i",$Codigo);
+                                    $stmt->execute();
+                                    $Registro = $stmt->get_result();
+                                    $Reg = $Registro->fetch_assoc();
+                                    $stmt->close();
+                                    if(isset($Reg['codigo'])){echo $Reg['codigo'];}else{?> Seleccione el código: <?php } ?>
+                                <?php } else {?>
+                                    Seleccione el código:
+                                <?php } ?>
+                            </option>
+                            <?php
+                            $stmt = $Con->prepare("SELECT id_variedad,codigo FROM tipo_variaciones ORDER BY id_variedad");
+                            $stmt->execute();
+                            $Registro = $stmt->get_result();
+                    
+                            while ($Reg = $Registro->fetch_assoc()){
+                                echo '<option value="'.$Reg['id_variedad'].'">'.$Reg['codigo'].'</option>';
+                            }
+                            $stmt->close();
+                            ?>
+                        </select>
+                    </label>
                 </div>
 
                 <div class="FAD">
@@ -207,7 +237,7 @@
                  <div class="FAD">
                     <label class="FAL">
                         <span class="FAS">Folio</span>
-                        <input class="FAI" autocomplete="off" id="8" type="Text" name="Folio" <?php if (isset($_POST['Folio']) != ''): ?> value="<?php echo $Folio; ?>"<?php endif; ?> size="15" maxLength="50" onkeyup="mayus(this);">
+                        <input class="FAI" autocomplete="off" id="8" type="Text" name="Folio" <?php if (isset($_POST['Folio']) != ''): ?> value="<?php echo $Folio; ?>"<?php endif; ?> size="15" maxLength="50">
                     </label>
                 </div>
 
@@ -292,7 +322,7 @@
                     </div>
                 </div>
                 <div class="box_footer">
-                    <div class="logo_footer"><img src="../../Images/Logo_Rising.png" alt="RisingCore"></div>
+                    <div class="logo_footer"><img src="../../Images/Rising-core.png" alt="RisingCore"></div>
                     <div class="links">
                         <ul>
                             <li>

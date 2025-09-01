@@ -311,7 +311,7 @@
                                 (SELECT peso_tarima FROM tipos_tarimas WHERE id_tarima = ?) AS tarimas,
                                 (SELECT cantidad_t FROM tipos_tarimas WHERE id_tarima = ?) AS c_tarimas,
                                 (SELECT peso_carro FROM tipos_carros WHERE id_carro = ?) AS carros,
-                                (SELECT codigo FROM codigos WHERE id_codigo = ?) AS codigo;");
+                                (SELECT codigo FROM tipo_variaciones WHERE id_variedad = ?) AS codigo;");
             $stmt->bind_param("iiiii",$Caja,$Tarima,$Tarima,$Carro,$Codigo);
             $stmt->execute();
             $Registro = $stmt->get_result();
