@@ -62,71 +62,28 @@
             <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST" name="octavo" id="">
                 <div class="FAD">
                     <label class="FAL">
-                        <span class="FAS">Código</span>
-                        <select class="FAI prueba" id="1" name="Codigo">
-                            <option <?php if (($Codigo) != null): ?> value="<?php echo $Codigo; ?>"<?php endif; ?>>
-                                <?php if ($Codigo != null) { ?>
-                                    <?php 
-                                    $stmt = $Con->prepare("SELECT codigo FROM tipo_variaciones WHERE id_variedad=?");
-                                    $stmt->bind_param("i",$Codigo);
-                                    $stmt->execute();
-                                    $Registro = $stmt->get_result();
-                                    $Reg = $Registro->fetch_assoc();
-                                    $stmt->close();
-                                    if(isset($Reg['codigo'])){echo $Reg['codigo'];}else{?> Seleccione el código: <?php } ?>
-                                <?php } else {?>
-                                    Seleccione el código:
-                                <?php } ?>
-                            </option>
-                            <?php
-                            $stmt = $Con->prepare("SELECT id_variedad,codigo FROM tipo_variaciones ORDER BY id_variedad");
-                            $stmt->execute();
-                            $Registro = $stmt->get_result();
-                    
-                            while ($Reg = $Registro->fetch_assoc()){
-                                echo '<option value="'.$Reg['id_variedad'].'">'.$Reg['codigo'].'</option>';
-                            }
-                            $stmt->close();
-                            ?>
+                        <span class="FAS">Sede</span>
+                        <select class="FAI prueba" id="sede" name="Sede">
+                            <option value="0">Seleccione la sede:</option>
+                            <option value="RF1"<?php if ($Sede == "RF1") echo " selected"; ?>>RF1</option>
+                            <option value="RF2"<?php if ($Sede == "RF2") echo " selected"; ?>>RF2</option>
+                            <option value="RF3"<?php if ($Sede == "RF3") echo " selected"; ?>>RF3</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="FAD" id="campo_codigos" >
+                    <label class="FAL">
+                        <span class="FAS">Codigos</span>
+                        <select class="FAI prueba" name="Codigo" id="codigos">
+                            <option value="0">Seleccione un código</option>
                         </select>
                     </label>
                 </div>
 
                 <div class="FAD">
                 <label class="FAL">
-                    <span class="FAS">Presentación</span>
-                    <select class="FAI prueba" id="2" name="Presentacion">
-                        <option <?php if (($Presentacion) != null): ?> value="<?php echo $Presentacion; ?>"<?php endif; ?>>
-                            <?php if ($Presentacion != null) { ?>
-                                <?php 
-                                $stmt = $Con->prepare("SELECT nombre_p FROM tipos_presentacion WHERE id_presentacion=?");
-                                $stmt->bind_param("i",$Presentacion);
-                                $stmt->execute();
-                                $Registro = $stmt->get_result();
-                                $Reg = $Registro->fetch_assoc();
-                                $stmt->close();
-                                if(isset($Reg['nombre_p'])){echo $Reg['nombre_p'];}else{?> Seleccione la presentación: <?php } ?>
-                            <?php } else {?>
-                                Seleccione la presentación:
-                            <?php } ?>
-                        </option>
-                        <?php
-                        $stmt = $Con->prepare("SELECT id_presentacion,nombre_p FROM tipos_presentacion ORDER BY id_presentacion");
-                        $stmt->execute();
-                        $Registro = $stmt->get_result();
-                
-                        while ($Reg = $Registro->fetch_assoc()){
-                            echo '<option value="'.$Reg['id_presentacion'].'">'.$Reg['nombre_p'].'</option>';
-                        }
-                        $stmt->close();
-                        ?>
-                    </select>
-                </label>
-                </div>
-
-                <div class="FAD">
-                <label class="FAL">
-                    <span class="FAS">Carro</span>
+                    <span class="FAS">Traila</span>
                     <select class="FAI prueba" id="3" name="Carro">
                         <option <?php if (($Carro) != null): ?> value="<?php echo $Carro; ?>"<?php endif; ?>>
                             <?php if ($Carro != null) { ?>
@@ -137,9 +94,9 @@
                                 $Registro = $stmt->get_result();
                                 $Reg = $Registro->fetch_assoc();
                                 $stmt->close();
-                                if(isset($Reg['folio_carro'])){echo $Reg['folio_carro'];}else{?> Seleccione el carro: <?php } ?>
+                                if(isset($Reg['folio_carro'])){echo $Reg['folio_carro'];}else{?> Seleccione la traila: <?php } ?>
                             <?php } else {?>
-                                Seleccione el carro:
+                                Seleccione la traila:
                             <?php } ?>
                         </option>
                         <?php
@@ -189,9 +146,16 @@
                 </div>
 
                 <div class="FAD">
+                    <label class="FAL">
+                        <span class="FAS">Cantidad de tarimas</span>
+                        <input class="FAI" autocomplete="off" id="5" type="Number" name="NoTarima" <?php if (isset($_POST['NoTarima']) != ''): ?> value="<?php echo $NoTarima; ?>"<?php endif; ?> size="15" maxLength="4">
+                    </label>
+                </div>
+
+                <div class="FAD">
                 <label class="FAL">
                     <span class="FAS">Tipo de caja</span>
-                    <select class="FAI prueba" id="5" name="Cajas">
+                    <select class="FAI prueba" id="6" name="Cajas">
                         <option <?php if (($Caja) != null): ?> value="<?php echo $Caja; ?>"<?php endif; ?>>
                             <?php if ($Caja != null) { ?>
                                 <?php 
@@ -223,30 +187,23 @@
                 <div class="FAD">
                     <label class="FAL">
                         <span class="FAS">Cantidad de cajas</span>
-                        <input class="FAI" autocomplete="off" id="6" type="Number" name="NoCajas" <?php if (isset($_POST['NoCajas']) != ''): ?> value="<?php echo $NoCaja; ?>"<?php endif; ?> size="15" maxLength="4">
+                        <input class="FAI" autocomplete="off" id="7" type="Number" name="NoCajas" <?php if (isset($_POST['NoCajas']) != ''): ?> value="<?php echo $NoCaja; ?>"<?php endif; ?> size="15" maxLength="4">
                     </label>
                 </div>
 
                 <div class="FAD">
                     <label class="FAL">
                         <span class="FAS">Kilos brutos</span>
-                        <input class="FAI" autocomplete="off" id="7" type="Number" step="0.01" name="KilosB" <?php if (isset($_POST['KilosB']) != ''): ?> value="<?php echo $KilosB; ?>"<?php endif; ?> size="15" maxLength="20">
+                        <input class="FAI" autocomplete="off" id="8" type="Number" step="0.01" name="KilosB" <?php if (isset($_POST['KilosB']) != ''): ?> value="<?php echo $KilosB; ?>"<?php endif; ?> size="15" maxLength="20">
                     </label>
                 </div>
                 
                  <div class="FAD">
                     <label class="FAL">
                         <span class="FAS">Folio</span>
-                        <input class="FAI" autocomplete="off" id="8" type="Text" name="Folio" <?php if (isset($_POST['Folio']) != ''): ?> value="<?php echo $Folio; ?>"<?php endif; ?> size="15" maxLength="50">
+                        <input class="FAI" autocomplete="off" id="9" type="Text" name="Folio" <?php if (isset($_POST['Folio']) != ''): ?> value="<?php echo $Folio; ?>"<?php endif; ?> size="15" maxLength="50">
                     </label>
                 </div>
-
-                <!-- <div class="FAD">
-                    <label class="FAL">
-                        <span class="FAS Top">Fecha de factura</span>
-                        <input class="FAI" id="11" type="date" name="Fecha" <?php if (isset($_POST['Fecha']) != ''): ?> value="<?php echo $Fecha; ?>"<?php endif; ?>>
-                    </label>
-                </div>           -->
 
             <div class=Center>
                 <input class="Boton" id="AB" type="Submit" value="Registrar" name="Insertar">

@@ -17,22 +17,19 @@
     $NumP=0;
     $Finalizado="";
     $Correcto=0;
+    $Sede = isset($_POST['TipoRegistro']) ? $_POST['TipoRegistro'] : '';
     $Nave = isset($_POST['Nave']) ? $_POST['Nave'] : '';
     $Variedad = isset($_POST['Variedad']) ? $_POST['Variedad'] : '';
     $Tipo = isset($_POST['Tipo']) ? $_POST['Tipo'] : '';
     $Color = isset($_POST['Color']) ? $_POST['Color'] : '';
     $Superficie = isset($_POST['Superficie']) ? $_POST['Superficie'] : '';
     $Ciclo = isset($_POST['Ciclo']) ? $_POST['Ciclo'] : '';
+    $Presentacion = isset($_POST['Presentacion']) ? $_POST['Presentacion'] : '';
     $Codigo = "";
     $Sede = "";
     $Invernadero = "";
-    echo $Nave;
-    echo $Variedad;
-    echo $Tipo;
-    echo $Color;
-    echo $Ciclo;
 
-    for ($i=1; $i <= 6; $i++) {
+    for ($i=1; $i <= 8; $i++) {
         ${"Error".$i}="";
     }
 
@@ -74,37 +71,6 @@
         }
     }
 
-    class Val_Variedad {
-        public $Variedad;
-    
-        function __Construct($V){
-            $this -> Variedad = $V;
-        }
-    
-        public function getVariedad(){
-            return $this -> Variedad;
-        }
-    
-        public function setVariedad($Variedad){
-            $this -> Variedad = $Variedad;
-            
-            if (!empty($Variedad)) {
-                $Variedad=filter_var($Variedad, FILTER_SANITIZE_SPECIAL_CHARS);
-                
-                if (!preg_match('/^[A-ZÑ0-9\s]*$/', $Variedad)){
-                    $Valor = 1;
-                    return $Valor;
-                }else{
-                    $Valor = 2;
-                    return $Valor;
-                }
-            }else{
-                    $Valor = 3;
-                    return $Valor;
-            }
-        }
-    }
-
     class Cleanner{
         public $Limpiar;
         public $Nave;
@@ -113,6 +79,8 @@
         public $Color;
         public $Superficie;
         public $Ciclo;
+        public $Presentacion;
+        public $Sede;
 
         function __Construct($L){
             $this -> Limpiar = $L;
@@ -123,7 +91,7 @@
         }
 
         public function LimpiarVariedad(){
-            return $this -> Variedad="";
+            return $this -> Variedad="Seleccione la variedad:";
         }
 
         public function LimpiarTipo(){
@@ -135,11 +103,19 @@
         }
 
         public function LimpiarCiclo(){
-            return $this -> Ciclo="Seleccione el carro:";
+            return $this -> Ciclo="Seleccione el ciclo:";
         }
 
         public function LimpiarNave(){
             return $this -> Nave="Seleccione la nave:";
+        }
+        
+        public function LimpiarPresentacion(){
+            return $this -> Presentacion="Seleccione la presentación:";
+        }
+
+        public function LimpiarSede(){
+            return $this -> Sede="Seleccione la sede:";
         }
         
     }
@@ -152,41 +128,39 @@
         $Color=$_POST['Color'];
         $Superficie=$_POST['Superficie'];
         $Ciclo=$_POST['Ciclo'];
+        $Presentacion=$_POST['Presentacion'];
+        $Sede=$_POST['TipoRegistro'];
 
-        if ($Nave == "Seleccione la nave:") {
-            $Error1 = "Tienes que seleccionar una nave";
+        if ($Sede == "0") {
+            $Error1 = "Tienes que seleccionar una sede";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
 
-        $ValidarVariedad = new Val_Variedad($Variedad);
-        $Retorno = $ValidarVariedad -> setVariedad($Variedad);
-        $VariedadVal = $ValidarVariedad -> getVariedad();
-        
-        switch ($Retorno) {
-            case '1':
-                $Precaucion1 = "El campo de variedad solo lleva letras y números";
-                $NumP += 1;
-                break;
-            case '2':
-                $Correcto += 1;
-                break;
-            case '3':
-                $Error2 = "El campo de variedad no puede ir vacío";
-                $NumE += 1;
-                break;    
-        }
-
-        if ($Tipo == "Seleccione el tipo:") {
-            $Error3 = "Tienes que seleccionar un tipo";
+        if ($Nave == "0") {
+            $Error2 = "Tienes que seleccionar una nave";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
 
-        if ($Color == "Seleccione el color:") {
-            $Error4 = "Tienes que seleccionar un color";
+        if ($Variedad == "Seleccione la variedad:") {
+            $Error3 = "Tienes que seleccionar una variedad";
+            $NumE += 1;
+        }else{
+            $Correcto += 1;
+        }
+
+        if ($Tipo == "0") {
+            $Error4 = "Tienes que seleccionar un tipo";
+            $NumE += 1;
+        }else{
+            $Correcto += 1;
+        }
+
+        if ($Color == "0") {
+            $Error5 = "Tienes que seleccionar un color";
             $NumE += 1;
         }else{
             $Correcto += 1;
@@ -209,54 +183,60 @@
                 $NumP += 1;
                 break;
             case '4':
-                $Error5 = "El campo de superficie no puede ir vacío";
+                $Error6 = "El campo de superficie no puede ir vacío";
                 $NumE += 1;
                 break;  
         }
 
-        if ($Ciclo == "Seleccione el ciclo:") {
-            $Error6 = "Tienes que seleccionar un ciclo";
+        if ($Presentacion == "Seleccione la presentación:") {
+            $Error7 = "Tienes que seleccionar una presentación";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
 
-        if ($Correcto==6) {
+        if ($Ciclo == "Seleccione el ciclo:") {
+            $Error8 = "Tienes que seleccionar un ciclo";
+            $NumE += 1;
+        }else{
+            $Correcto += 1;
+        }
+        
+        if ($Correcto==8) {
             $stmt = $Con->prepare("SELECT 
                                 (SELECT id_sede_i FROM invernaderos WHERE id_invernadero = ?) AS sede,
                                 (SELECT abreviatura FROM variedades WHERE id_nombre_v = ?) AS abreviatura,
                                 (SELECT invernadero FROM invernaderos WHERE id_invernadero = ?) AS nave;");
-            $stmt->bind_param("ii",$Sede,$Invernadero);
+            $stmt->bind_param("iii",$Nave,$Variedad,$Nave);
             $stmt->execute();
             $Registro = $stmt->get_result();
             $NumCol=$Registro->num_rows;
 
             if ($NumCol>0) {
                 while ($Reg = $Registro->fetch_assoc()){
-                        $Sede = $Reg['sede'];
+                        $Sedes = $Reg['sede'];
                         $Invernadero = $Reg['nave'];
                         $Abreviatura = $Reg['abreviatura'];
                     }
                     $stmt->close();
             }
 
-            $Codigo = $Sede . $Invernadero . $Abreviatura;
+            $Codigo = $Sedes . "-" . $Invernadero . "-" . $Abreviatura;
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $stmt = $Con->prepare("INSERT INTO registro_empaque (id_codigo_r, id_presentacion_r, folio_r, id_tipo_caja , id_tipo_tarima, id_tipo_carro, p_bruto, p_taraje, p_neto, cantidad_caja, usuario_r, fecha_r, hora_r, activo_r, tipo_registro, id_tipo_merma, no_serie_r, semana_r) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param('iisiiidddisssisiss', $Codigo, $Presentacion, $FolioVal, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCaja, $Usuario, $FechaR, $HoraR, $Activo, $Clase, $Clasificacion, $NoSerieVal, $SemanaR);
+                $stmt = $Con->prepare("INSERT INTO tipo_variaciones (codigo, id_nombre_v, tipo , color, superficie, id_presentacion_v, id_ciclo_v, id_modulo_v) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param('sissdiii', $Codigo, $Variedad, $Tipo, $Color, $Superficie, $Presentacion, $Ciclo, $Nave);
                 $stmt->execute();
                 $stmt->close();
-                $Limpiar = new Cleanner($Folio,$KilosB,$NoCaja,$Codigo,$Carro,$Tarima,$Caja,$Clasificacion,$Tipo);
-                $Folio = $Limpiar -> LimpiarFolio();
-                $KilosB = $Limpiar -> LimpiarKilosB();
-                $NoCaja = $Limpiar -> LimpiarNoCaja();
-                $Codigo = $Limpiar -> LimpiarCodigo();
-                $Carro = $Limpiar -> LimpiarCarro();
-                $Tarima = $Limpiar -> LimpiarTarima();
-                $Caja = $Limpiar -> LimpiarCaja();
-                $Clasificacion = $Limpiar -> LimpiarClasificacion();
+                $Limpiar = new Cleanner($Variedad, $Tipo, $Color, $Superficie, $Presentacion, $Sede, $Ciclo, $Nave);
+                $Variedad = $Limpiar -> LimpiarVariedad();
                 $Tipo = $Limpiar -> LimpiarTipo();
+                $Color = $Limpiar -> LimpiarColor();
+                $Superficie = $Limpiar -> LimpiarSuperficie();
+                $Presentacion = $Limpiar -> LimpiarPresentacion();
+                $Sede = $Limpiar -> LimpiarSede();
+                $Ciclo = $Limpiar -> LimpiarCiclo();
+                $Nave = $Limpiar -> LimpiarNave();
                 $Finalizado = "Se hizo el registro correctamente";
             }
             
@@ -264,6 +244,6 @@
 
     }
 
-    include 'RegMerma.php';
+    include 'RegCodigos.php';
     } else { header("Location: ../Registro_empaque/CatalogoR.php"); }
 ?>

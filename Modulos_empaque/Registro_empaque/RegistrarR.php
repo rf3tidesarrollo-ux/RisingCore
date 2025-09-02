@@ -19,12 +19,13 @@
     $NumP=0;
     $Finalizado="";
     $Correcto=0;
+    $Sede = isset($_POST['Sede']) ? $_POST['Sede'] : '';
     $Codigo = isset($_POST['Codigo']) ? $_POST['Codigo'] : '';
-    $Presentacion = isset($_POST['Presentacion']) ? $_POST['Presentacion'] : '';
     $Carro = isset($_POST['Carro']) ? $_POST['Carro'] : '';
     $Tarima = isset($_POST['Tarima']) ? $_POST['Tarima'] : '';
     $Caja = isset($_POST['Cajas']) ? $_POST['Cajas'] : '';
     $NoCaja = isset($_POST['NoCajas']) ? $_POST['NoCajas'] : '';
+    $NoTarima = isset($_POST['NoTarima']) ? $_POST['NoTarima'] : '';
     $KilosB = isset($_POST['KilosB']) ? $_POST['KilosB'] : '';
     $Folio = isset($_POST['Folio']) ? $_POST['Folio'] : '';
     $Caja = isset($_POST['Cajas']) ? $_POST['Cajas'] : '';
@@ -92,7 +93,7 @@
             
             if (!empty($NoCaja)) {
                 if (is_numeric($NoCaja)){
-                    if ($NoCaja > 0 && $NoCaja <= 999) {
+                    if ($NoCaja > 0 && $NoCaja <= 9999) {
                         $Valor = 1;
                         return $Valor;
                     }else{
@@ -150,7 +151,7 @@
         public $Carro;
         public $Tarima;
         public $Caja;
-        public $Presentacion;
+        public $Sede;
 
         function __Construct($L){
             $this -> Limpiar = $L;
@@ -169,11 +170,11 @@
         }
 
         public function LimpiarCodigo(){
-            return $this -> Codigo="Seleccione el código:";
+            return $this -> Codigo="Seleccione la variedad:";
         }
 
         public function LimpiarCarro(){
-            return $this -> Carro="Seleccione el carro:";
+            return $this -> Carro="Seleccione la traila:";
         }
 
         public function LimpiarTarima(){
@@ -184,8 +185,8 @@
             return $this -> Caja="Seleccione la caja:";
         }
 
-        public function LimpiarPresentacion(){
-            return $this -> Presentacion="Seleccione la presentación:";
+        public function LimpiarSede(){
+            return $this -> Sede="Seleccione la sede:";
         }
         
     }
@@ -193,7 +194,7 @@
 
     if (isset($_POST['Insertar'])) {
         $Codigo=$_POST['Codigo'];
-        $Presentacion=$_POST['Presentacion'];
+        $Sede=$_POST['Sede'];
         $Carro=$_POST['Carro'];
         $Tarima=$_POST['Tarima'];
         $Caja=$_POST['Cajas'];
@@ -201,22 +202,22 @@
         $KilosB=$_POST['KilosB'];
         $Folio=$_POST['Folio'];
 
-        if ($Codigo == "Seleccione el código:") {
-            $Error1 = "Tienes que seleccionar un código";
+        if ($Sede == "0") {
+            $Error1 = "Tienes que seleccionar una sede";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
 
-        if ($Presentacion == "Seleccione la presentación:") {
-            $Error2 = "Tienes que seleccionar una presentación";
+        if ($Codigo == "0") {
+            $Error2 = "Tienes que seleccionar una variedad";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
 
-        if ($Carro == "Seleccione el carro:") {
-            $Error3 = "Tienes que seleccionar un carro";
+        if ($Carro == "Seleccione la traila:") {
+            $Error3 = "Tienes que seleccionar una traila";
             $NumE += 1;
         }else{
             $Correcto += 1;
@@ -267,7 +268,7 @@
                 $Correcto += 1;
                 break;
             case '2':
-                $Precaucion2 = "Las cajas deben ser mayor a 0";
+                $Precaucion2 = "Las cajas deben ser mayor a 0 y menor o igual a 999";
                 $NumP += 1;
                 break;
             case '3':
@@ -353,11 +354,11 @@
             $stmt->close();
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $stmt = $Con->prepare("INSERT INTO registro_empaque (id_codigo_r, id_presentacion_r, folio_r, id_tipo_caja , id_tipo_tarima, id_tipo_carro, p_bruto, p_taraje, p_neto, cantidad_caja, usuario_r, fecha_r, hora_r, activo_r, tipo_registro, id_tipo_merma, no_serie_r, semana_r) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param('iisiiidddisssisiss', $Codigo, $Presentacion, $FolioVal, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCaja, $Usuario, $FechaR, $HoraR, $Activo, $Tipo, $Clasificacion, $NoSerieVal, $SemanaR);
+                $stmt = $Con->prepare("INSERT INTO registro_empaque (id_codigo_r, folio_r, id_tipo_caja , id_tipo_tarima, id_tipo_carro, p_bruto, p_taraje, p_neto, cantidad_caja, usuario_r, fecha_r, hora_r, activo_r, tipo_registro, id_tipo_merma, no_serie_r, semana_r) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param('isiiidddisssisiss', $Codigo, $FolioVal, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCaja, $Usuario, $FechaR, $HoraR, $Activo, $Tipo, $Clasificacion, $NoSerieVal, $SemanaR);
                 $stmt->execute();
                 $stmt->close();
-                $Limpiar = new Cleanner($Folio,$KilosB,$NoCaja,$Codigo,$Carro,$Tarima,$Caja,$Presentacion);
+                $Limpiar = new Cleanner($Folio,$KilosB,$NoCaja,$Codigo,$Carro,$Tarima,$Caja,$Sede);
                 $Folio = $Limpiar -> LimpiarFolio();
                 $KilosB = $Limpiar -> LimpiarKilosB();
                 $NoCaja = $Limpiar -> LimpiarNoCaja();
@@ -365,7 +366,7 @@
                 $Carro = $Limpiar -> LimpiarCarro();
                 $Tarima = $Limpiar -> LimpiarTarima();
                 $Caja = $Limpiar -> LimpiarCaja();
-                $Presentacion = $Limpiar -> LimpiarPresentacion();
+                $Sede = $Limpiar -> LimpiarSede();
                 $Finalizado = "Se hizo el registro correctamente";
             }
             

@@ -13,7 +13,7 @@ $mapa_tipos = [
 if (isset($mapa_tipos[$tipo])) {
     $nave = $mapa_tipos[$tipo];
 
-    $stmt = $Con->prepare("SELECT id_invernadero, invernadero FROM invernaderos WHERE id_invernadero = ?");
+    $stmt = $Con->prepare("SELECT id_invernadero, invernadero FROM invernaderos WHERE id_sede_i = ?");
     $stmt->bind_param("i", $nave);
     $stmt->execute();
     $resultado = $stmt->get_result();
@@ -24,12 +24,12 @@ if (isset($mapa_tipos[$tipo])) {
             echo '<option value="'.$fila['id_invernadero'].'">'.htmlspecialchars($fila['invernadero']).'</option>';
         }
     } else {
-        echo '<option value="">No hay naves disponibles</option>';
+        echo '<option value="0">No hay naves disponibles</option>';
     }
 
     $stmt->close();
 } else {
-    echo '<option value="">Tipo inválido</option>';
+    echo '<option value="0">Tipo inválido</option>';
 }
 
 $Con->close();

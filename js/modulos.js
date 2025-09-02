@@ -53,6 +53,32 @@ $(document).ready(function () {
     });
 });
 
+$(document).ready(function () {
+
+    $('#campo_codigos').hide();
+
+    $('#sede').on('change', function () {
+        const tipo = $(this).val();
+
+        if (tipo === '') {
+            $('#codigos').html('<option value="">Seleccione una variedad primero</option>');
+            return;
+        }
+
+        $.ajax({
+            url: '/RisingCore/Modulos_empaque/Registro_empaque/get_codigos.php',
+            method: 'GET',
+            data: { tipo: tipo },
+            success: function (data) {
+                $('#codigos').html(data);
+                $('#campo_codigos').show(); 
+            },
+            error: function (xhr, status, error) {
+                console.error('Error en AJAX:', status, error);
+            }
+        });
+    });
+});
 
 const inputs = document.querySelectorAll('.FAD .FAI');
 

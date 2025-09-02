@@ -24,12 +24,12 @@ if (isset($mapa_tipos[$tipo])) {
             echo '<option value="'.$fila['id_merma'].'">'.htmlspecialchars($fila['motivo']).'</option>';
         }
     } else {
-        echo '<option value="">No hay clasificaciones disponibles</option>';
+        echo '<option value="0">No hay clasificaciones disponibles</option>';
     }
 
     $stmt->close();
 } else {
-    echo '<option value="">Tipo inválido</option>';
+    echo '<option value="0">Tipo inválido</option>';
 }
 
 $Con->close();
