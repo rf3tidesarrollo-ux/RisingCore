@@ -19,25 +19,28 @@
     $NumP=0;
     $Finalizado="";
     $Correcto=0;
+    $Sede = isset($_POST['Sede']) ? $_POST['Sede'] : '';
     $Tipo = isset($_POST['TipoRegistro']) ? $_POST['TipoRegistro'] : '';
     $Codigo = isset($_POST['Codigo']) ? $_POST['Codigo'] : '';
     $Carro = isset($_POST['Carro']) ? $_POST['Carro'] : '';
     $Tarima = isset($_POST['Tarima']) ? $_POST['Tarima'] : '';
+    $NoTarima = isset($_POST['NoTarima']) ? $_POST['NoTarima'] : '';
     $Caja = isset($_POST['Cajas']) ? $_POST['Cajas'] : '';
     $NoCaja = isset($_POST['NoCajas']) ? $_POST['NoCajas'] : '';
     $KilosB = isset($_POST['KilosB']) ? $_POST['KilosB'] : '';
     $Folio = isset($_POST['Folio']) ? $_POST['Folio'] : '';
     $Clasificacion = isset($_POST['Clasificacion']) ? $_POST['Clasificacion'] : '';
     $NoSerie=NULL;
-    $NS=false;
     $Clase="MERMA";
-    $Presentacion=NULL;
+    $CodigoR = "";
+    $VariedadSeleccionada = $_POST['Codigo'] ?? '';
+    $ClasificacionSeleccionada = $_POST['Clasificacion'] ?? '';
 
-    for ($i=1; $i <= 10; $i++) {
+    for ($i=1; $i <= 12; $i++) {
         ${"Error".$i}="";
     }
 
-    for ($i=1; $i <= 3; $i++) { 
+    for ($i=1; $i <= 5; $i++) { 
         ${"Precaucion".$i}="";
     }
 
@@ -109,6 +112,40 @@
         }
     }
 
+    class Val_NoTarima {
+        public $NoTarima;
+    
+        function __Construct($T){
+            $this -> NoTarima = $T;
+        }
+    
+        public function getNoTarima(){
+            return $this -> NoTarima;
+        }
+    
+        public function setNoTarima($NoTarima){
+            $this -> NoTarima = $NoTarima;
+            
+            if (!empty($NoTarima)) {
+                if (is_numeric($NoTarima)){
+                    if ($NoTarima > 0 && $NoTarima <= 99) {
+                        $Valor = 1;
+                        return $Valor;
+                    }else{
+                        $Valor = 2;
+                        return $Valor; 
+                    }
+                }else{
+                    $Valor = 3;
+                    return $Valor;
+                }
+            }else{
+                    $Valor = 4;
+                    return $Valor;
+            }
+        }
+    }
+
     class Val_Folio {
         public $Folio;
     
@@ -151,6 +188,8 @@
         public $Caja;
         public $Clasificacion;
         public $Tipo;
+        public $Sede;
+        public $NoTarima;
 
         function __Construct($L){
             $this -> Limpiar = $L;
@@ -192,6 +231,14 @@
             return $this -> Tipo="Seleccione el tipo de merma:";
         }
         
+        public function LimpiarSede(){
+            return $this -> Sede="Seleccione la sede:";
+        }
+
+        public function LimpiarNoTarima(){
+            return $this -> NoTarima="";
+        }
+        
     }
     
 
@@ -205,10 +252,26 @@
         $Folio=$_POST['Folio'];
         $Clasificacion=$_POST['Clasificacion'];
         $Tipo=$_POST['TipoRegistro'];
+        $Sede=$_POST['Sede'];
+        $NoTarima=$_POST['NoTarima'];
         
-        if ($Codigo == "Seleccione el código:") {
+        if ($Sede == "0") {
+            $Error1 = "Tienes que seleccionar una sede";
+            $NumE += 1;
+        }else{
+            $Correcto += 1;
+        }
+
+        if ($Tipo == "0") {
+            $Error2 = "Tienes que seleccionar un tipo de merma";
+            $NumE += 1;
+        }else{
+            $Correcto += 1;
+        }
+
+        if ($Codigo == "0") {
             if ($Tipo == "A") {
-                $Error1 = "Tienes que seleccionar un código";
+                $Error3 = "Tienes que seleccionar una variedad";
                 $NumE += 1;
             } else {
                 $Codigo = NULL;
@@ -218,47 +281,65 @@
             $Correcto += 1;
         }
 
+        if ($Clasificacion == "0") {
+            $Error4 = "Tienes que seleccionar una clasificación";
+            $NumE += 1;
+        }else{
+            $Correcto += 1;
+        }
+
         if ($Carro == "Seleccione el carro:") {
-            $Error2 = "Tienes que seleccionar un carro";
+            $Error5 = "Tienes que seleccionar un carro";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
 
         if ($Tarima == "Seleccione la tarima:") {
-            $Error3 = "Tienes que seleccionar una tarima";
+            $Error6 = "Tienes que seleccionar una tarima";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
 
-        if ($Caja == "Seleccione la caja:") {
-            $Error4 = "Tienes que seleccionar una caja";
-            $NumE += 1;
-        }else{
-            $Correcto += 1;
-        }
-
-        $ValidarKilosB = new Val_KilosB($KilosB);
-        $Retorno = $ValidarKilosB -> setKilosB($KilosB);
-        $KilosBVal = $ValidarKilosB -> getKilosB();
+        $ValidarNoTarima = new Val_NoTarima($NoTarima);
+        $Retorno = $ValidarNoTarima -> setNoTarima($NoTarima);
+        $NoTarimaVal = $ValidarNoTarima -> getNoTarima();
 
         switch ($Retorno) {
             case '1':
-                $Correcto += 1;
+                if ($Tarima == "1") {
+                    $Correcto += 1;
+                    $NoTarima = 0;
+                }else{
+                    $Correcto += 1;
+                    break; 
+                }
                 break;
             case '2':
-                $Precaucion1 = "Los kilos deben ser mayor a 0";
+                $Precaucion1 = "Las tarimas deben ser mayor a 0 y menor o igual a 99";
                 $NumP += 1;
                 break;
             case '3':
-                $Precaucion1 = "Tienes que ingresar solo números en el campo de kilos brutos";
+                $Precaucion1 = "Tienes que ingresar solo números en el campo de tarimas";
                 $NumP += 1;
                 break;
             case '4':
-                $Error5 = "El campo de kilos no puede ir vacío";
-                $NumE += 1;
-                break;  
+                if ($Tarima == "1") {
+                    $Correcto += 1;
+                    $NoTarima = 0;
+                }else{
+                    $Error7 = "La cantidad de tarimas no puede ir vacío";
+                    $NumE += 1;
+                    break; 
+                }
+        }
+
+        if ($Caja == "Seleccione la caja:") {
+            $Error8 = "Tienes que seleccionar una caja";
+            $NumE += 1;
+        }else{
+            $Correcto += 1;
         }
 
         $ValidarNoCaja = new Val_NoCaja($NoCaja);
@@ -278,9 +359,31 @@
                 $NumP += 1;
                 break;
             case '4':
-                $Error6 = "El campo de cajas no puede ir vacío";
+                $Error9 = "El campo de cajas no puede ir vacío";
                 $NumE += 1;
                 break;   
+        }
+
+        $ValidarKilosB = new Val_KilosB($KilosB);
+        $Retorno = $ValidarKilosB -> setKilosB($KilosB);
+        $KilosBVal = $ValidarKilosB -> getKilosB();
+
+        switch ($Retorno) {
+            case '1':
+                $Correcto += 1;
+                break;
+            case '2':
+                $Precaucion3 = "Los kilos deben ser mayor a 0";
+                $NumP += 1;
+                break;
+            case '3':
+                $Precaucion3 = "Tienes que ingresar solo números en el campo de kilos brutos";
+                $NumP += 1;
+                break;
+            case '4':
+                $Error10 = "El campo de kilos no puede ir vacío";
+                $NumE += 1;
+                break;  
         }
 
         $ValidarFolio = new Val_Folio($Folio);
@@ -289,46 +392,31 @@
         
         switch ($Retorno) {
             case '1':
-                $Precaucion3 = "El campo de folio solo lleva letras y números";
+                $Precaucion4 = "El campo de folio solo lleva letras y números";
                 $NumP += 1;
                 break;
             case '2':
                 $Correcto += 1;
                 break;
             case '3':
-                $Error7 = "El campo de folio no puede ir vacío";
+                $Error11 = "El campo de folio no puede ir vacío";
                 $NumE += 1;
                 break;    
-        }
-
-        if ($Tipo == "0") {
-            $Error8 = "Tienes que seleccionar un tipo de merma";
-            $NumE += 1;
-        }else{
-            $Correcto += 1;
-        }
-
-        if ($Clasificacion == "0") {
-            $Error9 = "Tienes que seleccionar una clasificación";
-            $NumE += 1;
-        }else{
-            $Correcto += 1;
         }
 
         if ($FechaR!=null && $HoraR!=null && $SemanaR!=null) {
             $Correcto += 1;
         }else{
-            $Error10 = "Error con la fecha, hora o semana";
+            $Error12 = "Error con la fecha, hora o semana";
             $NumE += 1;
         }
 
-        if ($Correcto==10) {
+        if ($Correcto==12) {
             $stmt = $Con->prepare("SELECT 
                                 (SELECT peso_caja FROM tipos_cajas WHERE id_caja = ?) AS cajas,
                                 (SELECT peso_tarima FROM tipos_tarimas WHERE id_tarima = ?) AS tarimas,
-                                (SELECT cantidad_t FROM tipos_tarimas WHERE id_tarima = ?) AS c_tarimas,
                                 (SELECT peso_carro FROM tipos_carros WHERE id_carro = ?) AS carros;");
-            $stmt->bind_param("iiii",$Caja,$Tarima,$Tarima,$Carro);
+            $stmt->bind_param("iii",$Caja,$Tarima,$Carro);
             $stmt->execute();
             $Registro = $stmt->get_result();
             $NumCol=$Registro->num_rows;
@@ -337,35 +425,76 @@
                 while ($Reg = $Registro->fetch_assoc()){
                         $PesoB = $Reg['cajas'];
                         $PesoT = $Reg['tarimas'];
-                        $CantT = $Reg['c_tarimas'];
                         $PesoC = $Reg['carros'];
                     }
                     $stmt->close();
             }
             
-            $KilosT = ($PesoB * $NoCajaVal) + ($PesoT * $CantT) + ($PesoC * 1);
+            $KilosT = ($PesoB * $NoCajaVal) + ($PesoT * $NoTarima) + ($PesoC * 1);
             $KilosN = $KilosBVal - $KilosT;
+            
+            if ($KilosN > 0) {
+                $Correcto += 1;
+            }else{
+                $Precaucion5 = "El taraje supera la cantidad neta";
+                $NumP += 1;
+            }
+        }
+
+        if ($Correcto==13) {
+            $Fecha = date("dmy");
+            $stmt = $Con->prepare("SELECT codigo FROM tipo_variaciones WHERE id_variedad = ?");
+            $stmt->bind_param("i",$Codigo);
+            $stmt->execute();
+            $Registro = $stmt->get_result();
+            $NumCol=$Registro->num_rows;
+
+            if ($NumCol>0) {
+                while ($Reg = $Registro->fetch_assoc()){
+                        $CodigoR = $Reg['codigo'];
+                    }
+                    $stmt->close();
+            }
+
+            $CodigoBase = $CodigoR . "-" . $Fecha;
+
+            $stmt = $Con->prepare("SELECT no_serie_r FROM registro_empaque WHERE fecha_r = ? AND no_serie_r LIKE CONCAT(?, '%') ORDER BY no_serie_r DESC LIMIT 1");
+            $stmt->bind_param("ss", $FechaR, $CodigoBase);
+            $stmt->execute();
+            $Registro = $stmt->get_result();
+
+            if ($Registro->num_rows > 0) {
+                $Reg = $Registro->fetch_assoc();
+                $UltimoCodigo = $Reg['no_serie_r'];
+                $Numero = (int)substr($UltimoCodigo, -3);
+                $NNS = str_pad($Numero + 1, 3, "0", STR_PAD_LEFT);
+                $NoSerieVal = $CodigoBase . "-" . $NNS;
+            } else {
+                $NoSerieVal = $CodigoBase . "-001";
+            }
+
+            $stmt->close();
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $stmt = $Con->prepare("INSERT INTO registro_empaque (id_codigo_r, id_presentacion_r, folio_r, id_tipo_caja , id_tipo_tarima, id_tipo_carro, p_bruto, p_taraje, p_neto, cantidad_caja, usuario_r, fecha_r, hora_r, activo_r, tipo_registro, id_tipo_merma, no_serie_r, semana_r) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param('iisiiidddisssisiss', $Codigo, $Presentacion, $FolioVal, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCaja, $Usuario, $FechaR, $HoraR, $Activo, $Clase, $Clasificacion, $NoSerie, $SemanaR);
+                $stmt = $Con->prepare("INSERT INTO registro_empaque (id_codigo_r, folio_r, id_tipo_caja , id_tipo_tarima, id_tipo_carro, p_bruto, p_taraje, p_neto, cantidad_caja, cantidad_tarima, usuario_r, fecha_r, hora_r, activo_r, tipo_registro, id_tipo_merma, no_serie_r, semana_r) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param('isiiidddiisssisiss', $Codigo, $FolioVal, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCaja, $NoTarima, $Usuario, $FechaR, $HoraR, $Activo, $Clase, $Clasificacion, $NoSerieVal, $SemanaR);
                 $stmt->execute();
                 $stmt->close();
-                $Limpiar = new Cleanner($Folio,$KilosB,$NoCaja,$Codigo,$Carro,$Tarima,$Caja,$Clasificacion,$Tipo);
+                $Limpiar = new Cleanner($Folio,$KilosB,$NoCaja,$NoTarima,$Codigo,$Carro,$Tarima,$Caja,$Sede,$Clasificacion,$Tipo);
                 $Folio = $Limpiar -> LimpiarFolio();
                 $KilosB = $Limpiar -> LimpiarKilosB();
                 $NoCaja = $Limpiar -> LimpiarNoCaja();
                 $Codigo = $Limpiar -> LimpiarCodigo();
                 $Carro = $Limpiar -> LimpiarCarro();
                 $Tarima = $Limpiar -> LimpiarTarima();
+                $NoTarima = $Limpiar -> LimpiarNoTarima();
                 $Caja = $Limpiar -> LimpiarCaja();
+                $Sede = $Limpiar -> LimpiarSede();
                 $Clasificacion = $Limpiar -> LimpiarClasificacion();
                 $Tipo = $Limpiar -> LimpiarTipo();
                 $Finalizado = "Se hizo el registro correctamente";
             }
-            
         }
-
     }
 
     include 'RegMerma.php';

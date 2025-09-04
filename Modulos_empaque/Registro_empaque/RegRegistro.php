@@ -72,11 +72,11 @@
                     </label>
                 </div>
 
-                <div class="FAD" id="campo_codigos" >
+                <div class="FAD" id="campo_codigos">
                     <label class="FAL">
-                        <span class="FAS">Codigos</span>
+                        <span class="FAS">Variedades</span>
                         <select class="FAI prueba" name="Codigo" id="codigos">
-                            <option value="0">Seleccione un código</option>
+                            <option value="0">Seleccione la variedad</option>
                         </select>
                     </label>
                 </div>
@@ -100,7 +100,7 @@
                             <?php } ?>
                         </option>
                         <?php
-                        $stmt = $Con->prepare("SELECT id_carro,folio_carro FROM tipos_carros ORDER BY id_carro");
+                        $stmt = $Con->prepare("SELECT id_carro,folio_carro FROM tipos_carros ORDER BY folio_carro");
                         $stmt->execute();
                         $Registro = $stmt->get_result();
                 
@@ -120,8 +120,8 @@
                         <option <?php if (($Tarima) != null): ?> value="<?php echo $Tarima; ?>"<?php endif; ?>>
                             <?php if ($Tarima != null) { ?>
                                 <?php 
-                                $stmt = $Con->prepare("SELECT nombre_tarima FROM tipos_tarimas WHERE id_tarima=?");
-                                $stmt->bind_param("i",$Codigo);
+                                $stmt = $Con->prepare("SELECT nombre_tarima FROM tipos_tarimas WHERE id_tarima=? ORDER BY nombre_tarima");
+                                $stmt->bind_param("i",$Tarima);
                                 $stmt->execute();
                                 $Registro = $stmt->get_result();
                                 $Reg = $Registro->fetch_assoc();
@@ -159,7 +159,7 @@
                         <option <?php if (($Caja) != null): ?> value="<?php echo $Caja; ?>"<?php endif; ?>>
                             <?php if ($Caja != null) { ?>
                                 <?php 
-                                $stmt = $Con->prepare("SELECT tipo_caja FROM tipos_cajas WHERE id_caja=?");
+                                $stmt = $Con->prepare("SELECT tipo_caja FROM tipos_cajas WHERE id_caja=? ORDER BY tipo_caja");
                                 $stmt->bind_param("i",$Caja);
                                 $stmt->execute();
                                 $Registro = $stmt->get_result();
@@ -211,9 +211,9 @@
             </section>
         </div>
 
-        <?php if ($Correcto < 9) {
+        <?php if ($Correcto < 11) {
                  if ($NumE>0) { 
-                    for ($i=1; $i <= 9; $i++) {
+                    for ($i=1; $i <= 10; $i++) {
                         $Error=${"Error".$i};
                         if (!empty($Error)) { ?>
                             <script type="module">
@@ -225,7 +225,7 @@
                     <?php } ?>
                 <?php }
                 if ($NumP>0) { 
-                    for ($i=1; $i <= 6; $i++) {
+                    for ($i=1; $i <= 5; $i++) {
                         $Precaucion=${"Precaucion".$i};
                         if (!empty($Precaucion)) { ?>
                             <script type="module">
@@ -256,7 +256,10 @@
             </script>
         <?php } ?>
 
-        <script src="../../js/modulos.js"></script>        
+        <script src="../../js/modulos.js"></script>
+        <script>
+            const variedadSeleccionada = "<?php echo $VariedadSeleccionada; ?>";
+        </script>
     </body>
     <footer>
         <div class="container_footer">

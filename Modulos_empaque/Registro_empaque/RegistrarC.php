@@ -28,6 +28,7 @@
     $Codigo = "";
     $Sede = "";
     $Invernadero = "";
+    $NaveSeleccionada = $_POST['Nave'] ?? '';
 
     for ($i=1; $i <= 8; $i++) {
         ${"Error".$i}="";

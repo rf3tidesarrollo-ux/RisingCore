@@ -188,7 +188,7 @@ header {
 }
 
 .inicio .encabezado {
-    background: url("../../Images/Inventario.jpg");
+    background: url("../Images/Inventario.jpg");
     background-size: cover;
     background-position: center center;
     overflow: hidden;
@@ -241,7 +241,7 @@ td > a {
 }
 
 .tabla{
-    background-image: url("../../Images/TEC.jpeg");
+    background-image: url("../Images/Logo_rising.png");
     background-repeat: no-repeat;
     background-size: cover;
     width: 100%;
@@ -929,6 +929,36 @@ footer {
 /* SELECT2 FULL WIDTH */
 .select2.select2-container { width: 100% !important; }
 
+/* DISEÑO PERMISOS */
+.tabla-permisos {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.tabla-permisos th,
+.tabla-permisos td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+
+.tabla-permisos th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.tabla-permisos td input[type="checkbox"] {
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+input[type="checkbox"] {
+  accent-color: var(--verde-principal);
+}
+
 /* ==========================
    MEDIA QUERIES MÓVILES
    ========================== */
@@ -1040,6 +1070,46 @@ footer {
     clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%) !important;  /* Mantener la forma inclinada */
     -webkit-clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%) !important;
     border-radius: 4px;          /* Opcional: bordes redondeados para mejor estética */
+  }
+
+  .tabla-permisos thead {
+    display: none;
+  }
+
+  .tabla-permisos, 
+  .tabla-permisos tbody, 
+  .tabla-permisos tr, 
+  .tabla-permisos td {
+    display: block;
+    width: 100%;
+  }
+
+  .tabla-permisos tr {
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    background: #fff;
+  }
+
+  .tabla-permisos td {
+    text-align: left;
+    padding-left: 50%;
+    position: relative;
+    border: none;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+  }
+
+  .tabla-permisos td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 10px;
+    width: 45%;
+    white-space: nowrap;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
   }
 }
 

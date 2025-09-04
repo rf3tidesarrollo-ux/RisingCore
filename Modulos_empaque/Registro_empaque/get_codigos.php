@@ -9,15 +9,32 @@ $mapa_tipos = [
     'RF2' => '2',
     'RF3' => '3'
 ];
-echo $mapa_tipos[$tipo];
+
+// Elimina este echo que puede romper el HTML
+// echo $mapa_tipos[$tipo];  
+
 if (isset($mapa_tipos[$tipo])) {
     $codigo = $mapa_tipos[$tipo];
+
+    $mes_actual = date('n');   // 'n' devuelve el mes sin ceros (1 a 12)
+    $año_actual = date('Y');
+
+    if ($mes_actual >= 1 && $mes_actual <= 7) {
+        $año_inicio = $año_actual - 1;
+        $año_fin = $año_actual;
+    } else {
+        $año_inicio = $año_actual;
+        $año_fin = $año_actual + 1;
+    }
+
+    $ciclo = $año_inicio . '-' . $año_fin;
 
     $stmt = $Con->prepare("SELECT tv.id_variedad, tv.codigo
                             FROM tipo_variaciones tv
                             JOIN invernaderos m ON tv.id_modulo_v = m.id_invernadero
-                            WHERE m.id_sede_i = ?");
-    $stmt->bind_param("i", $codigo);
+                            JOIN ciclos c ON tv.id_ciclo_v = c.id_ciclo
+                            WHERE m.id_sede_i = ? AND c.ciclo = ? ORDER BY tv.codigo ASC");
+    $stmt->bind_param("is", $codigo, $ciclo);
     $stmt->execute();
     $resultado = $stmt->get_result();
 
