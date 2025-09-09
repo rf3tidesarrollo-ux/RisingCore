@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<<<<<<< HEAD
+    <link rel="shortcut icon" href="../../../Images/MiniLogo.png">
+=======
     <link rel="shortcut icon" href="../Images/MiniLogo.png">
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
     <script src="https://code.jquery.com/jquery-3.7.1.js" type="text/javascript"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -20,7 +24,11 @@
 
 <body onload="validar()">
         <header id="header">
+<<<<<<< HEAD
+            <nav class="rising">
+=======
             <nav class="navbar">
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
                 <div class="navbar-container">
                     <a href="#" class="logo">
                     <img src="../../../Images/Rising-core.png" alt="Logo">
@@ -30,6 +38,15 @@
                     <ul class="menu">
                     <li><a href="#">Inicio</a></li>
                     <li class="submenu-parent">
+<<<<<<< HEAD
+                        <a href="#">Registros <i class="fas fa-caret-down"></i></a>
+                        <ul class="submenu">
+                        <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true) { ?><li><a href="../../Empaque/Pesaje/RegistrarR.php"><i class="fas fa-balance-scale"></i> Pesaje</a></li><?PHP } ?>
+                        <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true) { ?><li><a href="../../Empaque/Pesaje/RegistrarM.php"><i class="fa-solid fa-store"></i> Merma</a></li><?PHP } ?>
+                        <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true) { ?><li><a href="../../Empaque/Mezcla/RegistrarMz.php"><i class="fa-solid fa-mortar-pestle"></i> Mezcla</a></li><?PHP } ?>
+                        <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true) { ?><li><a href="../../Empaque/Pallets/RegistrarP.php"><i class="fa-solid fa-tag"></i> Pallets</a></li><?PHP } ?>
+                        <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true) { ?><li><a href="../../Empaque/Embarque/RegistrarE.php"><i class="fa-solid fa-truck"></i> Embarque</a></li><?PHP } ?>
+=======
                         <a href="#">Registro <i class="fas fa-caret-down"></i></a>
                         <ul class="submenu">
                         <li><a href="RegistrarR.php"><i class="fas fa-balance-scale"></i> Pesaje</a></li>
@@ -37,11 +54,32 @@
                         <li><a href="RegistrarMz.php"><i class="fa-solid fa-mortar-pestle"></i> Mezcla</a></li>
                         <li><a href="RegistrarE.php"><i class="fa-solid fa-truck"></i> Embarque</a></li>
                         <li><a href="RegistrarC.php"><i class="fa-solid fa-qrcode"></i></i> Códigos</a></li>
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
                         </ul>
                     </li>
                     <li class="submenu-parent">
                         <a href="#">Reportes <i class="fas fa-caret-down"></i></a>
                         <ul class="submenu">
+<<<<<<< HEAD
+                        <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true) { ?><li><a href="../../Empaque/Pesaje/CatalogoR.php"><i class="fas fa-balance-scale"></i> Pesaje</a></li><?PHP } ?>
+                        <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true) { ?><li><a href="../../Empaque/Pesaje/CatalogoM.php"><i class="fa-solid fa-store"></i> Merma</a></li><?PHP } ?>
+                        <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true) { ?><li><a href="../../Empaque/Mezcla/CatalogoMz.php"><i class="fa-solid fa-mortar-pestle"></i> Mezcla</a></li><?PHP } ?>
+                        <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true) { ?><li><a href="../../Empaque/Pallets/CatalogoP.php"><i class="fa-solid fa-tag"></i> Pallets</a></li><?PHP } ?>
+                        <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true) { ?><li><a href="../../Empaque/Embarque/CatalogoE.php"><i class="fa-solid fa-truck"></i> Embarque</a></li><?PHP } ?>
+                        </ul>
+                    </li>
+                    <li class="submenu-parent">
+                        <a href="#">Módulos <i class="fas fa-caret-down"></i></a>
+                        <ul class="submenu">
+                        <?php if ($TipoRol=="ADMINISTRADOR" || PermisoModulo($_SESSION['ID'],"Produccion",$Con)) { ?><li><a href="../../Inicio.php"><i class="fa-solid fa-seedling"></i> Producción</a></li><?PHP } ?>
+                        <?php if ($TipoRol=="ADMINISTRADOR" || PermisoModulo($_SESSION['ID'],"Empaque",$Con)) { ?><li><a href="../../Inicio.php"><i class="fa-solid fa-box-open"></i> Empaque</a></li><?PHP } ?>
+                        <?php if ($TipoRol=="ADMINISTRADOR" || PermisoModulo($_SESSION['ID'],"Exportacion",$Con)) { ?><li><a href="../../Inicio.php"><i class="fa-solid fa-truck-fast"></i> Exportacion</a></li><?PHP } ?>
+                        <?php if ($TipoRol=="ADMINISTRADOR" || PermisoModulo($_SESSION['ID'],"Calidad",$Con)) { ?><li><a href="../../Inicio.php"><i class="fa-solid fa-certificate"></i> Calidad</a></li><?PHP } ?>
+                        <?php if ($TipoRol=="ADMINISTRADOR" || PermisoModulo($_SESSION['ID'],"Sistemas",$Con)) { ?><li><a href="../../Inicio.php"><i class="fa-solid fa-laptop-code"></i> Sistemas</a></li><?PHP } ?>
+                        </ul>
+                    </li>
+                    <li><a href="../../../Login/Cerrar.php"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</a></li>
+=======
                         <li><a href="RegistrarR.php"><i class="fas fa-balance-scale"></i> Pesaje</a></li>
                         <li><a href="RegistrarM.php"><i class="fa-solid fa-store"></i> Merma</a></li>
                         <li><a href="RegistrarMz.php"><i class="fa-solid fa-mortar-pestle"></i> Mezcla</a></li>
@@ -49,6 +87,7 @@
                         </ul>
                     </li>
                     <li><a href="#">Cerrar sesión</a></li>
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
                     </ul>
                 </div>
             </nav>
@@ -201,18 +240,31 @@
                         <?php } ?>
                     <?php } ?>
                 <?php }
+<<<<<<< HEAD
+        } 
+        
+        if (isset($_SESSION['correcto'])) { $Finalizado = $_SESSION['correcto']; unset($_SESSION['correcto']); ?>
+=======
         } else { ?>
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
             <script type="module">
             var error="<?php echo $Finalizado;?>";
             import { Eggy } from '../../../js/eggy.js';
             await Eggy({title: 'Correcto!', message: error, type: 'success', position: 'top-right', duration: 10000});
 
+<<<<<<< HEAD
+            window.permisosSeleccionados = {};
+            document.querySelectorAll('#tablaPermisos input[type="checkbox"]').forEach(cb => cb.checked = false);
+            </script>
+        <?php }?>
+=======
             window.permisosSeleccionados = {};  // ← LIMPIA LA VARIABLE
 
             // Opcional: Limpiar checkboxes (si ya están renderizados)
             document.querySelectorAll('#tablaPermisos input[type="checkbox"]').forEach(cb => cb.checked = false);
             </script>
         <?php } ?>
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
 
         <script src="../../../js/modulos.js"></script>
         <script src="../../../js/ajax.js"></script>

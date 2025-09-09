@@ -4,7 +4,11 @@ $User = $_POST['Usuario'];
 $Pass = $_POST['Password'];
 $Estado = 1;
 
+<<<<<<< HEAD
+    $stmt = $Con->prepare("SELECT u.id_usuario as ID, r.rol as Rol, c.nombre_completo as Titular, c.id_sede_u as Sede
+=======
     $stmt = $Con->prepare("SELECT u.id_usuario as ID, r.rol as Rol, c.nombre_completo as Titular
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
         FROM usuarios u
         LEFT JOIN roles r ON u.id_rol = r.id_rol
         LEFT JOIN cargos c ON u.id_cargo = c.id_cargo
@@ -21,6 +25,10 @@ $Estado = 1;
             $_SESSION['Password'] = $Pass;
             $_SESSION['Rol'] = $Reg['Rol'];
             $_SESSION['Titular'] = $Reg['Titular'];
+<<<<<<< HEAD
+            $_SESSION['Sede'] = $Reg['Sede'];
+=======
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
             $_SESSION['ID'] = $Reg['ID'];
         }
         $stmt->close();

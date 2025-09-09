@@ -55,108 +55,119 @@ function eliminarRegistroC(id,catalogo){
     });
 }
 
-function mostrarRegistro(id_Inventario){
-    $.ajax({
-      url: 'MostrarI.php',
-      type: 'POST',
-      async: true,
-      data: {id:id_Inventario},
-      success: function(response){
-        if (response != 'error') {
-          location.reload();
-        }
-      },
-      error: function(error){
-        swal("Error!", {
-          icon: "error",
-        });
-      },
-    });
-}
-
 function mostrarRegistroR(id){
-  var nombre = 'nombre';
-  var cargo = 'cargo';
-    $.ajax({
-      url: 'MostrarR.php',
-      type: 'POST',
-      async: true,
-      data: {nombre:nombre,cargo:cargo,id:id},
-      success: function(response){
-        if (response != 'error') {
-          var info = JSON.parse(response);
-          nombre = info.nombre+" "+info.apellido_paterno+" "+info.apellido_materno;
-          cargo = info.cargo;
-          
-          swal("Información:", 
-          "RESPONSABLE: " + nombre + "\n"+
-          "CARGO: " + cargo);
-        }
-      },
-      error: function(error){
-        swal("Error!", {
-          icon: "error",
-        });
-      },
-    });
+  $.ajax({
+    url: 'MostrarR.php',
+    type: 'POST',
+    async: true,
+    data: {id:id},
+    success: function(response){
+      if (response != 'error') {
+        var info = JSON.parse(response);
+        var nSerie = info.ns; 
+        var vCodigo = info.cv;
+        var Sede = info.s;
+        var vNombre = info.nv;
+        var pNombre = info.np;
+        var nave = info.i;
+        var cCajas = info.cc; 
+        var tCaja = info.tc; 
+        var pBruto = info.pb; 
+        var pTaraje = info.pt;
+        var pNeto = info.pn; 
+        var F = info.fr;
+        var fecha = F.split('-').reverse().join('/');
+        var hora = info.hr;
+        var rSemana = info.sr;
+        var tCarro = info.tc;
+        var nTarima = info.nt;
+        var cTarima = info.ct;
+
+        swal("Información:", 
+        "NO. SERIE: " + nSerie + "\n" +
+        "CÓDIGO: " + vCodigo + "\n" +
+        "SEDE: " + Sede + "\n" +
+        "VARIEDAD: " + vNombre + "\n" +
+        "PRESENTACIÓN: " + pNombre + "\n" +
+        "NAVE: " + nave + "\n" +
+        "CANTIDAD DE CAJAS: " + cCajas + "\n" +
+        "TIPO DE CAJA: " + tCaja + "\n" +
+        "PESO BRUTO: " + pBruto + "\n" +
+        "PESO TARAJE: " + pTaraje + "\n" +
+        "PESO NETO: " + pNeto + "\n" +
+        "FECHA DE REGISTRO: " + fecha + "\n" +
+        "HORA: " + hora + "\n" +
+        "SEMANA: " + rSemana + "\n" +
+        "TIPO DE CARRO: " + tCarro + "\n" +
+        "TIPO DE TARIMAS: " + nTarima + "\n" +
+        "CANTIDAD DE TARIMAS: " + cTarima);
+      }
+    },
+    error: function(error){
+      swal("Error!", {
+        icon: "error",
+      });
+    },
+  });
 }
 
-function mostrarRegistroM(id) {
+function mostrarRegistroM(id){
   $.ajax({
-      url: 'MostrarM.php',
-      type: 'POST',
-      async: true,
-      data: { id: id },
-      success: function(response) {
-          if (response != 'error') {
-              var info = JSON.parse(response);
-              var folio = info.art; 
-              var nombre_ant = info.na + ' ' + info.ap + ' ' + info.am;
-              var nombre_act = info.nc + ' ' + info.pc + ' ' + info.mc;
-              var edificio_ant = info.edificio_ant;
-              var edificio_act = info.edificio_act;
-              var area_ant = info.area_ant;
-              var area_act = info.area_act;
-              var F = info.fecha_mov;
-              var fecha = F.split('-').reverse().join('/');
-              var estado = info.estado;
-                if (estado=="1") {
-                  estado = "PENDIENTE";
-                }else if(estado=="2"){
-                  estado = "ACEPTADO";
-                }else{
-                  estado = "FINALIZADO";
-                }
-              var creador = info.creador;
-              // switch (estado) {
-              //   case "1":
-              //     estado = "PENDIENTE";
-              //     break;
-              //   case "2":
-              //     estado = "ACEPTADO";
-              //     break;
-              //   case "3":
-              //     estado = "FINALIZADO";
-              //     break;
-              // }
+    url: 'MostrarM.php',
+    type: 'POST',
+    async: true,
+    data: {id:id},
+    success: function(response){
+      if (response != 'error') {
+        var info = JSON.parse(response);
+        var nSerie = info.ns; 
+        var vCodigo = info.cv;
+        var Sede = info.s;
+        var vNombre = info.nv;
+        var tMerma = info.tm;
+        var tMotivo = info.m;
+        var pNombre = info.np;
+        var nave = info.i;
+        var cCajas = info.cc; 
+        var tCaja = info.tc; 
+        var pBruto = info.pb; 
+        var pTaraje = info.pt;
+        var pNeto = info.pn; 
+        var F = info.fr;
+        var fecha = F.split('-').reverse().join('/');
+        var hora = info.hr;
+        var rSemana = info.sr;
+        var tCarro = info.tc;
+        var nTarima = info.nt;
+        var cTarima = info.ct;
 
-              swal("Información:", 
-              "FOLIO: " + folio + "\n" +
-              "RESPONSABLE ANTERIOR: " + nombre_ant + "\n" +
-              "RESPONSABLE ACTUAL: " + nombre_act + "\n" +
-              "EDIFICIO ANTERIOR: " + edificio_ant + "\n" +
-              "EDIFICIO ACTUAL: " + edificio_act + "\n" +
-              "ÁREA ANTERIOR: " + area_ant + "\n" +
-              "ÁREA ACTUAL: " + area_act + "\n" +
-              "FECHA DEL MOVIMIENTO: " + fecha + "\n" +
-              "ESTADO: " + estado + "\n" +
-              "CREADOR: " + creador);
-
-          }
-      },
-      error: function(error) {
-          swal("Error!", "Ha ocurrido un error al obtener la información.", "error");
-      },
+        swal("Información:", 
+        "NO. SERIE: " + nSerie + "\n" +
+        "CÓDIGO: " + vCodigo + "\n" +
+        "SEDE: " + Sede + "\n" +
+        "VARIEDAD: " + vNombre + "\n" +
+        "TIPO DE MERMA: " + tMerma + "\n" +
+        "CLASIFICACIÓN: " + tMotivo + "\n" +
+        "PRESENTACIÓN: " + pNombre + "\n" +
+        "NAVE: " + nave + "\n" +
+        "CANTIDAD DE CAJAS: " + cCajas + "\n" +
+        "TIPO DE CAJA: " + tCaja + "\n" +
+        "PESO BRUTO: " + pBruto + "\n" +
+        "PESO TARAJE: " + pTaraje + "\n" +
+        "PESO NETO: " + pNeto + "\n" +
+        "FECHA DE REGISTRO: " + fecha + "\n" +
+        "HORA: " + hora + "\n" +
+        "SEMANA: " + rSemana + "\n" +
+        "TIPO DE CARRO: " + tCarro + "\n" +
+        "TIPO DE TARIMAS: " + nTarima + "\n" +
+        "CANTIDAD DE TARIMAS: " + cTarima);
+      }
+    },
+    error: function(error){
+      swal("Error!", {
+        icon: "error",
+      });
+    },
   });
 }
 

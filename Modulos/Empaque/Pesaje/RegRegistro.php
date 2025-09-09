@@ -4,13 +4,59 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<<<<<<< HEAD
+    <link rel="shortcut icon" href="../../../Images/MiniLogo.png">
+=======
     <link rel="shortcut icon" href="../../Images/MiniLogo.png">
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
     <script src="https://code.jquery.com/jquery-3.7.1.js" type="text/javascript"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://kit.fontawesome.com/367278d2a4.js" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
+<<<<<<< HEAD
+    <script src="../../../js/select.js"></script>
+    <link rel="stylesheet" href="../../../css/eggy.css" />
+    <link rel="stylesheet" href="../../../css/progressbar.css" />
+    <link rel="stylesheet" href="../../../css/theme.css" />
+    <link rel="stylesheet" href="DesignR.css">
+    <title>Empaque: Pesaje</title>
+</head>
+
+    <body onload="validar()">
+        <?php
+        $basePath = "../";
+        $Logo = "../../../";
+        $modulo = 'Empaque';
+        include('../../../Complementos/Header.php');
+        ?>
+
+        <main>
+            <div style="background: #f9f9f9; padding: 12px 25px; border-bottom: 1px solid #ccc; font-size: 16px;">
+                <nav style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
+                    <a href="/RisingCore/Modulos/index.php" style="color: #6c757d; text-decoration: none;">
+                        📦 Empaque
+                    </a>
+<<<<<<<< HEAD:Modulos/Empaque/Pesaje/RegRegistro.php
+                    <span style="color: #6c757d;">&raquo;</span>
+
+                    <a href="/RisingCore/Modulos/Empaque/index.php" style="color: #6c757d; text-decoration: none;">
+                        ⚖️ Pesaje
+                    </a>
+                    <span style="color: #6c757d;">&raquo;</span>
+
+                    <a href="/RisingCore/Modulos/Empaque/Pesajes" style="color: #6c757d; text-decoration: none;">
+                        📋 Registros
+                    </a>
+                    <span style="color: #6c757d;">&raquo;</span>
+
+                    <strong style="color: #333;">📊 Registro de Pesaje</strong>
+                </nav>
+            </div>
+
+========
+=======
     <script src="../../js/select.js"></script>
     <link rel="stylesheet" href="../../css/eggy.css" />
     <link rel="stylesheet" href="../../css/progressbar.css" />
@@ -26,6 +72,7 @@
                     <a href="#" class="logo">
                     <img src="../../Images/Rising-core.png" alt="Logo">
                     </a>
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
                     <input type="checkbox" id="menu-toggle">
                     <label for="menu-toggle" class="hamburger"><i class="fas fa-bars"></i></label>
                     <ul class="menu">
@@ -56,7 +103,13 @@
             </nav>
         </header>
         
+<<<<<<< HEAD
+>>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736:Modulos_empaque/Registro_empaque/RegRegistro.php
         <div id="main-container">
+        <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true) { ?> <a title="Reporte" href="CatalogoR.php"><div class="back"><i class="fas fa-balance-scale fa-xl"></i></div></a><?php } ?>
+=======
+        <div id="main-container">
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
 
         <section class="Registro">
             <h4>Registro pesaje</h4>
@@ -73,6 +126,41 @@
                     </label>
                 </div>
 
+<<<<<<< HEAD
+                <div class="FAD">
+                    <label class="FAL">
+                        <span class="FAS">Presentación</span>
+                        <select class="FAI prueba" id="2" name="Presentacion">
+                            <option <?php if (($Presentacion) != null): ?> value="<?php echo $Presentacion; ?>"<?php endif; ?>>
+                                <?php if ($Presentacion != null) { ?>
+                                    <?php 
+                                    $stmt = $Con->prepare("SELECT nombre_p FROM tipos_presentacion WHERE id_presentacion=?");
+                                    $stmt->bind_param("i",$Presentacion);
+                                    $stmt->execute();
+                                    $Registro = $stmt->get_result();
+                                    $Reg = $Registro->fetch_assoc();
+                                    $stmt->close();
+                                    if(isset($Reg['nombre_p'])){echo $Reg['nombre_p'];}else{?> Seleccione la presentación: <?php } ?>
+                                <?php } else {?>
+                                    Seleccione la presentación:
+                                <?php } ?>
+                            </option>
+                            <?php
+                            $stmt = $Con->prepare("SELECT id_presentacion,nombre_p FROM tipos_presentacion ORDER BY id_presentacion");
+                            $stmt->execute();
+                            $Registro = $stmt->get_result();
+                    
+                            while ($Reg = $Registro->fetch_assoc()){
+                                echo '<option value="'.$Reg['id_presentacion'].'">'.$Reg['nombre_p'].'</option>';
+                            }
+                            $stmt->close();
+                            ?>
+                        </select>
+                    </label>
+                </div>
+
+=======
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
                 <div class="FAD" id="campo_codigos">
                     <label class="FAL">
                         <span class="FAS">Variedades</span>
@@ -212,14 +300,24 @@
             </section>
         </div>
 
+<<<<<<< HEAD
+        <?php if ($Correcto < 12) {
+                 if ($NumE>0) { 
+                    for ($i=1; $i <= 11; $i++) {
+=======
         <?php if ($Correcto < 11) {
                  if ($NumE>0) { 
                     for ($i=1; $i <= 10; $i++) {
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
                         $Error=${"Error".$i};
                         if (!empty($Error)) { ?>
                             <script type="module">
                                 var error="<?php echo $Error;?>";
+<<<<<<< HEAD
+                                import { Eggy } from '../../../js/eggy.js';
+=======
                                 import { Eggy } from '../../js/eggy.js';
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
                                 await Eggy({title: 'Error!', message: error, type: 'error', position: 'top-right', duration: 20000});
                             </script>
                         <?php } ?>
@@ -231,7 +329,11 @@
                         if (!empty($Precaucion)) { ?>
                             <script type="module">
                                 var error="<?php echo $Precaucion;?>";
+<<<<<<< HEAD
+                                import { Eggy } from '../../../js/eggy.js';
+=======
                                 import { Eggy } from '../../js/eggy.js';
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
                                 await Eggy({title: 'Precaución!', message: error, type: 'warning', position: 'top-right', duration: 20000});
                             </script>
                         <?php } ?>
@@ -243,12 +345,38 @@
                         if (!empty($Informacion)) { ?>
                             <script type="module">
                                 var error="<?php echo $Informacion;?>";
+<<<<<<< HEAD
+                                import { Eggy } from '../../../js/eggy.js';
+=======
                                 import { Eggy } from '../../js/eggy.js';
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
                                 await Eggy({title: 'Error!', message: error, type: 'info', position: 'top-right', duration: 20000});
                             </script>
                         <?php } ?>
                     <?php } ?>
                 <?php }
+<<<<<<< HEAD
+        } 
+        if (isset($_SESSION['correcto'])) { $Finalizado = $_SESSION['correcto']; unset($_SESSION['correcto']); ?>
+            <script type="module">
+            var error="<?php echo $Finalizado;?>";
+            import { Eggy } from '../../../js/eggy.js';
+            await Eggy({title: 'Correcto!', message: error, type: 'success', position: 'top-right', duration: 10000});
+
+            window.permisosSeleccionados = {};
+            document.querySelectorAll('#tablaPermisos input[type="checkbox"]').forEach(cb => cb.checked = false);
+            </script>
+        <?php }?>
+
+        <script src="../../../js/modulos.js"></script>
+        <script>
+            const variedadSeleccionada = <?= json_encode($Codigo) ?>;
+        </script>
+        </main>
+        
+        <?php include '../../../Complementos/Footer.php'; ?>
+    </body>
+=======
         } else { ?>
             <script type="module">
             var error="<?php echo $Finalizado;?>";
@@ -305,4 +433,5 @@
             </div>
         </div>
     </footer>
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
 </html>

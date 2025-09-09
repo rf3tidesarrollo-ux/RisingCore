@@ -52,6 +52,25 @@ input:-webkit-autofill {
     -webkit-text-fill-color: #000000;
   }
 
+<<<<<<< HEAD
+  html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+main {
+  flex: 1;
+}
+
+=======
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
 body {
     /* background-image: url("../../Images/Logo_rising.png");
     background-repeat: repeat;
@@ -62,6 +81,96 @@ body {
 }
 
 /* NAVBAR STYLES */
+<<<<<<< HEAD
+/* Header y Navbar */
+header {
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.rising {
+  background-color: var(--verde-principal);
+  color: white;
+}
+
+/* Contenedor del navbar */
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1.2rem;
+  max-width: 1200px;
+  margin: auto;
+  flex-wrap: wrap;
+  font-family: sans-serif;
+}
+
+/* Logo */
+.logo img {
+  height: 50px;
+}
+
+/* Estilos del menú */
+.menu {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.menu li {
+  position: relative;
+}
+
+.menu > li > a {
+  display: block;
+  padding: 0.7rem 1rem;
+  text-decoration: none;
+  color: white;
+  white-space: nowrap;
+}
+
+/* Submenú */
+.submenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--verde-principal);
+  min-width: 100px;
+  list-style: none;
+  padding: 0;
+  z-index: 999;
+}
+
+.submenu li a {
+  display: block;
+  padding: 0.7rem 1rem;
+  text-decoration: none;
+  color: white;
+  white-space: nowrap;
+}
+
+.submenu li a:hover {
+  background-color: #666b69;
+}
+
+/* Mostrar submenú al pasar el mouse */
+.submenu-parent:hover .submenu {
+  display: block;
+}
+
+/* Responsive: Menú Hamburguesa */
+.hamburger {
+  display: none;
+  font-size: 1.8rem;
+  color: white;
+  cursor: pointer;
+=======
 header {
     position: sticky;
     top: 0;
@@ -134,6 +243,7 @@ header {
 
 .submenu-parent:hover .submenu {
     display: block;
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
 }
 
 /* Responsive Styles */
@@ -228,7 +338,11 @@ div.dt-buttons > div.dt-button-split .dt-button:hover:not(.disabled) {
 
 div.dt-buttons {
     bottom: 100px;
+<<<<<<< HEAD
+    margin-left: 2%;
+=======
     margin-left: 2.5%;
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
 }
 
 #acciones {
@@ -241,9 +355,15 @@ td > a {
 }
 
 .tabla{
+<<<<<<< HEAD
+    /* background-image: url("../../Images/TEC.jpeg");
+    background-repeat: no-repeat;
+    background-size: cover; */
+=======
     background-image: url("../../Images/TEC.jpeg");
     background-repeat: no-repeat;
     background-size: cover;
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
     width: 100%;
     background-attachment: fixed;
 }
@@ -254,12 +374,22 @@ td > a {
 } */
 
 div.dt-container div.dt-layout-row {
+<<<<<<< HEAD
+    margin-left: 5%;
+}
+
+div.dt-container div.dt-layout-row {
+=======
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
     margin: 0 0;
     padding: 5px 0;
 }
 
 div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-start{
+<<<<<<< HEAD
+=======
     margin-left: 2%;
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
     white-space: nowrap;
 }
 
@@ -276,7 +406,10 @@ div.dt-container #dt-search-0 {
     background-color: #ffffff;
     border-radius: 5px;
     border-color: #00000058;
+<<<<<<< HEAD
+=======
     margin-right: 5%;
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
 }
 
 div.dt-container .dt-length {
@@ -291,12 +424,20 @@ div.dt-container .dt-search {
 }
 
 div.dt-container .dt-info {
+<<<<<<< HEAD
+    margin-left: 5%;
+=======
     margin-left: 10%;
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
     color: #fff;
 }
 
 div.dt-container div.dt-layout-row div.dt-layout-cell.dt-layout-end {
+<<<<<<< HEAD
+    margin-right: 5%;
+=======
     margin-right: 2.5%;
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
 }
 
 /* div.dt-container .dt-paging {
@@ -355,6 +496,14 @@ tr > td.child {
     overflow-x: auto;
 }
 
+<<<<<<< HEAD
+div.dt-container .dt-length, div.dt-container .dt-search, div.dt-container .dt-info, div.dt-container .dt-processing, div.dt-container .dt-paging {
+    color: inherit;
+    margin-right: 5%;
+}
+
+=======
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
 /* FOOTER */
 footer {
     width: 100%;
@@ -536,7 +685,12 @@ footer {
     position: fixed;
     width: 50px;
     height: 50px;
+<<<<<<< HEAD
+    background: var(--verde-principal);
+    color: var(--fondo-form);
+=======
     background: #30d12b;
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
     cursor: pointer;
     padding: 0;
     border-radius: 50%;
@@ -552,7 +706,12 @@ footer {
 }
 
 .back:hover {
+<<<<<<< HEAD
+    background: var(--fondo-form);
+    color: var(--verde-principal);
+=======
     background: #93918f;
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
 }
 
 /* FORMULARIO */
@@ -627,7 +786,11 @@ footer {
 }
 
 .Registro .Boton:hover{
+<<<<<<< HEAD
+    box-shadow: inset 500px 0 0 0 var(--color-texto);
+=======
     box-shadow: inset 250px 0 0 0 var(--color-texto);
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
     border: 2px solid var(--color-texto);
     color: #fdfdfd;
 }
@@ -842,10 +1005,13 @@ tfoot input {
     border: 1px solid #fdfdfd8a;
 }
 
+<<<<<<< HEAD
+=======
 div.dt-buttons > .dt-button:first-child, div.dt-buttons > div.dt-button-split .dt-button:first-child {
     margin-left: 40px;
 }
 
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
 /* ==========================
    FOOTER RESPONSIVE
    ========================== */

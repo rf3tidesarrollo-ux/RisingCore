@@ -5,14 +5,26 @@
     include_once '../../../Login/validar_sesion.php';
     // $Pagina=basename(__FILE__);
     // Historial($Pagina,$Con);
+<<<<<<< HEAD
+    $Ver = TienePermiso($_SESSION['ID'], "Config/Usuarios", 1, $Con);
+    $Crear = TienePermiso($_SESSION['ID'], "Config/Usuarios", 2, $Con);
+    $Editar = TienePermiso($_SESSION['ID'], "Config/Usuarios", 3, $Con);
+    $Eliminar = TienePermiso($_SESSION['ID'], "Config/Usuarios", 4, $Con);
+=======
     Permisos($_SESSION['ID'], $_SESSION['IDM'], 1, $Con);
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
 
     $FechaR=date("Y-m-d");
     $HoraR=date("H:i:s");
     $SemanaR=date("Y-W");
     $Activo=1;
+<<<<<<< HEAD
+    
+    if ($TipoRol=="ADMINISTRADOR" || $Crear==true) {
+=======
 
     if ($Rol=="ADMINISTRADOR" || $PERMISO==true ) {
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
     $NumE=0;
     $NumI=0;
     $NumP=0;
@@ -220,7 +232,15 @@
             $Pass = $Limpiar -> LimpiarPass();
             $Rol = $Limpiar -> LimpiarRol();
             $Titular = $Limpiar -> LimpiarTitular();
+<<<<<<< HEAD
+
+            session_start();
+            $_SESSION['correcto'] = "Se hizo el registro correctamente";
+            header("Location: ".$_SERVER['PHP_SELF']);
+            exit();
+=======
             $Finalizado = "Se hizo el registro correctamente";
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
             }
         }
     }

@@ -1,4 +1,5 @@
-particlesJS(
+document.addEventListener('DOMContentLoaded', () => {
+  particlesJS(
   {
     "particles": {
       "number": {
@@ -21,7 +22,7 @@ particlesJS(
           "nb_sides": 5
         },
         "image": {
-          "src": "Images/LOGO-INVE.png",
+          "src": "Images/MiniLogo.png",
           "width": 337,
           "height": 327
         }
@@ -110,4 +111,4 @@ particlesJS(
     "retina_detect": true
   }
 );
-        
+});

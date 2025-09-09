@@ -11,7 +11,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: '/RisingCore/Modulos_empaque/Registro_empaque/get_clasificaciones.php',
+            url: '/RisingCore/Modulos/Server_side/get_clasificaciones.php',
             method: 'GET',
             data: { tipo: tipo },
             success: function (data) {
@@ -44,7 +44,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: '/RisingCore/Modulos_empaque/Registro_empaque/get_naves.php',
+            url: '/RisingCore/Modulos/Server_side/get_naves.php',
             method: 'GET',
             data: { tipo: tipo },
             success: function (data) {
@@ -65,40 +65,42 @@ $(document).ready(function () {
 });
 
 $(document).ready(function () {
+    const sede = $('#sede').val(); // "RF1", "RF2", etc.
+
+    if (sede && sede !== "0") {
+        cargarVariedades(sede, variedadSeleccionada);
+    }
 
     $('#sede').on('change', function () {
-        const tipo = $(this).val();
-
-        if (tipo === '') {
-            $('#codigos').html('<option value="">Seleccione una variedad primero</option>');
-            return;
-        }
-
-        $.ajax({
-            url: '/RisingCore/Modulos_empaque/Registro_empaque/get_codigos.php',
-            method: 'GET',
-            data: { tipo: tipo },
-            success: function (data) {
-                $('#codigos').html(data);        // Rellena el select
-                $('#campo_codigos').show();      // Muestra el campo
-                $('#codigos').select2();         // Re-aplica Select2
-
-                if (variedadSeleccionada !== "" && $('#codigos option[value="' + variedadSeleccionada + '"]').length > 0) {
-                    $('#codigos').val(variedadSeleccionada).trigger('change');
-                } else {
-                    console.warn("La variedad seleccionada no está entre las opciones");
-                }
-            },
-        });
+        const sede = $(this).val();
+        cargarVariedades(sede, null);
     });
 
-    // Si ya hay una sede seleccionada, dispara el cambio para cargar automáticamente
-    const sedeInicial = $('#sede').val();
-    if (sedeInicial !== "0" && sedeInicial !== "") {
-        $('#sede').trigger('change');
+    function cargarVariedades(sede, seleccionada) {
+        $.ajax({
+            url: '../../Server_side/get_codigos.php',
+            type: 'GET',
+            data: { tipo: sede },
+            success: function (res) {
+                const select = $('#codigos');
+                select.empty();
+                select.append('<option value="0">Seleccione la variedad:</option>');
+
+                if (res.status === 'ok') {
+                    res.variedades.forEach(function (v) {
+                        const selected = (v.id == seleccionada) ? 'selected' : '';
+                        select.append(`<option value="${v.id}" ${selected}>${v.codigo}</option>`);
+                    });
+                } else {
+                    select.append('<option value="0">No hay variedades disponibles</option>');
+                }
+            },
+            error: function () {
+                $('#codigos').html('<option value="0">Error al cargar variedades</option>');
+            }
+        });
     }
 });
-
 
 const inputs = document.querySelectorAll('.FAD .FAI');
 
@@ -131,23 +133,26 @@ function mayus(e) {
     e.value = e.value.toUpperCase();
 }
 
-const pass = document.getElementById("2"), icon = document.querySelector("#eye");
+const icon = document.getElementById("eye");
+const pass = document.getElementById("2");
 
-// icon.addEventListener("click", () => {
-//     if (pass.type === "password") {
-//         pass.type = "text";
-//         $('#eye').removeClass('fa-eye').addClass('fa-eye-slash');
-//     }else{
-//         pass.type = "password";
-//         $('#eye').removeClass('fa-eye-slash').addClass('fa-eye');
-//     }
-// });
+if (icon && pass) {
+    icon.addEventListener("click", () => {
+        if (pass.type === "password") {
+            pass.type = "text";
+            $('#eye').removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            pass.type = "password";
+            $('#eye').removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    });
+}
 
 function mostrarCampo() {
     const tipo = document.getElementById("tipo_registro").value;
-    const campoC = document.getElementById("campo_codigo");
+    const campoC = document.getElementById("campo_codigos");
 
-    if (tipo === "A") {
+    if (tipo === "PRODUCCIÓN") {
         campoC.style.display = "block";
     } else {
         campoC.style.display = "none";

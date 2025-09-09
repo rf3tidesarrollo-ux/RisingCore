@@ -40,7 +40,10 @@
     border: 1px solid #999b98;
 }
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
 /* CAMBIAR COLOR DE AUTOCOMPLETADO */
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
@@ -50,7 +53,11 @@ input:-webkit-autofill:focus {
 
 input:-webkit-autofill {
     -webkit-text-fill-color: #000000;
+<<<<<<< HEAD
+}
+=======
   }
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
 
 body {
     /* background-image: url("../../Images/Logo_rising.png");
@@ -70,7 +77,11 @@ header {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+<<<<<<< HEAD
+.rising {
+=======
 .navbar {
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
     background-color: var(--verde-principal);
     color: #fff;
 }
@@ -626,7 +637,11 @@ footer {
 }
 
 .Registro .Boton:hover{
+<<<<<<< HEAD
+    box-shadow: inset 500px 0 0 0 var(--color-texto);
+=======
     box-shadow: inset 250px 0 0 0 var(--color-texto);
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
     border: 2px solid var(--color-texto);
     color: #fdfdfd;
 }
@@ -929,6 +944,16 @@ footer {
 /* SELECT2 FULL WIDTH */
 .select2.select2-container { width: 100% !important; }
 
+<<<<<<< HEAD
+/* Boton contraseña */
+#eye {
+    float: right;
+    transform: translateY(-13px);
+    cursor: pointer;
+}
+
+=======
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
 /* DISEÑO PERMISOS */
 .tabla-permisos {
   width: 100%;
@@ -946,7 +971,11 @@ footer {
 }
 
 .tabla-permisos th {
+<<<<<<< HEAD
+  background-color: var(--verde-principal);
+=======
   background-color: #f2f2f2;
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
   font-weight: bold;
 }
 
@@ -969,6 +998,25 @@ input[type="checkbox"] {
     }
 }
 
+<<<<<<< HEAD
+@media (max-width: 1000px) {
+    /* Formulario */
+    .Registro { 
+        width: 70%; 
+        margin-left: 15%;
+        margin-right: 15%;
+        padding: 20px; 
+    }
+    .Registro .Boton { 
+        width: 50%; 
+        font-size: 14px; 
+        padding: 10px;
+    }
+    .FAL .FAI { font-size: 18px; }
+}
+
+=======
+>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
 @media (max-width: 768px) {
     .logo img {
         width: 80px; /* Ajusta según necesites */
