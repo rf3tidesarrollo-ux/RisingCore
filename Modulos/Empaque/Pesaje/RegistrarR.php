@@ -1,5 +1,4 @@
 <?php
-<<<<<<< HEAD
     include_once '../../../Conexion/BD.php';
     $RutaCS = "../../../Login/Cerrar.php";
     $RutaSC = "../../../index.php";
@@ -10,39 +9,20 @@
     $Crear = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 2, $Con);
     $Editar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 3, $Con);
     $Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 4, $Con);
-=======
-    include_once '../../Conexion/BD.php';
-    $RutaCS = "../../Sesion/Cerrar.php";
-    $RutaSC = "../../index.php";
-    // include_once "../../Sesion/validar_sesion.php";
-    // $Pagina=basename(__FILE__);
-    // Historial($Pagina,$Con);
->>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
 
     $FechaR=date("Y-m-d");
     $HoraR=date("H:i:s");
     $SemanaR=date("Y-W");
-<<<<<<< HEAD
     $Activo=1;
 
    if ($TipoRol=="ADMINISTRADOR" || $Crear==true) {
-=======
-    $Usuario="prueba";
-    $Rol="ADMINISTRADOR";
-    $Activo=1;
-
-    if ($Rol!="USUARIO") {
->>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
     $NumE=0;
     $NumI=0;
     $NumP=0;
     $Finalizado="";
     $Correcto=0;
     $Sede = isset($_POST['Sede']) ? $_POST['Sede'] : '';
-<<<<<<< HEAD
     $Presentacion = isset($_POST['Presentacion']) ? $_POST['Presentacion'] : '';
-=======
->>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
     $Codigo = isset($_POST['Codigo']) ? $_POST['Codigo'] : '';
     $Carro = isset($_POST['Carro']) ? $_POST['Carro'] : '';
     $Tarima = isset($_POST['Tarima']) ? $_POST['Tarima'] : '';
@@ -54,14 +34,7 @@
     $Caja = isset($_POST['Cajas']) ? $_POST['Cajas'] : '';
     $Folio="";
     $NoSerie="";
-<<<<<<< HEAD
     $CodigoR="";
-=======
-    $Tipo="NORMAL";
-    $Clasificacion=NULL;
-    $CodigoR="";
-    $VariedadSeleccionada = $_POST['Codigo'] ?? '';
->>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
 
     for ($i=1; $i <= 10; $i++) {
         ${"Error".$i}="";
@@ -207,10 +180,7 @@
     class Cleanner{
         public $Limpiar;
         public $Folio;
-<<<<<<< HEAD
         public $Presentacion;
-=======
->>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
         public $KilosB;
         public $NoCaja;
         public $NoTarima;
@@ -228,13 +198,10 @@
             return $this -> Folio="";
         }
 
-<<<<<<< HEAD
         public function LimpiarPresentacion(){
             return $this -> Presentacion="Seleccione la presentación:";
         }
 
-=======
->>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
         public function LimpiarKilosB(){
             return $this -> KilosB="";
         }
@@ -272,10 +239,7 @@
 
     if (isset($_POST['Insertar'])) {
         $Codigo=$_POST['Codigo'];
-<<<<<<< HEAD
         $Presentacion=$_POST['Presentacion'];
-=======
->>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
         $Sede=$_POST['Sede'];
         $Carro=$_POST['Carro'];
         $Tarima=$_POST['Tarima'];
@@ -422,7 +386,6 @@
             $NumE += 1;
         }
 
-<<<<<<< HEAD
         if ($Presentacion == "Seleccione la presentación:") {
             $Error11 = "Tienes que seleccionar una presentación";
             $NumE += 1;
@@ -431,9 +394,6 @@
         }
 
         if ($Correcto==11) {
-=======
-        if ($Correcto==10) {
->>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
             $stmt = $Con->prepare("SELECT 
                                 (SELECT peso_caja FROM tipos_cajas WHERE id_caja = ?) AS cajas,
                                 (SELECT peso_tarima FROM tipos_tarimas WHERE id_tarima = ?) AS tarimas,
@@ -463,11 +423,7 @@
             }
         }
 
-<<<<<<< HEAD
         if ($Correcto==12) {
-=======
-        if ($Correcto==11) {
->>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
             $Fecha = date("dmy");
             $stmt = $Con->prepare("SELECT codigo FROM tipo_variaciones WHERE id_variedad = ?");
             $stmt->bind_param("i",$Codigo);
@@ -502,13 +458,8 @@
             $stmt->close();
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-<<<<<<< HEAD
                 $stmt = $Con->prepare("INSERT INTO registro_empaque (id_codigo_r, id_presentacion_r, folio_r, id_tipo_caja , id_tipo_tarima, id_tipo_carro, p_bruto, p_taraje, p_neto, cantidad_caja, cantidad_tarima, usuario_r, fecha_r, hora_r, activo_r, kilos_dis, cajas_dis, no_serie_r, semana_r) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 $stmt->bind_param('iisiiidddiisssidiss', $Codigo, $Presentacion, $FolioVal, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCajaVal, $NoTarima, $Name, $FechaR, $HoraR, $Activo, $KilosN, $NoCajaVal, $NoSerieVal, $SemanaR);
-=======
-                $stmt = $Con->prepare("INSERT INTO registro_empaque (id_codigo_r, folio_r, id_tipo_caja , id_tipo_tarima, id_tipo_carro, p_bruto, p_taraje, p_neto, cantidad_caja, cantidad_tarima, usuario_r, fecha_r, hora_r, activo_r, tipo_registro, id_tipo_merma, no_serie_r, semana_r) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param('isiiidddiisssisiss', $Codigo, $FolioVal, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCaja, $NoTarima, $Usuario, $FechaR, $HoraR, $Activo, $Tipo, $Clasificacion, $NoSerieVal, $SemanaR);
->>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
                 $stmt->execute();
                 $stmt->close();
                 $Limpiar = new Cleanner($Folio,$KilosB,$NoCaja,$NoTarima,$Codigo,$Carro,$Tarima,$Caja,$Sede);
@@ -521,24 +472,16 @@
                 $NoTarima = $Limpiar -> LimpiarNoTarima();
                 $Caja = $Limpiar -> LimpiarCaja();
                 $Sede = $Limpiar -> LimpiarSede();
-<<<<<<< HEAD
                 $Presentacion = $Limpiar -> LimpiarPresentacion();
 
                 session_start();
                 $_SESSION['correcto'] = "Se hizo el registro correctamente";
                 header("Location: ".$_SERVER['PHP_SELF']);
                 exit();
-=======
-                $Finalizado = "Se hizo el registro correctamente";
->>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
             }
         }
     }
 
     include 'RegRegistro.php';
-<<<<<<< HEAD
     } else { header("Location: CatalogoR.php"); }
-=======
-    } else { header("Location: ../Registro_empaque/CatalogoR.php"); }
->>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
 ?>

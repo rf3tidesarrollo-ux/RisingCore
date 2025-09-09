@@ -28,7 +28,27 @@
         ?>
 
         <main>
-        
+            <div style="background: #f9f9f9; padding: 12px 25px; border-bottom: 1px solid #ccc; font-size: 16px;">
+                <nav style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
+                    <a href="/RisingCore/Modulos/index.php" style="color: #6c757d; text-decoration: none;">
+                        📦 Empaque
+                    </a>
+                    <span style="color: #6c757d;">&raquo;</span>
+
+                    <a href="/RisingCore/Modulos/Empaque/index.php" style="color: #6c757d; text-decoration: none;">
+                        ⚖️ Pesaje
+                    </a>
+                    <span style="color: #6c757d;">&raquo;</span>
+
+                    <a href="/RisingCore/Modulos/Empaque/Pesajes" style="color: #6c757d; text-decoration: none;">
+                        📋 Registros
+                    </a>
+                    <span style="color: #6c757d;">&raquo;</span>
+
+                    <strong style="color: #333;">✏️ Registro de Pesaje</strong>
+                </nav>
+            </div>
+
         <div id="main-container">
         <a title="Regresar" href="CatalogoR.php"><div class="back"><i class="fa-solid fa-left-long fa-xl"></i></div></a>
 

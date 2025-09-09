@@ -4,18 +4,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-<<<<<<< HEAD
     <link rel="shortcut icon" href="../../../Images/MiniLogo.png">
-=======
-    <link rel="shortcut icon" href="../../Images/MiniLogo.png">
->>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
     <script src="https://code.jquery.com/jquery-3.7.1.js" type="text/javascript"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://kit.fontawesome.com/367278d2a4.js" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<<<<<<< HEAD
     <script src="../../../js/select.js"></script>
     <link rel="stylesheet" href="../../../css/eggy.css" />
     <link rel="stylesheet" href="../../../css/progressbar.css" />
@@ -38,7 +33,6 @@
                     <a href="/RisingCore/Modulos/index.php" style="color: #6c757d; text-decoration: none;">
                         📦 Empaque
                     </a>
-<<<<<<<< HEAD:Modulos/Empaque/Pesaje/RegRegistro.php
                     <span style="color: #6c757d;">&raquo;</span>
 
                     <a href="/RisingCore/Modulos/Empaque/index.php" style="color: #6c757d; text-decoration: none;">
@@ -51,65 +45,14 @@
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <strong style="color: #333;">📊 Registro de Pesaje</strong>
+                    <strong style="color: #333;">✏️ Registro de Pesaje</strong>
                 </nav>
             </div>
-
-========
-=======
-    <script src="../../js/select.js"></script>
-    <link rel="stylesheet" href="../../css/eggy.css" />
-    <link rel="stylesheet" href="../../css/progressbar.css" />
-    <link rel="stylesheet" href="../../css/theme.css" />
-    <link rel="stylesheet" href="DesignR.css">
-    <title>Empaque: Registrar</title>
-</head>
-
-<body onload="validar()">
-        <header id="header">
-            <nav class="navbar">
-                <div class="navbar-container">
-                    <a href="#" class="logo">
-                    <img src="../../Images/Rising-core.png" alt="Logo">
-                    </a>
->>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
-                    <input type="checkbox" id="menu-toggle">
-                    <label for="menu-toggle" class="hamburger"><i class="fas fa-bars"></i></label>
-                    <ul class="menu">
-                    <li><a href="#">Inicio</a></li>
-                    <li class="submenu-parent">
-                        <a href="#">Registro <i class="fas fa-caret-down"></i></a>
-                        <ul class="submenu">
-                        <?php if ($Rol=="ADMINISTRADOR" || $Acceso==2) { ?><li><a href="RegistrarR.php"><i class="fas fa-balance-scale"></i> Pesaje</a></li><?php } ?>
-                        <?php if ($Rol=="ADMINISTRADOR" || $Acceso==2) { ?><li><a href="RegistrarM.php"><i class="fa-solid fa-store"></i> Merma</a></li><?php } ?>
-                        <?php if ($Rol=="ADMINISTRADOR" || $Acceso==2) { ?><li><a href="RegistrarMz.php"><i class="fa-solid fa-mortar-pestle"></i> Mezcla</a></li><?php } ?>
-                        <?php if ($Rol=="ADMINISTRADOR" || $Acceso==2) { ?><li><a href="RegistrarP.php"><i class="fa-solid fa-truck"></i> Pallets</a></li><?php } ?>
-                        <?php if ($Rol=="ADMINISTRADOR" || $Acceso==2) { ?><li><a href="RegistrarE.php"><i class="fa-solid fa-qrcode"></i></i> Embarque</a></li><?php } ?>
-                        </ul>
-                    </li>
-                    <li class="submenu-parent">
-                        <a href="#">Reportes <i class="fas fa-caret-down"></i></a>
-                        <ul class="submenu">
-                        <?php if ($Rol=="ADMINISTRADOR" || $Acceso==1) { ?><li><a href="CatalogoR.php"><i class="fas fa-balance-scale"></i> Pesaje</a></li><?php } ?>
-                        <?php if ($Rol=="ADMINISTRADOR" || $Acceso==1) { ?><li><a href="CatalogoM.php"><i class="fa-solid fa-store"></i> Merma</a></li><?php } ?>
-                        <?php if ($Rol=="ADMINISTRADOR" || $Acceso==1) { ?><li><a href="CatalogoMz.php"><i class="fa-solid fa-mortar-pestle"></i> Mezcla</a></li><?php } ?>
-                        <?php if ($Rol=="ADMINISTRADOR" || $Acceso==1) { ?><li><a href="CatalogoP.php"><i class="fa-solid fa-truck"></i> Pallets</a></li><?php } ?>
-                        <?php if ($Rol=="ADMINISTRADOR" || $Acceso==1) { ?><li><a href="CatalogoE.php"><i class="fa-solid fa-qrcode"></i></i> Embarque</a></li><?php } ?>
-                        </ul>
-                    </li>
-                    <li><a href="#">Cerrar sesión</a></li>
-                    </ul>
-                </div>
-            </nav>
-        </header>
         
-<<<<<<< HEAD
->>>>>>>> b5226a49ccee15b7388121ff0078837832ff8736:Modulos_empaque/Registro_empaque/RegRegistro.php
         <div id="main-container">
         <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true) { ?> <a title="Reporte" href="CatalogoR.php"><div class="back"><i class="fas fa-balance-scale fa-xl"></i></div></a><?php } ?>
-=======
+
         <div id="main-container">
->>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
 
         <section class="Registro">
             <h4>Registro pesaje</h4>
@@ -126,7 +69,6 @@
                     </label>
                 </div>
 
-<<<<<<< HEAD
                 <div class="FAD">
                     <label class="FAL">
                         <span class="FAS">Presentación</span>
@@ -159,8 +101,6 @@
                     </label>
                 </div>
 
-=======
->>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
                 <div class="FAD" id="campo_codigos">
                     <label class="FAL">
                         <span class="FAS">Variedades</span>
@@ -300,24 +240,14 @@
             </section>
         </div>
 
-<<<<<<< HEAD
         <?php if ($Correcto < 12) {
                  if ($NumE>0) { 
                     for ($i=1; $i <= 11; $i++) {
-=======
-        <?php if ($Correcto < 11) {
-                 if ($NumE>0) { 
-                    for ($i=1; $i <= 10; $i++) {
->>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
                         $Error=${"Error".$i};
                         if (!empty($Error)) { ?>
                             <script type="module">
                                 var error="<?php echo $Error;?>";
-<<<<<<< HEAD
                                 import { Eggy } from '../../../js/eggy.js';
-=======
-                                import { Eggy } from '../../js/eggy.js';
->>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
                                 await Eggy({title: 'Error!', message: error, type: 'error', position: 'top-right', duration: 20000});
                             </script>
                         <?php } ?>
@@ -329,11 +259,7 @@
                         if (!empty($Precaucion)) { ?>
                             <script type="module">
                                 var error="<?php echo $Precaucion;?>";
-<<<<<<< HEAD
                                 import { Eggy } from '../../../js/eggy.js';
-=======
-                                import { Eggy } from '../../js/eggy.js';
->>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
                                 await Eggy({title: 'Precaución!', message: error, type: 'warning', position: 'top-right', duration: 20000});
                             </script>
                         <?php } ?>
@@ -345,17 +271,12 @@
                         if (!empty($Informacion)) { ?>
                             <script type="module">
                                 var error="<?php echo $Informacion;?>";
-<<<<<<< HEAD
                                 import { Eggy } from '../../../js/eggy.js';
-=======
-                                import { Eggy } from '../../js/eggy.js';
->>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
                                 await Eggy({title: 'Error!', message: error, type: 'info', position: 'top-right', duration: 20000});
                             </script>
                         <?php } ?>
                     <?php } ?>
                 <?php }
-<<<<<<< HEAD
         } 
         if (isset($_SESSION['correcto'])) { $Finalizado = $_SESSION['correcto']; unset($_SESSION['correcto']); ?>
             <script type="module">
@@ -376,62 +297,4 @@
         
         <?php include '../../../Complementos/Footer.php'; ?>
     </body>
-=======
-        } else { ?>
-            <script type="module">
-            var error="<?php echo $Finalizado;?>";
-            import { Eggy } from '../../js/eggy.js';
-            await Eggy({title: 'Correcto!', message: error, type: 'success', position: 'top-right', duration: 10000});
-            </script>
-        <?php } ?>
-
-        <script src="../../js/modulos.js"></script>
-        <script>
-            const variedadSeleccionada = "<?php echo $VariedadSeleccionada; ?>";
-        </script>
-    </body>
-    <footer>
-        <div class="container_footer">
-            <div class="colum1">
-                <div class="footer_line one">
-                    <hr class="hrLinea">
-                </div>
-            </div>
-            <div class="colum2">
-                <div class="box">
-                    <div class="footer_icons">
-                        <ul>
-                            <li><a href="#"><i class="fa-brands fa-bounce fa-facebook fa-2xl" style="color: #0865ff;"></i></a></li>
-                            <li><a href="#"><i class="fa-brands fa-bounce fa-instagram fa-2xl"  style="color: #000000ff;"></i></a></li>
-                            <li><a href="#"><i class="fa-brands fa-bounce fa-tiktok fa-2xl"  style="color: #000000;"></i></a></li>
-                            <li><a href="#"><i class="fa-brands fa-bounce fa-x-twitter fa-2xl"  style="color: #030303ff;"></i></a></li>
-                            <li><a href="#"><i class="fa-solid fa-globe fa-bounce fa-2xl" style="color: #808080;"></i></a></li>
-                            <li><a href="#"><i class="fa-brands fa-youtube fa-bounce fa-2xl" style="color: #ff0000;"></i></a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="box_footer">
-                    <div class="logo_footer"><img src="../../Images/Rising-core.png" alt="RisingCore"></div>
-                    <div class="links">
-                        <ul>
-                            <li>
-                                <a href="#">Aviso de privacidad</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="box_copyright">
-                    <?php $Year = date("Y");  ?>
-                    <p>Todos los derechos reservados © <?php echo $Year ?> <b>RisingCore</b>
-                    </p>
-                </div>
-            </div>
-            <div class="colum3">
-                <div class="footer_line two">
-                    <hr class="hrLinea">
-                </div>
-            </div>
-        </div>
-    </footer>
->>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
 </html>

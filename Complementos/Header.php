@@ -3,6 +3,18 @@
 
 // Configuración por módulo
 $modulosConfig = [
+    "Configuración" => [
+        "routes" => [
+            "RegistrarC" => "Codigos/RegistrarC.php",
+            "CatalogoC"  => "Codigos/CatalogoC.php",
+            "RegistrarU" => "Usuarios/RegistrarU.php",
+            "CatalogoU"  => "Usuarios/CatalogoU.php",
+        ],
+        "iconos" => [
+            "Codigos" => "fas fa-balance-scale",
+            "Usuarios" => "fa-solid fa-users",
+        ]
+    ],
     "Empaque" => [
         "routes" => [
             "RegistrarR" => "Pesaje/RegistrarR.php",
@@ -58,6 +70,7 @@ $claveMap = [
     'E'   => 'Embarque',
     'C'   => 'Codigos',
     'Cl'  => 'Cultivo',
+    'U'  => 'Usuarios',
 ];
 
 $submodulos = [
@@ -69,6 +82,7 @@ $submodulos = [
     'Codigos'      => "$modulo/Codigos",
     'Cultivo'      => "$modulo/Cultivo",
     'Estimaciones' => "$modulo/Estimaciones",
+    'Usuarios' => "$modulo/Usuarios"
 ];
 
 // Función para generar ruta absoluta desde la raíz del sitio
@@ -85,7 +99,8 @@ $modulosInicio = [
     "Empaque"      => ["path" => "Empaque/Inicio.php", "icon" => "fa-solid fa-box-open"],
     "Exportacion"  => ["path" => "Exportacion/Inicio.php", "icon" => "fa-solid fa-truck-fast"],
     "Calidad"      => ["path" => "Calidad/Inicio.php", "icon" => "fa-solid fa-certificate"],
-    "Sistemas"     => ["path" => "Config/Usuarios/RegistrarU.php", "icon" => "fa-solid fa-laptop-code"]
+    "Sistemas"     => ["path" => "Sistemas/Inicio.php", "icon" => "fa-solid fa-laptop-code"],
+    "Configuración" => ["path" => "Configuración/Inicio.php", "icon" => "fa-solid fa-gear"]
 ];
 
 ?>

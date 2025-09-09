@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="box_footer">
-                    <div class="logo_footer"><img src="../../../Images/Rising-core.png" alt="RisingCore"></div>
+                    <div class="logo_footer"><img src="<?php echo $Logo . 'Images/Rising-core.png'; ?>" alt="RisingCore"></div>
                     <div class="links">
                         <ul>
                             <li>

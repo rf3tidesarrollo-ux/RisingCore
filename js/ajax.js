@@ -8,7 +8,10 @@ $(document).ready(function () {
             const modulos = data.modulos;
             const permisos = data.permisos;
 
-            // Recorremos cada módulo
+            console.log("Permisos seleccionados desde PHP:", permisosSeleccionados);
+
+            tbody.empty();
+
             modulos.forEach(function (modulo) {
                 const modulo_id = modulo.id_seccion;
                 const nombre_modulo = modulo.nombre_seccion;
@@ -16,13 +19,13 @@ $(document).ready(function () {
                 let row = `<tr><td>${nombre_modulo}</td>`;
 
                 permisos.forEach(function (permiso) {
-                    const permiso_id = permiso.id_permiso;
+                    const permiso_id = parseInt(permiso.id_permiso);
                     const permiso_nombre = permiso.nombre;
 
-                    // Verificar si debe estar marcado
-                    const checked = (typeof permisosSeleccionados !== 'undefined' &&
-                                     permisosSeleccionados[modulo_id] &&
-                                     permisosSeleccionados[modulo_id].includes(permiso_id))
+                    const moduloKey = String(modulo_id);
+
+                    const checked = (permisosSeleccionados[moduloKey] &&
+                                        permisosSeleccionados[moduloKey].includes(permiso_id))
                                     ? 'checked' : '';
 
                     row += `
@@ -38,6 +41,7 @@ $(document).ready(function () {
         },
         error: function (xhr, status, error) {
             console.error('Error al cargar permisos:', error);
+            console.log(xhr.responseText);
         }
-    });
+    }); 
 });

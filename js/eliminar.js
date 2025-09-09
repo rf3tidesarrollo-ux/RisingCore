@@ -111,56 +111,36 @@ function mostrarRegistroR(id){
   });
 }
 
-function mostrarRegistroM(id){
+function mostrarRegistroU(id){
   $.ajax({
-    url: 'MostrarM.php',
+    url: 'MostrarU.php',
     type: 'POST',
     async: true,
     data: {id:id},
     success: function(response){
       if (response != 'error') {
         var info = JSON.parse(response);
-        var nSerie = info.ns; 
-        var vCodigo = info.cv;
+        var uName = info.un;
         var Sede = info.s;
-        var vNombre = info.nv;
-        var tMerma = info.tm;
-        var tMotivo = info.m;
-        var pNombre = info.np;
-        var nave = info.i;
-        var cCajas = info.cc; 
-        var tCaja = info.tc; 
-        var pBruto = info.pb; 
-        var pTaraje = info.pt;
-        var pNeto = info.pn; 
-        var F = info.fr;
-        var fecha = F.split('-').reverse().join('/');
-        var hora = info.hr;
-        var rSemana = info.sr;
-        var tCarro = info.tc;
-        var nTarima = info.nt;
-        var cTarima = info.ct;
+        var cNombre = info.nc;
+        var cargo = info.c;
+        var depto = info.d;
+        var rol = info.r;
+        var state = info.e;
+              if (state=="1") {
+                state="ACTIVO";
+              }else{
+                state="INACTIVO";
+              }
 
         swal("Información:", 
-        "NO. SERIE: " + nSerie + "\n" +
-        "CÓDIGO: " + vCodigo + "\n" +
+        "USUARIO: " + uName + "\n" +
         "SEDE: " + Sede + "\n" +
-        "VARIEDAD: " + vNombre + "\n" +
-        "TIPO DE MERMA: " + tMerma + "\n" +
-        "CLASIFICACIÓN: " + tMotivo + "\n" +
-        "PRESENTACIÓN: " + pNombre + "\n" +
-        "NAVE: " + nave + "\n" +
-        "CANTIDAD DE CAJAS: " + cCajas + "\n" +
-        "TIPO DE CAJA: " + tCaja + "\n" +
-        "PESO BRUTO: " + pBruto + "\n" +
-        "PESO TARAJE: " + pTaraje + "\n" +
-        "PESO NETO: " + pNeto + "\n" +
-        "FECHA DE REGISTRO: " + fecha + "\n" +
-        "HORA: " + hora + "\n" +
-        "SEMANA: " + rSemana + "\n" +
-        "TIPO DE CARRO: " + tCarro + "\n" +
-        "TIPO DE TARIMAS: " + nTarima + "\n" +
-        "CANTIDAD DE TARIMAS: " + cTarima);
+        "TITULAR: " + cNombre + "\n" +
+        "CARGO: " + cargo + "\n" +
+        "DEPARTAMENTO: " + depto + "\n" +
+        "ROL: " + rol + "\n" +
+        "ESTADO: " + state);
       }
     },
     error: function(error){
@@ -385,37 +365,5 @@ function mostrarRegistroCM(id){
         icon: "error",
       });
     },
-  });
-}
-
-function mostrarRegistroU(id) {
-  $.ajax({
-      url: 'MostrarU.php',
-      type: 'POST',
-      async: true,
-      data: { id: id },
-      success: function(response) {
-          if (response != 'error') {
-              var info = JSON.parse(response);
-              var user = info.user;
-              var rol = info.rol;
-              var area = info.nombre_area;
-              var status = info.estado;
-              if (status=="0") {
-                status="INACTIVO";
-              }else{
-                status="ACTIVO";
-              }
-              swal("Información:",
-              "USUARIO: " + user + "\n" +
-              "ROL: " + rol + "\n" +
-              "NOMBRE DEL ÁREA: " + area + "\n" +
-              "STATUS: " + status);
-
-          }
-      },
-      error: function(error) {
-          swal("Error!", "Ha ocurrido un error al obtener la información.", "error");
-      },
   });
 }

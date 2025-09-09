@@ -5,10 +5,10 @@ $RutaSC = "../../../index.php";
 include_once "../../../Login/validar_sesion.php";
 // $Pagina=basename(__FILE__);
 // Historial($Pagina,$Con);
-$Ver = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 1, $Con);
-$Crear = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 2, $Con);
-$Editar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 3, $Con);
-$Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 4, $Con);
+$Ver = TienePermiso($_SESSION['ID'], "Configuración/Usuarios", 1, $Con);
+$Crear = TienePermiso($_SESSION['ID'], "Configuración/Usuarios", 2, $Con);
+$Editar = TienePermiso($_SESSION['ID'], "Configuración/Usuarios", 3, $Con);
+$Eliminar = TienePermiso($_SESSION['ID'], "Configuración/Usuarios", 4, $Con);
 
 if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 ?>
@@ -39,35 +39,28 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="../../../js/script.js"></script>
     <script src="../../../js/eliminar.js"></script>
-    <link rel="stylesheet" href="DesignR.css">
-    <title>Empaque: Reporte</title>
+    <link rel="stylesheet" href="DesignU.css">
+    <title>Configuración: Usuarios</title>
 </head>
 
 <body>
         <?php
         $basePath = "../";
         $Logo = "../../../";
-        $modulo = 'Empaque';
+        $modulo = 'Configuración';
         include('../../../Complementos/Header.php');
         ?>
 
         <main>
-            <!-- <div style="background: #f9f9f9; padding: 10px 25px; border-bottom: 1px solid #ccc; font-size: 16px;">
-                <span style="color: #6c757d;">Inicio</span> &raquo; 
-                <span style="color: #6c757d;">Módulos</span> &raquo;
-                <span style="color: #6c757d;">Empaque</span> &raquo; 
-                <strong style="color: #333;">Reporte de Pesajes</strong>
-            </div> -->
-            
             <div style="background: #f9f9f9; padding: 12px 25px; border-bottom: 1px solid #ccc; font-size: 16px;">
                 <nav style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
                     <a href="/RisingCore/Modulos/index.php" style="color: #6c757d; text-decoration: none;">
-                        📦 Empaque
+                        ⚙️ Configuración
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
                     <a href="/RisingCore/Modulos/Empaque/index.php" style="color: #6c757d; text-decoration: none;">
-                        ⚖️ Pesaje
+                        👤 Usuarios
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
@@ -76,7 +69,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <strong style="color: #333;">📊 Reporte de Pesajes</strong>
+                    <strong style="color: #333;">📊 Reporte de usuarios</strong>
                 </nav>
             </div>
 
@@ -87,50 +80,26 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
             <table id="basic-datatables" class="display table table-striped table-hover responsive nowrap" style="width:95%">
                     <thead>
                         <tr>
-                            <th>Número de serie</th>
-                            <th>Código</th>
+                            <th>Usuario</th>
                             <th>Sede</th>
-                            <th>Variedad</th>
-                            <th>Presentación</th>
-                            <th>Nave</th>
-                            <th>Traila</th>
-                            <th>Tipo de tarima</th>
-                            <th>Cant. tarimas</th>
-                            <th>Tipo de caja</th>
-                            <th>Cant. cajas</th>
-                            <th>Peso bruto</th>
-                            <th>Peso de taraje</th>
-                            <th>Peso neto</th>
-                            <th>Kilos disponibles</th>
-                            <th>Cajas disponibles</th>
-                            <th>Semana</th>
-                            <th>Fecha</th>
-                            <th>Hora</th>
+                            <th>Titular</th>
+                            <th>Cargo</th>
+                            <th>Departamento</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
                             <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
                         </tr>
                     </thead>
                     
                     <tfoot>
                         <tr>
-                            <th>Número de serie</th>
-                            <th>Código</th>
+                            <th>Usuario</th>
                             <th>Sede</th>
-                            <th>Variedad</th>
-                            <th>Presentación</th>
-                            <th>Nave</th>
-                            <th>Traila</th>
-                            <th>Tipo de tarima</th>
-                            <th>Cant. tarimas</th>
-                            <th>Tipo de caja</th>
-                            <th>Cant. cajas</th>
-                            <th>Peso bruto</th>
-                            <th>Peso de taraje</th>
-                            <th>Peso neto</th>
-                            <th>Kilos disponibles</th>
-                            <th>Cajas disponibles</th>
-                            <th>Semana</th>
-                            <th>Fecha</th>
-                            <th>Hora</th>
+                            <th>Titular</th>
+                            <th>Cargo</th>
+                            <th>Departamento</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
                             <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
                         </tr>
                     </tfoot>
@@ -152,46 +121,28 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     $('#basic-datatables').DataTable({
         serverSide: true,
         ajax: {
-            url: '../../Server_side/tabla_pesaje.php',
+            url: '../../Server_side/tabla_usuarios.php',
             type: 'POST',
         },
         columns: [
-                  { data: 'no_serie_r' },
-                  { data: 'codigo' },
+                  { data: 'username' },
                   { data: 'codigo_s' },
-                  { data: 'nombre_variedad', className: 'none' },
-                  { data: 'nombre_p' },
-                  { data: 'invernadero' },
-                  { data: 'folio_carro', className: 'none' },
-                  { data: 'nombre_tarima', className: 'none' },
-                  { data: 'cantidad_tarima', className: 'none' },
-                  { data: 'tipo_caja', className: 'none' },
-                  { data: 'cantidad_caja' },
-                  { data: 'p_bruto' },
-                  { data: 'p_taraje' },
-                  { data: 'p_neto' },
-                  { data: 'kilos_dis' },
-                  { data: 'cajas_dis' },
-                  { data: 'semana_r' },
-                  { data: 'fecha_r',
+                  { data: 'nombre_completo' },
+                  { data: 'cargo' },
+                  { data: 'departamento' },
+                  { data: 'rol' },
+                  { data: 'estado',
                     "render": function ( data, type, row ) {
                         if(type === 'display'){
-                            // Asumiendo que viene como "yyyy-mm-dd"
-                            let partes = row.fecha_r.split('-'); // [yyyy, mm, dd]
-                            return partes[2] + '/' + partes[1] + '/' + partes[0]; // dd/mm/yyyy
-                        }else{
-                            return data;
-                        }
-                    }
-                   },
-                  { data: 'hora_r',
-                    "render": function ( data, type, row ) {
-                        if(type === 'display'){
-                            let partes = row.hora_r.split(':'); // ["18","45","20"]
-                            let horas = partes[0].padStart(2, '0');
-                            let minutos = partes[1].padStart(2, '0');
-                            let segundos = partes[2] ? partes[2].padStart(2, '0') : '00';
-                            return `${horas}:${minutos}:${segundos}`;
+                            let state = row.estado;
+                            
+                            if (state===1) {
+                                state = "ACTIVO";
+                                return state;
+                            }else{
+                                state = "INACTIVO";
+                                return state;
+                            }
                         }else{
                             return data;
                         }
@@ -213,9 +164,9 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 
                         if (Ver || Editar || Eliminar) {
                             return `
-                                ${Ver ? `<a title="Mostrar" href="#${row.id_registro_r}" onclick="mostrarRegistroR(${row.id_registro_r})"><i class="fa-solid fa-eye fa-xl" style="color: #16ac19;"></i></a>` : ''}
-                                ${Editar ? `<a title="Editar" class="Edit" href="EditarR.php?id=${row.id_registro_r}"><i class="fa-solid fa-pen-to-square fa-xl" style="color: #0a5ceb;"></i></a>` : ''}
-                                ${Eliminar ? `<a title="Eliminar" class="Delete" href="#${row.id_registro_r}" onclick="eliminarRegistro(${row.id_registro_r})"><i class="fa-solid fa-trash fa-xl" style="color: #ca1212;"></i></a>` : ''}
+                                ${Ver ? `<a title="Mostrar" href="#${row.id_usuario}" onclick="mostrarRegistroU(${row.id_usuario})"><i class="fa-solid fa-eye fa-xl" style="color: #16ac19;"></i></a>` : ''}
+                                ${Editar ? `<a title="Editar" class="Edit" href="EditarU.php?id=${row.id_usuario}"><i class="fa-solid fa-pen-to-square fa-xl" style="color: #0a5ceb;"></i></a>` : ''}
+                                ${Eliminar ? `<a title="Eliminar" class="Delete" href="#${row.id_usuario}" onclick="eliminarRegistro(${row.id_usuario})"><i class="fa-solid fa-trash fa-xl" style="color: #ca1212;"></i></a>` : ''}
                             `;
                         } else {
                             return '';
@@ -229,15 +180,10 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
         responsive: true,
         columnDefs: [
         <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true || $Editar==true || $Eliminar==true) { ?>
-                            { responsivePriority: 1, targets: 17 },
+                            { responsivePriority: 1, targets: 7 },
         <?php  } ?>
-                            { responsivePriority: 2, targets: 15 },
-                            { responsivePriority: 2, targets: 14 },
-                            { responsivePriority: 2, targets: 13 },
-                            { responsivePriority: 2, targets: 12 },
-                            { responsivePriority: 2, targets: 11 },
-                            { responsivePriority: 2, targets: 10 },
-                            { responsivePriority: 2, targets: 2 },
+                            { responsivePriority: 2, targets: 6 },
+                            { responsivePriority: 2, targets: 5 },
                             { responsivePriority: 2, targets: 1 },
                             { responsivePriority: 1, targets: 0 }
                     ],

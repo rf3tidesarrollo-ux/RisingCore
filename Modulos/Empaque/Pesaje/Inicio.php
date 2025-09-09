@@ -1,5 +1,4 @@
 <?php
-<<<<<<< HEAD
 include_once '../../../Conexion/BD.php';
 $RutaCS = "../../../Login/Cerrar.php";
 $RutaSC = "../../../index.php";
@@ -61,7 +60,3 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 </html>
 
 <?php } else { header("Location: ../../../Complementos/Acceso.php"); }?>
-=======
-    echo "Inicio de empaque";
-?>
->>>>>>> b5226a49ccee15b7388121ff0078837832ff8736
