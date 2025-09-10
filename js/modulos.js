@@ -102,6 +102,66 @@ $(document).ready(function () {
     }
 });
 
+$(document).ready(function () {
+  // Función para cargar clientes según la sede y seleccionar un cliente opcional
+  function cargarClientes(sede, clienteSeleccionado = null) {
+    if (!sede || sede === '0') {
+      $('#clientes').empty().append('<option value="0">Seleccione el cliente</option>');
+      $('#datosCliente').hide(); // Oculta los datos también
+      return;
+    }
+
+    $.getJSON('../../Server_side/get_clientes.php?tipo=' + sede, function (data) {
+      const selectClientes = $('#clientes');
+      selectClientes.empty().append('<option value="0">Seleccione el cliente</option>');
+
+      if (data.status === 'ok') {
+        data.clientes.forEach(function (cliente) {
+          const selectedAttr = (cliente.id == clienteSeleccionado) ? 'selected' : '';
+          selectClientes.append(`<option value="${cliente.id}" data-nombre="${cliente.sub}" ${selectedAttr}>${cliente.cliente}</option>`);
+        });
+
+        // Mostrar datos si el cliente ya está seleccionado
+        if (clienteSeleccionado && clienteSeleccionado !== '0') {
+          $('#datosCliente').show();
+          generarFolio();
+        } else {
+          $('#datosCliente').hide();
+        }
+      } else {
+        selectClientes.append('<option value="0">No hay clientes disponibles</option>');
+        $('#datosCliente').hide();
+      }
+    });
+  }
+
+  // Evento cambio en sede para cargar clientes
+  $('#sede2').on('change', function () {
+    const sede = $(this).val();
+    cargarClientes(sede);
+  });
+
+  // Evento cambio en clientes para mostrar datos y generar folio
+  $('#clientes').on('change', function () {
+    const clienteVal = $(this).val();
+    if (clienteVal && clienteVal !== '0') {
+      $('#datosCliente').show();
+      generarFolio();
+    } else {
+      $('#datosCliente').hide();
+    }
+  });
+
+  // Inicializar si ya hay datos cargados
+  const sedeInicial = $('#sede2').val();
+  const clienteInicial = $('#clienteSeleccionado').val();
+  if (sedeInicial && sedeInicial !== '0') {
+    cargarClientes(sedeInicial, clienteInicial);
+  } else {
+    $('#datosCliente').hide(); // Oculta datos si no hay selección inicial
+  }
+});
+
 const inputs = document.querySelectorAll('.FAD .FAI');
 
 inputs.forEach(input => {
@@ -195,3 +255,50 @@ $(document).ready(function () {
     }
 });
 
+function obtenerCorrelativo(base) {
+  return fetch(`../../Server_side/get_correlativo.php?base=${base}`)
+    .then(response => response.json())
+    .then(data => data.correlativo || '01')
+    .catch(() => '01');
+}
+
+function generarFolio() {
+  const sedeSelect = document.getElementById('sede2');
+  const clienteSelect = document.getElementById('clientes');
+  const folioInput = document.querySelector('input[name="Folio"]'); // O usa id si prefieres
+
+  if (!sedeSelect || !clienteSelect || !folioInput) return; // Evita errores si algo falta
+
+  const sede = sedeSelect.value;
+  const clienteId = clienteSelect.value;
+  const clienteOption = clienteSelect.options[clienteSelect.selectedIndex];
+  const clienteCodigo = clienteOption.getAttribute('data-nombre');
+
+  if (sede !== "0" && clienteId !== "0" && clienteCodigo) {
+    const fecha = new Date();
+
+    // Calcular semana
+    const getWeekNumber = (d) => {
+      d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+      const dayNum = d.getUTCDay() || 7;
+      d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+      return weekNo;
+    };
+
+    const weekNumber = getWeekNumber(fecha);
+    const year = fecha.getFullYear().toString().slice(-2);
+    const dias = ['AX', 'AO', 'AU', 'AE', 'AH', 'AR', 'AA'];
+    const nomenclatura = dias[fecha.getDay()];
+    const folioBase = `${sede}-${clienteCodigo}-${weekNumber}${nomenclatura}${year}`;
+
+    obtenerCorrelativo(folioBase).then(correlativo => {
+      const folioFinal = `${folioBase}-${correlativo}`;
+      folioInput.value = folioFinal;
+    });
+
+  } else {
+    folioInput.value = '';
+  }
+}

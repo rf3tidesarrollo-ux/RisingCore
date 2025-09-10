@@ -71,7 +71,7 @@ if (!empty($whereClauses)) {
 // Procesa el ordenamiento
 $orderColumnIndex = isset($_POST['order'][0]['column']) ? $_POST['order'][0]['column'] : 0; // Índice de la columna por defecto
 $orderDir = isset($_POST['order'][0]['dir']) ? $_POST['order'][0]['dir'] : 'asc'; // Dirección por defecto
-$orderColumn = isset($columnsMap[$orderColumnIndex]) ? $columnsMap[$orderColumnIndex] : 'id_inventario'; // Columna por defecto
+$orderColumn = isset($columnsMap[$orderColumnIndex]) ? $columnsMap[$orderColumnIndex] : 'id_registro_r'; // Columna por defecto
 
 // Procesa la paginación
 $start = isset($_POST['start']) ? intval($_POST['start']) : 0;
