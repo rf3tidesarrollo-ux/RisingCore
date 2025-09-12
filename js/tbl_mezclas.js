@@ -23,7 +23,7 @@ $(document).ready(function () {
 
     // Obtener datos de la mezcla desde el servidor
     $.ajax({
-      url: '../../Server_side/get_datos_mezcla.php',
+      url: '../../Server_side/get_lotes.php',
       type: 'GET',
       data: { id: mezclaID },
       dataType: 'json',

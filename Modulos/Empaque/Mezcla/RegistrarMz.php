@@ -5,13 +5,13 @@
     include_once "../../../Login/validar_sesion.php";
     // $Pagina=basename(__FILE__);
     // Historial($Pagina,$Con);
-    $Ver = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 1, $Con);
-    $Crear = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 2, $Con);
-    $Editar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 3, $Con);
-    $Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 4, $Con);
+    $Ver = TienePermiso($_SESSION['ID'], "Empaque/Mezcla", 1, $Con);
+    $Crear = TienePermiso($_SESSION['ID'], "Empaque/Mezcla", 2, $Con);
+    $Editar = TienePermiso($_SESSION['ID'], "Empaque/Mezcla", 3, $Con);
+    $Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Mezcla", 4, $Con);
 
-    $FechaR=date("Y-m-d");
-    $HoraR=date("H:i:s");
+    $FechaM=date("Y-m-d");
+    $HoraM=date("H:i:s");
 
    if ($TipoRol=="ADMINISTRADOR" || $Crear==true) {
     $NumE=0;
@@ -24,8 +24,11 @@
     $Folio = isset($_POST['Folio']) ? $_POST['Folio'] : '';
     $CajasT = isset($_POST['CajasT']) ? $_POST['CajasT'] : '';
     $KilosT = isset($_POST['KilosT']) ? $_POST['KilosT'] : '';
+    $Variedad = isset($_POST['Variedad']) ? $_POST['Variedad'] : '';
+    $Lote = isset($_POST['Lotes']) ? $_POST['Lotes'] : '';
+    $CajasA = isset($_POST['CajasA']) ? $_POST['CajasA'] : '';
 
-    for ($i=1; $i <= 5; $i++) {
+    for ($i=1; $i <= 6; $i++) {
         ${"Error".$i}="";
     }
 
@@ -65,7 +68,6 @@
             return $this -> KilosT="";
         }
     }
-    
 
     if (isset($_POST['Insertar'])) {
         $Sede=$_POST['Sede'];
@@ -78,6 +80,17 @@
             $Error1 = "Tienes que seleccionar una sede";
             $NumE += 1;
         }else{
+            switch ($Sede) {
+                case 'RF1':
+                    $Sede=1;
+                    break;
+                case 'RF2':
+                    $Sede=2;
+                    break;
+                case 'RF3':
+                    $Sede=3;
+                    break;
+            }
             $Correcto += 1;
         }
 
@@ -88,37 +101,56 @@
             $Correcto += 1;
         }
 
-        if ($CajasT == "") {
-            $Error3 = "Las cajas no pueden ir vacias";
+        if ($CajasT == "" || $KilosT == "") {
+            $Error3 = "No has agregado ningún lote";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
 
-        if ($KilosT == "") {
-            $Error4 = "Los kilos no pueden ir vacios";
-            $NumE += 1;
-        }else{
-            $Correcto += 1;
-        }
-
-        if ($Correcto==4) {
+        if ($Correcto==3) {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $stmt = $Con->prepare("INSERT INTO registro_empaque (id_codigo_r, id_presentacion_r, folio_r, id_tipo_caja , id_tipo_tarima, id_tipo_carro, p_bruto, p_taraje, p_neto, cantidad_caja, cantidad_tarima, usuario_r, fecha_r, hora_r, activo_r, kilos_dis, cajas_dis, no_serie_r, semana_r) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param('iisiiidddiisssidiss', $Codigo, $Presentacion, $FolioVal, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCajaVal, $NoTarima, $Name, $FechaR, $HoraR, $Activo, $KilosN, $NoCajaVal, $NoSerieVal, $SemanaR);
+                $stmt = $Con->prepare("SELECT id_lote, cajas_m, kilos_m FROM mezcla_lotes_temp WHERE usuario_id = ?");
+                $stmt->bind_param("i", $ID);
+                $stmt->execute();
+                $result = $stmt->get_result();
+
+                if ($result->num_rows === 0) {
+                    $Error4 = "No hay ningún lote registrado";
+                    $NumE += 1;
+                    exit;
+                }
+                
+                $stmtInsertMezcla = $Con->prepare("INSERT INTO mezclas (folio_m, id_sede_m, id_cliente_m, cajas_t, kilos_t, fecha_m, hora_m) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                $stmtInsertMezcla->bind_param("siiidss", $Folio, $Sede, $Cliente, $CajasT, $KilosT, $FechaM, $HoraM);
+                $stmtInsertMezcla->execute();
+                $idMezcla = $stmtInsertMezcla->insert_id;
+
+                // Insertar todos los lotes a tabla final
+                $stmtInsert = $Con->prepare("INSERT INTO mezcla_lotes (id_mezcla_l, id_lote_l, cajas_m, kilos_m, fecha_m, hora_m) VALUES (?, ?, ?, ?, ?, ?)");
+                while ($row = $result->fetch_assoc()) {
+                    $stmtInsert->bind_param("iiidss", $idMezcla, $row['id_lote'], $row['cajas_m'], $row['kilos_m'], $FechaM, $HoraM);
+                    $stmtInsert->execute();
+                }
+
+                $stmtDel = $Con->prepare("DELETE FROM mezcla_lotes_temp WHERE usuario_id = ?");
+                $stmtDel->bind_param("i", $ID);
+                $stmtDel->execute();
+
+                $pdf_nombre = generarPDFMezcla($id_mezcla, $Con);
+
+                // 4. Guardar ruta PDF en tabla mezcla (suponiendo que tienes campo pdf_ruta)
+                $stmt = $Con->prepare("UPDATE mezclas SET pdf_ruta = ? WHERE id_mezcla = ?");
+                $stmt->bind_param("si", $pdf_nombre, $id_mezcla);
                 $stmt->execute();
                 $stmt->close();
-                $Limpiar = new Cleanner($Folio,$KilosB,$NoCaja,$NoTarima,$Codigo,$Carro,$Tarima,$Caja,$Sede);
-                $Folio = $Limpiar -> LimpiarFolio();
-                $KilosB = $Limpiar -> LimpiarKilosB();
-                $NoCaja = $Limpiar -> LimpiarNoCaja();
-                $Codigo = $Limpiar -> LimpiarCodigo();
-                $Carro = $Limpiar -> LimpiarCarro();
-                $Tarima = $Limpiar -> LimpiarTarima();
-                $NoTarima = $Limpiar -> LimpiarNoTarima();
-                $Caja = $Limpiar -> LimpiarCaja();
+
+                $Limpiar = new Cleanner($Sede,$Cliente,$Folio,$CajasT,$KilosT);
                 $Sede = $Limpiar -> LimpiarSede();
-                $Presentacion = $Limpiar -> LimpiarPresentacion();
+                $Cliente = $Limpiar -> LimpiarCliente();
+                $Folio = $Limpiar -> LimpiarFolio();
+                $CajasT = $Limpiar -> LimpiarCajasT();
+                $KilosT = $Limpiar -> LimpiarKilosT();
 
                 session_start();
                 $_SESSION['correcto'] = "Se hizo el registro correctamente";

@@ -18,6 +18,7 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://kit.fontawesome.com/367278d2a4.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <script src="../../../js/select.js"></script>
     <link rel="stylesheet" href="../../../css/eggy.css" />
@@ -60,8 +61,6 @@
         <div id="main-container">
         <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true) { ?> <a title="Reporte" href="CatalogoMz.php"><div class="back"><i class="fas fa-balance-scale fa-xl"></i></div></a><?php } ?>
 
-        <div id="main-container">
-
             <section class="Registro">
                 <h4>Registro mezclas</h4>
                 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST" name="octavo" id="">
@@ -88,28 +87,96 @@
                     <input type="hidden" id="clienteSeleccionado" value="<?= htmlspecialchars($Cliente) ?>">
 
                     <div id="datosCliente" style="display: none;">
-                    <div class="FAD">
-                        <label class="FAL">
-                            <span class="FAS">Folio</span>
-                            <input class="FAI" type="Text" name="Folio" <?php if (isset($_POST['Folio']) != ''): ?> value="<?php echo $Folio; ?>"<?php endif; ?> id="folio" readonly>
-                        </label>
-                    </div>
+                        <div class="fila-dos-campos">
+                            <!-- Folio -->
+                            <div class="campo campo-grande">
+                                <div class="FAD">
+                                    <label class="FAL">
+                                        <span class="FAS Top">Folio</span>
+                                        <input class="FAI" type="text" name="Folio" id="folio" <?php if (isset($_POST['Folio']) != ''): ?> value="<?php echo $Folio; ?>"<?php endif; ?> readonly>
+                                    </label>
+                                </div>
+                            </div>
 
-                    <div class="FAD">
-                        <label class="FAL">
-                            <span class="FAS">Cajas disponibles</span>
-                            <input class="FAI"  type="Number" name="CajasT" <?php if (isset($_POST['CajasT']) != ''): ?> value="<?php echo $CajasT; ?>"<?php endif; ?> id="cajasT" readonly>
-                        </label>
-                    </div>
+                            <!-- Contenedor para Cajas y Kilos -->
+                            <div class="campo campo-grande">
+                                <div class="contenedor-doble-campo">
+                                    <div class="campo">
+                                        <div class="FAD">
+                                            <label class="FAL">
+                                                <span class="FAS Top">Cajas totales</span>
+                                                <input class="FAI" type="number" name="CajasT" <?php if (isset($_POST['CajasT']) != ''): ?> value="<?php echo $CajasT; ?>" <?php endif; ?> id="cajasT" readonly>
+                                            </label>
+                                        </div>
+                                    </div>
 
-                    <div class="FAD">
-                        <label class="FAL">
-                            <span class="FAS">Kilos disponibles</span>
-                            <input class="FAI" type="Number" name="KilosT" <?php if (isset($_POST['KilosT']) != ''): ?> value="<?php echo $KilosT; ?>"<?php endif; ?> id="kilosT" readonly>
-                        </label>
-                    </div>
-                    </div>
+                                    <div class="campo">
+                                        <div class="FAD">
+                                            <label class="FAL">
+                                                <span class="FAS Top">Kilos totales</span>
+                                                <input class="FAI" type="number" name="KilosT" <?php if (isset($_POST['KilosT']) != ''): ?> value="<?php echo $KilosT; ?>" <?php endif; ?> id="kilosT" readonly>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
+                        <div class="ARCH">
+                            <div class="AR">AGREGAR LOTE<a id="C1"><i id="Arrow1" class="fa-regular fa-circle-plus fa-lg" style="color: #fff;"></i></a></div>
+                            <div id="F1" class=Close>
+                                <div class="FAD">
+                                    <label class="FAL">
+                                        <span class="FAS">Variedades</span>
+                                        <select class="FAI prueba" id="variedad" name="Variedad">
+                                             <option value="0" selected disabled>Seleccione la variedad:</option>
+                                            <?php
+                                            $stmt = $Con->prepare("SELECT id_nombre_v,nombre_variedad FROM variedades ORDER BY id_nombre_v");
+                                            $stmt->execute();
+                                            $Registro = $stmt->get_result();
+                                    
+                                            while ($Reg = $Registro->fetch_assoc()){
+                                                echo '<option value="'.$Reg['id_nombre_v'].'">'.$Reg['nombre_variedad'].'</option>';
+                                            }
+                                            $stmt->close();
+                                            ?>
+                                        </select>
+                                    </label>
+                                </div>
+
+                                <div class="FAD" id="campo_lotes">
+                                    <label class="FAL">
+                                        <span class="FAS">Lotes</span>
+                                        <select class="FAI prueba" name="Lotes" id="lotes">
+                                            <option value="0">Seleccione el lote</option>
+                                        </select>
+                                    </label>
+                                </div>
+
+                                <div class="campos-cajas">
+                                    <div class="FAD" style="flex: 1;">
+                                        <label class="FAL">
+                                            <span class="FAS">Cajas solicitadas</span>
+                                            <input class="FAI" type="number" name="CajasA" id="CajasA" size="15" maxlength="10">
+                                        </label>
+                                    </div>
+
+                                    <div class="FAD" style="flex: 1;">
+                                        <label class="FAL">
+                                            <span class="FAS Top">Cajas disponibles</span>
+                                            <input class="FAI" type="number" name="CajasD" id="CajasD" readonly>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class=Center2>
+                                    <button class="BotonAgregar" type="button" id="btnAgregarLote"><i class="fa-solid fa-plus fa-xl" style="color: #ffffffff;"></i></button>
+                                    <a title="Mostrar" class="BotonAgregar" onclick="mostrarIDL()"><i class="fa-solid fa-eye fa-xl" style="color: #ffffffff;"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
                     <div class="FAD">
                         <label class="FAL">
                             <span>Lotes</span>
@@ -121,6 +188,7 @@
                                         <th>Fecha</th>
                                         <th>Sede</th>
                                         <th>Módulo</th>
+                                        <th>Variedad</th>
                                         <th>Cajas disponibles</th>
                                         <th>Kilos disponibles</th>
                                         <th>Cajas solicitadas</th>
@@ -128,29 +196,8 @@
                                         <th>Acciones</th>
                                         </tr>
                                     </thead>
-                                </table>
-                                <button type="button" id="btnAgregarMezcla">+</button>                
+                                </table>               
                         </label>
-
-                        <div id="formRegistro" style="display: none; margin-top: 20px;">
-                        <div class="FAD" id="campo_clientes">
-                            <label class="FAL">
-                                <span class="FAS">Cliente</span>
-                                <select class="FAI prueba" name="Clientes" id="clientes">
-                                    <option value="0">Seleccione el cliente</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div class="FAD">
-                            <label class="FAL">
-                                <span class="FAS">Cajas</span>
-                                <input class="FAI"  type="Number" name="CajasS" <?php if (isset($_POST['CajasS']) != ''): ?> value="<?php echo $CajasT; ?>"<?php endif; ?> id="cajasS" readonly>
-                            </label>
-                        </div>
-                            <button id="guardarRegistro">Guardar</button>
-                        <button id="cancelarRegistro">Cancelar</button>
-                        </div>
-                    </div>
 
                 <div class=Center>
                     <input class="Boton" id="AB" type="Submit" value="Registrar" name="Insertar">
@@ -210,8 +257,9 @@
 
         <script src="../../../js/modulos.js"></script>
         <script src="../../../js/tbl_mezclas.js"></script>
+        <script src="../../../js/mezcla.js"></script>
         <script>
-            const clienteSeleccionado = <?= json_encode($Cliente) ?>;
+            const variedadSeleccionada = <?= json_encode($Variedad) ?>;
         </script>
         </main>
         
@@ -220,11 +268,13 @@
 </html>
 
 <script>
+    let tablaLotes;
+    
     $(document).ready(function() {
-        $('#basic-datatables').DataTable({
+    tablaLotes = $('#basic-datatables').DataTable({
             serverSide: true,
             ajax: {
-                url: '../../Server_side/get_lotes.php',
+                url: '../../Server_side/get_lotes_temp.php',
                 type: 'POST',
             },
             columns: [
@@ -234,10 +284,10 @@
                     { data: 'codigo_s' },
                     { data: 'invernadero' },
                     { data: 'nombre_variedad' },
-                    { data: 'p_neto' },
                     { data: 'cantidad_caja' },
-                    { data: 'kilos_dis'},
-                    { data: 'cajas_dis'},
+                    { data: 'p_neto' },
+                    { data: 'kilos_m'},
+                    { data: 'cajas_m'},
                     { 
                         data: null,
                         "render": function (data, type, row) {
@@ -252,10 +302,9 @@
                                 Eliminar = true;
                             }
 
-                            if (Ver || Editar || Eliminar) {
+                            if (Eliminar) {
                                 return `
-                                    ${Editar ? `<a title="Editar" class="Edit" href="EditarU.php?id=${row.id_usuario}"><i class="fa-solid fa-pen-to-square fa-xl" style="color: #0a5ceb;"></i></a>` : ''}
-                                    ${Eliminar ? `<a title="Eliminar" class="Delete" href="#${row.id_usuario}" onclick="eliminarRegistro(${row.id_usuario})"><i class="fa-solid fa-trash fa-xl" style="color: #ca1212;"></i></a>` : ''}
+                                     ${Eliminar ? `<a title="Eliminar" class="Delete" href="#" data-id="${row.id_mezcla_temp}"><i class="fa-solid fa-trash fa-xl" style="color: #ca1212;"></i></a>` : ''}
                                 `;
                             } else {
                                 return '';
@@ -263,14 +312,29 @@
                         }
                     }
                     ],
+            language: {
+                "lengthMenu": "Mostrar _MENU_ registros por página",
+                "emptyTable": "No hay datos",
+                "zeroRecords": "No se encontraron resultados",
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                "infoEmpty": "Mostrando 0 a 0 de 0 registros",
+                "infoFiltered": "(filtrado de _MAX_ registros totales)",
+                loadingRecords: "Cargando resultados...",
+                "paginate": {
+                    "first": '<i class="fa-solid fa-backward-step fa-lg"></i>',
+                    "last": '<i class="fa-solid fa-forward-step fa-lg"></i>',
+                    "next": '<i class="fa-solid fa-caret-right fa-xl"></i>',
+                    "previous": '<i class="fa-solid fa-caret-left fa-xl"></i>'
+                },
+            },
             stateSave: true,
             responsive: true,
             columnDefs: [
             <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true || $Editar==true || $Eliminar==true) { ?>
                                 { responsivePriority: 1, targets: 10 },
             <?php  } ?>
-                                { responsivePriority: 1, targets: 8 },
-                                { responsivePriority: 2, targets: 7 },
+                                { responsivePriority: 1, targets: 9 },
+                                { responsivePriority: 2, targets: 8 },
                                 { responsivePriority: 2, targets: 2 },
                                 { responsivePriority: 2, targets: 1 },
                                 { responsivePriority: 1, targets: 0 }

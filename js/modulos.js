@@ -162,6 +162,53 @@ $(document).ready(function () {
   }
 });
 
+$(document).ready(function () {
+    // Evento cuando cambia la variedad
+    $('#variedad').on('change', function () {
+        const variedad = $(this).val();
+        const sede = $('#sede2').val(); // ← desde el select de sede
+
+        if (sede !== "0" && variedad !== "0") {
+            cargarLotes(sede, variedad);
+        } else {
+            $('#lotes').html('<option value="0">Seleccione el lote</option>');
+        }
+    });
+
+    // Evento cuando cambia la sede, limpia los lotes
+    $('#sede2').on('change', function () {
+        $('#lotes').html('<option value="0">Seleccione el lote</option>');
+    });
+
+    // Función para cargar los lotes con sede y variedad
+    function cargarLotes(sede, variedad) {
+        $.ajax({
+            url: '../../Server_side/get_lote.php',
+            type: 'GET',
+            data: {
+                sede: sede,
+                variedad: variedad
+            },
+            success: function (res) {
+                const select = $('#lotes');
+                select.empty();
+                select.append('<option value="0">Seleccione el lote:</option>');
+
+                if (res.status === 'ok') {
+                    res.variedades.forEach(function (l) {
+                        select.append(`<option value="${l.id}">${l.lote}</option>`);
+                    });
+                } else {
+                    select.append('<option value="0">No hay lotes disponibles</option>');
+                }
+            },
+            error: function () {
+                $('#lotes').html('<option value="0">Error al cargar lotes</option>');
+            }
+        });
+    }
+});
+
 const inputs = document.querySelectorAll('.FAD .FAI');
 
 inputs.forEach(input => {
@@ -227,6 +274,17 @@ function mostrarCampo2() {
         campoN.style.display = "block";
     } else {
         campoN.style.display = "none";
+    }
+}
+
+function mostrarAgregarLote() {
+    const tipo = document.getElementById("cliente").value;
+    const lotes = document.getElementById("lotes");
+
+    if (tipo !== "" ) {
+        lotes.style.display = "block";
+    } else {
+        lotes.style.display = "none";
     }
 }
 
@@ -302,3 +360,120 @@ function generarFolio() {
     folioInput.value = '';
   }
 }
+
+const bttn1 = document.querySelector('#C1');
+const cmb1 = document.querySelector('#F1');
+var P1 = false;
+
+bttn1.addEventListener('click', () => {
+    cmb1.classList.toggle("Close");
+    cmb1.classList.toggle("Open");
+    
+    if (P1==false) {
+        $('#Arrow1').removeClass('fa-circle-down').addClass('fa-circle-up');
+        P1=true;
+    }else{
+        $('#Arrow1').removeClass('fa-circle-up').addClass('fa-circle-down');
+        P1=false;
+    }
+});
+
+$('#verLoteBtn').on('click', function () {
+    const loteID = $('#lotes').val();
+    const loteText = $('#lotes option:selected').text();
+
+    if (loteID !== "0") {
+        $('#infoLote').html(`<strong>Lote seleccionado:</strong> ${loteText} (ID: ${loteID})`);
+    } else {
+        $('#infoLote').html(`<span style="color: yellow;">Debe seleccionar un lote.</span>`);
+    }
+});
+
+$(document).ready(function() {
+ $('#btnAgregarLote').on('click', function(e) {
+
+    const loteID = $('#lotes').val();
+    const variedadID = $('#variedad').val();
+    const sede = $('#sede2').val();
+    const cajasM = $('#CajasA').val();
+    const cajasDis = $('#CajasD').val();
+    console.log(cajasDis);
+
+    if (
+    loteID === "0" ||
+    variedadID === "0" ||
+    sede === "0" ||
+    cajasM === "" ||
+    isNaN(cajasM) ||
+    cajasM <= 0 ||
+    parseFloat(cajasM) > parseFloat(cajasDis)
+    ) {
+        swal("Por favor selecciona sede, variedad, lote y cajas. Las cajas no deben ser mayores que las existentes", { icon: "warning" });
+        return;
+    }
+
+    $.ajax({
+      url: 'AgregarLote.php',
+      method: 'POST',
+      data: {
+        lote: loteID,
+        cajas: cajasM,
+        addLote: true
+      },
+      success: function(response) {
+      let res;
+    try {
+        res = typeof response === 'string' ? JSON.parse(response) : response;
+    } catch (e) {
+        console.error("Error al parsear JSON:", e);
+        swal("Respuesta no válida del servidor", { icon: "error" });
+        return;
+    }
+
+    if (res.status === 'ok') {
+    swal("Lote agregado correctamente", { icon: "success" });
+    $('#cajasT').val(res.total_cajas);
+    $('#kilosT').val(parseFloat(res.total_kilos).toFixed(2));
+    $('#variedad').val('0').trigger('change');
+    $('#lotes').val('0').trigger('change');
+    $('#CajasA').val('');
+    $('#CajasD').val('');
+    tablaLotes.ajax.reload(null, false);
+
+    } else if (res.status === 'duplicate') {
+        swal("Este lote ya fue agregado anteriormente", { icon: "warning" });
+
+    } else {
+        swal(res.message || "Error al agregar lote", { icon: "error" });
+    }
+
+        }
+        });
+    });
+
+  // Manejador para eliminar lote temporal desde la tabla
+  $('#basic-datatables').on('click', '.Delete', function(e) {
+    e.preventDefault();
+    const idTemp = $(this).data('id');
+    $.ajax({
+      url: 'EliminarTemp.php',
+      method: 'POST',
+      data: { id: idTemp },
+      success: function(response) {
+        if (response.trim() === 'ok') {
+            swal("Lote eliminado correctamente", { icon: "success" });
+            tablaLotes.ajax.reload(null, false);
+            tablaLotes.ajax.reload(function() {
+            tablaLotes.responsive.recalc();
+          }, false);
+        } else {
+            swal("Error al eliminar lote: " + response, { icon: "error" });
+        }
+        },
+      error: function() {
+        swal("Error en la eliminación", { icon: "error" });
+      }
+    });
+  });
+
+});

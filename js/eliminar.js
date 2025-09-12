@@ -151,33 +151,6 @@ function mostrarRegistroU(id){
   });
 }
 
-function mostrarRegistroA(id) {
-  $.ajax({
-      url: 'MostrarA.php',
-      type: 'POST',
-      async: true,
-      data: { id: id },
-      success: function(response) {
-          if (response != 'error') {
-              var info = JSON.parse(response);
-              var edificio = info.nombre_edificio;
-              var responsable = info.nombre + ' ' + info.apellido_paterno + ' ' + info.apellido_materno;
-              var area = info.nombre_area;
-
-              swal("Información:",
-              "EDIFICIO: " + edificio + "\n" +
-              "RESPONSABLE: " + responsable + "\n" +
-              "NOMBRE DEL ÁREA: " + area + "\n"
-          );
-
-          }
-      },
-      error: function(error) {
-          swal("Error!", "Ha ocurrido un error al obtener la información.", "error");
-      },
-  });
-}
-
 function mostrarRegistroE(id){
     $.ajax({
       url: 'MostrarE.php',
