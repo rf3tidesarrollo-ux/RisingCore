@@ -990,6 +990,23 @@ tfoot input {
     color: #fdfdfd;
 }
 
+/* CAMPOS GRISES */
+.FAD > .FAL.Gris {
+    border: 2px solid #797979;
+}
+
+.FAD > .FAL .FAS.Top.Gris {
+    color: #797979 !important;
+}
+
+.FAD > .FAL .FAS.Gris {
+    color: #797979 !important;
+}
+
+.FAD > .FAL .FAI.Gris {
+    color: #797979 !important;
+}
+
 /* ==========================
    FOOTER RESPONSIVE
    ========================== */

@@ -198,7 +198,7 @@
                  <div class="FAD">
                     <label class="FAL">
                         <span class="FAS">Folio</span>
-                        <input class="FAI" autocomplete="off" id="9" type="Text" name="Folio" value="<?php echo $Folio; ?>" size="15" maxLength="50">
+                        <input class="FAI" id="9" type="date" name="Fecha" value="<?php echo $Fecha; ?>">
                     </label>
                 </div>
 

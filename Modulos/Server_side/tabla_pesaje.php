@@ -30,7 +30,7 @@ $columnsMap = [
     11 => 'p_bruto',
     12 => 'p_taraje',
     13 => 'p_neto',
-    14 => 'fecha_r',
+    14 => 'fecha_reg',
     15 => 'hora_r'
 ];
 

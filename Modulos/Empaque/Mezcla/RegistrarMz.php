@@ -137,7 +137,7 @@
                 $stmtDel->bind_param("i", $ID);
                 $stmtDel->execute();
 
-                $pdf_nombre = generarPDFMezcla($id_mezcla, $Con);
+                //$pdf_nombre = generarPDFMezcla($id_mezcla, $Con);
 
                 // 4. Guardar ruta PDF en tabla mezcla (suponiendo que tienes campo pdf_ruta)
                 $stmt = $Con->prepare("UPDATE mezclas SET pdf_ruta = ? WHERE id_mezcla = ?");

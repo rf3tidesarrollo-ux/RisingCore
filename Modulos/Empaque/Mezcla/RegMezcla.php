@@ -91,9 +91,9 @@
                             <!-- Folio -->
                             <div class="campo campo-grande">
                                 <div class="FAD">
-                                    <label class="FAL">
-                                        <span class="FAS Top">Folio</span>
-                                        <input class="FAI" type="text" name="Folio" id="folio" <?php if (isset($_POST['Folio']) != ''): ?> value="<?php echo $Folio; ?>"<?php endif; ?> readonly>
+                                    <label class="FAL Gris">
+                                        <span class="FAS Top Gris">Folio</span>
+                                        <input class="FAI Gris" type="text" name="Folio" id="folio" <?php if (isset($_POST['Folio']) != ''): ?> value="<?php echo $Folio; ?>"<?php endif; ?> readonly>
                                     </label>
                                 </div>
                             </div>
@@ -103,18 +103,18 @@
                                 <div class="contenedor-doble-campo">
                                     <div class="campo">
                                         <div class="FAD">
-                                            <label class="FAL">
-                                                <span class="FAS Top">Cajas totales</span>
-                                                <input class="FAI" type="number" name="CajasT" <?php if (isset($_POST['CajasT']) != ''): ?> value="<?php echo $CajasT; ?>" <?php endif; ?> id="cajasT" readonly>
+                                            <label class="FAL Gris">
+                                                <span class="FAS Top Gris">Cajas totales</span>
+                                                <input class="FAI Gris" type="number" name="CajasT" <?php if (isset($_POST['CajasT']) != ''): ?> value="<?php echo $CajasT; ?>" <?php endif; ?> id="cajasT" readonly>
                                             </label>
                                         </div>
                                     </div>
 
                                     <div class="campo">
                                         <div class="FAD">
-                                            <label class="FAL">
-                                                <span class="FAS Top">Kilos totales</span>
-                                                <input class="FAI" type="number" name="KilosT" <?php if (isset($_POST['KilosT']) != ''): ?> value="<?php echo $KilosT; ?>" <?php endif; ?> id="kilosT" readonly>
+                                            <label class="FAL Gris">
+                                                <span class="FAS Top Gris">Kilos totales</span>
+                                                <input class="FAI Gris" type="number" name="KilosT" <?php if (isset($_POST['KilosT']) != ''): ?> value="<?php echo $KilosT; ?>" <?php endif; ?> id="kilosT" readonly>
                                             </label>
                                         </div>
                                     </div>
@@ -162,9 +162,9 @@
                                     </div>
 
                                     <div class="FAD" style="flex: 1;">
-                                        <label class="FAL">
-                                            <span class="FAS Top">Cajas disponibles</span>
-                                            <input class="FAI" type="number" name="CajasD" id="CajasD" readonly>
+                                        <label class="FAL Gris">
+                                            <span class="FAS Top Gris">Cajas disponibles</span>
+                                            <input class="FAI Gris" type="number" name="CajasD" id="CajasD" readonly>
                                         </label>
                                     </div>
                                 </div>
@@ -201,7 +201,7 @@
 
                 <div class=Center>
                     <input class="Boton" id="AB" type="Submit" value="Registrar" name="Insertar">
-                    <input class="Boton" id="AC" type="Submit" value="Visualizar" name="Mostrar">
+                    <a title="Mostrar" class="Boton" href="../../Plantillas/Mezclas/pdf_mezcla.php" target="_blank"><i class="fa-solid fa-eye fa-xl" style="color: #ffffffff;"></i></a>
                 </div>
             </section>
         </div>
@@ -256,7 +256,6 @@
         <?php }?>
 
         <script src="../../../js/modulos.js"></script>
-        <script src="../../../js/tbl_mezclas.js"></script>
         <script src="../../../js/mezcla.js"></script>
         <script>
             const variedadSeleccionada = <?= json_encode($Variedad) ?>;

@@ -8,7 +8,7 @@ if (!empty($_POST)) {
 
     $ID = $_POST['id'];
 
-    $stmt = $Con->prepare("SELECT registro_empaque.no_serie_r AS ns, tipo_variaciones.codigo AS cv, sedes.codigo_s AS s, variedades.nombre_variedad AS nv, tipos_presentacion.nombre_p AS np, invernaderos.invernadero AS i, registro_empaque.cantidad_caja AS cc, tipos_cajas.tipo_caja AS tp, registro_empaque.p_bruto AS pb, registro_empaque.p_taraje AS pt, registro_empaque.p_neto AS pn, registro_empaque.fecha_r AS fr, registro_empaque.hora_r AS hr, registro_empaque.semana_r AS sr, tipos_carros.folio_carro AS tc, tipos_tarimas.nombre_tarima AS nt, registro_empaque.cantidad_tarima AS ct
+    $stmt = $Con->prepare("SELECT registro_empaque.no_serie_r AS ns, tipo_variaciones.codigo AS cv, sedes.codigo_s AS s, variedades.nombre_variedad AS nv, tipos_presentacion.nombre_p AS np, invernaderos.invernadero AS i, registro_empaque.cantidad_caja AS cc, tipos_cajas.tipo_caja AS tp, registro_empaque.p_bruto AS pb, registro_empaque.p_taraje AS pt, registro_empaque.p_neto AS pn, registro_empaque.fecha_reg AS fr, registro_empaque.hora_r AS hr, registro_empaque.semana_r AS sr, tipos_carros.folio_carro AS tc, tipos_tarimas.nombre_tarima AS nt, registro_empaque.cantidad_tarima AS ct
                     FROM registro_empaque
                     JOIN tipo_variaciones ON registro_empaque.id_codigo_r = tipo_variaciones.id_variedad
                     JOIN tipos_cajas ON registro_empaque.id_tipo_caja = tipos_cajas.id_caja

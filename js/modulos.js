@@ -349,7 +349,7 @@ function generarFolio() {
     const year = fecha.getFullYear().toString().slice(-2);
     const dias = ['AX', 'AO', 'AU', 'AE', 'AH', 'AR', 'AA'];
     const nomenclatura = dias[fecha.getDay()];
-    const folioBase = `${sede}-${clienteCodigo}-${weekNumber}${nomenclatura}${year}`;
+    const folioBase = `${sede}-${clienteCodigo}-${nomenclatura}${weekNumber}${year}`;
 
     obtenerCorrelativo(folioBase).then(correlativo => {
       const folioFinal = `${folioBase}-${correlativo}`;

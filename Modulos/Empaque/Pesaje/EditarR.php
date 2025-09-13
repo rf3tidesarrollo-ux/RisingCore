@@ -29,9 +29,8 @@
     $NoCaja = "";
     $NoTarima = "";
     $KilosB = "";
-    $Folio = "";
+    $Fecha = "";
     $Caja = "";
-    $Folio="";
     $NoSerie="";
     $CodigoR="";
     $VariedadSeleccionada = $_POST['Codigo'] ?? '';
@@ -146,40 +145,44 @@
         }
     }
 
-    class Val_Folio {
-        public $Folio;
+    class Val_Fecha {
+        public $Fecha;
     
         function __Construct($F){
-            $this -> Folio = $F;
+            $this -> Fecha = $F;
         }
     
-        public function getFolio(){
-            return $this -> Folio;
+        public function getFecha(){
+            return $this -> Fecha;
         }
     
-        public function setFolio($Folio){
-            $this -> Folio = $Folio;
-            
-            if (!empty($Folio)) {
-                $Folio=filter_var($Folio, FILTER_SANITIZE_SPECIAL_CHARS);
-                
-                if (!preg_match('/^[a-zñA-ZÑ0-9\s]*$/', $Folio)){
-                    $Valor = 1;
-                    return $Valor;
+        function setFecha($Fecha){
+            if (!empty($Fecha)) {
+                $Valores = explode('-', $Fecha);
+                $FechaMin="2025/01/01";
+
+                if (strtotime($Fecha) > strtotime($FechaMin)) {
+                    if(count($Valores) == 3){
+                        $Valor = 1;
+                        return $Valor;
+                    }else{
+                        $Valor = 2;
+                        return $Valor;
+                    }
                 }else{
                     $Valor = 2;
                     return $Valor;
                 }
             }else{
-                    $Valor = 3;
-                    return $Valor;
+                $Valor = 3;
+                return $Valor;
             }
         }
     }
 
     class Cleanner{
         public $Limpiar;
-        public $Folio;
+        public $Fecha;
         public $KilosB;
         public $NoCaja;
         public $NoTarima;
@@ -193,8 +196,8 @@
             $this -> Limpiar = $L;
         }
         
-        public function LimpiarFolio(){
-            return $this -> Folio="";
+        public function LimpiarFecha(){
+            return $this -> Fecha="";
         }
 
         public function LimpiarKilosB(){
@@ -242,7 +245,7 @@
         $Caja=$_POST['Cajas'];
         $NoCaja=$_POST['NoCajas'];
         $KilosB=$_POST['KilosB'];
-        $Folio=$_POST['Folio'];
+        $Fecha=$_POST['Fecha'];
 
         if ($Sede == "0") {
             $Error1 = "Tienes que seleccionar una sede";
@@ -356,20 +359,20 @@
                 break;   
         }
 
-        $ValidarFolio = new Val_Folio($Folio);
-        $Retorno = $ValidarFolio -> setFolio($Folio);
-        $FolioVal = $ValidarFolio -> getFolio();
-        
+        $ValidarFecha = new Val_Fecha($Fecha);
+        $Retorno = $ValidarFecha -> setFecha($Fecha);
+        $FechaVal = $ValidarFecha -> getFecha();
+
         switch ($Retorno) {
             case '1':
-                $Precaucion4 = "El campo de folio solo lleva letras y números";
-                $NumP += 1;
-                break;
-            case '2':
                 $Correcto += 1;
                 break;
+            case '2':
+                $Error9 = "La fecha ingresada es incorrecta";
+                $NumE += 1;
+                break;
             case '3':
-                $Error9 = "El campo de folio no puede ir vacío";
+                $Error9 = "El campo de fecha no puede ir vacío";
                 $NumE += 1;
                 break;    
         }
@@ -446,13 +449,13 @@
             $stmt->close();
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $stmt = $Con->prepare("UPDATE registro_empaque SET id_codigo_r=?, folio_r=?, id_tipo_caja=?, id_tipo_tarima=?, id_tipo_carro=?, p_bruto=?, p_taraje=?, p_neto=?, cantidad_caja=?, cantidad_tarima=?, usuario_r=?, fecha_r=?, hora_r=?, activo_r=?, kilos_dis=?, cajas_dis=?, no_serie_r=?, semana_r=? WHERE id_registro_r=?");
-                $stmt->bind_param('isiiidddiisssidissi', $Codigo, $FolioVal, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCaja, $NoTarima, $Name, $FechaR, $HoraR, $Activo, $KilosN, $NoCajaVal, $NoSerieVal, $SemanaR, $id);
+                $stmt = $Con->prepare("UPDATE registro_empaque SET id_codigo_r=?, id_tipo_caja=?, id_tipo_tarima=?, id_tipo_carro=?, p_bruto=?, p_taraje=?, p_neto=?, cantidad_caja=?, cantidad_tarima=?, usuario_r=?, fecha_reg=?, fecha_r=?, hora_r=?, activo_r=?, kilos_dis=?, cajas_dis=?, no_serie_r=?, semana_r=? WHERE id_registro_r=?");
+                $stmt->bind_param('iiiidddiiisssidissi', $Codigo, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCaja, $NoTarima, $ID, $FechaVal, $FechaR, $HoraR, $Activo, $KilosN, $NoCajaVal, $NoSerieVal, $SemanaR, $id);
                 $stmt->execute();
                 $stmt->close();
                 
-                $Limpiar = new Cleanner($Folio,$KilosB,$NoCaja,$NoTarima,$Codigo,$Carro,$Tarima,$Caja,$Sede);
-                $Folio = $Limpiar -> LimpiarFolio();
+                $Limpiar = new Cleanner($Fecha,$KilosB,$NoCaja,$NoTarima,$Codigo,$Carro,$Tarima,$Caja,$Sede);
+                $Fecha = $Limpiar -> LimpiarFecha();
                 $KilosB = $Limpiar -> LimpiarKilosB();
                 $NoCaja = $Limpiar -> LimpiarNoCaja();
                 $Codigo = $Limpiar -> LimpiarCodigo();
@@ -497,7 +500,7 @@
                     $Caja=$Reg['id_tipo_caja'];
                     $NoCaja=$Reg['cantidad_caja'];
                     $KilosB=$Reg['p_bruto'];
-                    $Folio=$Reg['folio_r'];
+                    $Fecha=$Reg['fecha_reg'];
                 }
                 $stmt->close();
             }else{
@@ -526,7 +529,7 @@
                     $Caja=$Reg['id_tipo_caja'];
                     $NoCaja=$Reg['cantidad_caja'];
                     $KilosB=$Reg['p_bruto'];
-                    $Folio=$Reg['folio_r'];
+                    $Fecha=$Reg['fecha_reg'];
                 }
                 $stmt->close();
             }else{

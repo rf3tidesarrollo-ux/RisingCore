@@ -229,8 +229,9 @@
                 
                  <div class="FAD">
                     <label class="FAL">
-                        <span class="FAS">Folio</span>
-                        <input class="FAI" autocomplete="off" id="9" type="Text" name="Folio" <?php if (isset($_POST['Folio']) != ''): ?> value="<?php echo $Folio; ?>"<?php endif; ?> size="15" maxLength="50">
+                        <span class="FAS">Fecha</span>
+                        <?php $Fecha=date("Y-m-d");?>
+                        <input class="FAI" id="9" type="date" name="Fecha" value="<?php echo $Fecha; ?>">
                     </label>
                 </div>
 
@@ -242,7 +243,7 @@
 
         <?php if ($Correcto < 12) {
                  if ($NumE>0) { 
-                    for ($i=1; $i <= 11; $i++) {
+                    for ($i=1; $i <= 10; $i++) {
                         $Error=${"Error".$i};
                         if (!empty($Error)) { ?>
                             <script type="module">

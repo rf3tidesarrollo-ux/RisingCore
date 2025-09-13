@@ -173,7 +173,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                   { data: 'kilos_dis' },
                   { data: 'cajas_dis' },
                   { data: 'semana_r' },
-                  { data: 'fecha_r',
+                  { data: 'fecha_reg',
                     "render": function ( data, type, row ) {
                         if(type === 'display'){
                             // Asumiendo que viene como "yyyy-mm-dd"
