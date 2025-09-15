@@ -9,7 +9,7 @@
         exit;
     }
 
-    $stmt = $Con->prepare("SELECT COUNT(*) as total FROM mezclas WHERE codigo_m LIKE CONCAT(?, '%')");
+    $stmt = $Con->prepare("SELECT COUNT(*) as total FROM mezclas WHERE folio_m LIKE CONCAT(?, '%')");
     $stmt->bind_param("s", $base);
     $stmt->execute();
     $result = $stmt->get_result();

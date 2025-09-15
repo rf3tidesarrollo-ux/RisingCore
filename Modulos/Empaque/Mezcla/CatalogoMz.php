@@ -39,7 +39,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="../../../js/script.js"></script>
     <script src="../../../js/eliminar.js"></script>
-    <link rel="stylesheet" href="DesignR.css">
+    <link rel="stylesheet" href="DesignMz.css">
     <title>Empaque: Reporte</title>
 </head>
 
@@ -52,12 +52,6 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
         ?>
 
         <main>
-            <!-- <div style="background: #f9f9f9; padding: 10px 25px; border-bottom: 1px solid #ccc; font-size: 16px;">
-                <span style="color: #6c757d;">Inicio</span> &raquo; 
-                <span style="color: #6c757d;">Módulos</span> &raquo;
-                <span style="color: #6c757d;">Empaque</span> &raquo; 
-                <strong style="color: #333;">Reporte de Pesajes</strong>
-            </div> -->
             
             <div style="background: #f9f9f9; padding: 12px 25px; border-bottom: 1px solid #ccc; font-size: 16px;">
                 <nav style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
@@ -67,7 +61,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                     <span style="color: #6c757d;">&raquo;</span>
 
                     <a href="/RisingCore/Modulos/Empaque/index.php" style="color: #6c757d; text-decoration: none;">
-                        ⚖️ Pesaje
+                        🍅 Mezclas
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
@@ -76,7 +70,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <strong style="color: #333;">📊 Reporte de Pesajes</strong>
+                    <strong style="color: #333;">📊 Reportes de Mezclas</strong>
                 </nav>
             </div>
 
@@ -87,50 +81,28 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
             <table id="basic-datatables" class="display table table-striped table-hover responsive nowrap" style="width:95%">
                     <thead>
                         <tr>
-                            <th>Número de serie</th>
-                            <th>Código</th>
+                            <th>Folio de mezcla</th>
                             <th>Sede</th>
-                            <th>Variedad</th>
-                            <th>Presentación</th>
-                            <th>Nave</th>
-                            <th>Traila</th>
-                            <th>Tipo de tarima</th>
-                            <th>Cant. tarimas</th>
-                            <th>Tipo de caja</th>
-                            <th>Cant. cajas</th>
-                            <th>Peso bruto</th>
-                            <th>Peso de taraje</th>
-                            <th>Peso neto</th>
-                            <th>Kilos disponibles</th>
-                            <th>Cajas disponibles</th>
-                            <th>Semana</th>
+                            <th>Cliente</th>
+                            <th>Cajas</th>
+                            <th>Kilos</th>
                             <th>Fecha</th>
                             <th>Hora</th>
+                            <th>Registró</th>
                             <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
                         </tr>
                     </thead>
                     
                     <tfoot>
                         <tr>
-                            <th>Número de serie</th>
-                            <th>Código</th>
+                            <th>Folio de mezcla</th>
                             <th>Sede</th>
-                            <th>Variedad</th>
-                            <th>Presentación</th>
-                            <th>Nave</th>
-                            <th>Traila</th>
-                            <th>Tipo de tarima</th>
-                            <th>Cant. tarimas</th>
-                            <th>Tipo de caja</th>
-                            <th>Cant. cajas</th>
-                            <th>Peso bruto</th>
-                            <th>Peso de taraje</th>
-                            <th>Peso neto</th>
-                            <th>Kilos disponibles</th>
-                            <th>Cajas disponibles</th>
-                            <th>Semana</th>
+                            <th>Cliente</th>
+                            <th>Cajas</th>
+                            <th>Kilos</th>
                             <th>Fecha</th>
                             <th>Hora</th>
+                            <th>Registró</th>
                             <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
                         </tr>
                     </tfoot>
@@ -152,42 +124,30 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     $('#basic-datatables').DataTable({
         serverSide: true,
         ajax: {
-            url: '../../Server_side/tabla_pesaje.php',
+            url: '../../Server_side/tabla_mezcla.php',
             type: 'POST',
         },
         columns: [
-                  { data: 'no_serie_r' },
-                  { data: 'codigo' },
+                  { data: 'folio_m' },
                   { data: 'codigo_s' },
-                  { data: 'nombre_variedad', className: 'none' },
-                  { data: 'nombre_p' },
-                  { data: 'invernadero' },
-                  { data: 'folio_carro', className: 'none' },
-                  { data: 'nombre_tarima', className: 'none' },
-                  { data: 'cantidad_tarima', className: 'none' },
-                  { data: 'tipo_caja', className: 'none' },
-                  { data: 'cantidad_caja' },
-                  { data: 'p_bruto' },
-                  { data: 'p_taraje' },
-                  { data: 'p_neto' },
-                  { data: 'kilos_dis' },
-                  { data: 'cajas_dis' },
-                  { data: 'semana_r' },
-                  { data: 'fecha_r',
+                  { data: 'nombre_cliente' },
+                  { data: 'cajas_t' },
+                  { data: 'kilos_t' },
+                  { data: 'fecha_m',
                     "render": function ( data, type, row ) {
                         if(type === 'display'){
                             // Asumiendo que viene como "yyyy-mm-dd"
-                            let partes = row.fecha_r.split('-'); // [yyyy, mm, dd]
+                            let partes = row.fecha_m.split('-'); // [yyyy, mm, dd]
                             return partes[2] + '/' + partes[1] + '/' + partes[0]; // dd/mm/yyyy
                         }else{
                             return data;
                         }
                     }
                    },
-                  { data: 'hora_r',
+                  { data: 'hora_m',
                     "render": function ( data, type, row ) {
                         if(type === 'display'){
-                            let partes = row.hora_r.split(':'); // ["18","45","20"]
+                            let partes = row.hora_m.split(':'); // ["18","45","20"]
                             let horas = partes[0].padStart(2, '0');
                             let minutos = partes[1].padStart(2, '0');
                             let segundos = partes[2] ? partes[2].padStart(2, '0') : '00';
@@ -197,6 +157,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                         }
                     }
                    },
+                   { data: 'nombre_completo' },
                   { 
                     data: null,
                     "render": function (data, type, row) {
@@ -213,9 +174,9 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 
                         if (Ver || Editar || Eliminar) {
                             return `
-                                ${Ver ? `<a title="Mostrar" href="#${row.id_registro_r}" onclick="mostrarRegistroR(${row.id_registro_r})"><i class="fa-solid fa-eye fa-xl" style="color: #16ac19;"></i></a>` : ''}
-                                ${Editar ? `<a title="Editar" class="Edit" href="EditarR.php?id=${row.id_registro_r}"><i class="fa-solid fa-pen-to-square fa-xl" style="color: #0a5ceb;"></i></a>` : ''}
-                                ${Eliminar ? `<a title="Eliminar" class="Delete" href="#${row.id_registro_r}" onclick="eliminarRegistro(${row.id_registro_r})"><i class="fa-solid fa-trash fa-xl" style="color: #ca1212;"></i></a>` : ''}
+                                ${Ver ? `<a title="Mostrar" href="#${row.id_mezcla}" onclick="mostrarRegistroMz(${row.id_mezcla})"><i class="fa-solid fa-eye fa-xl" style="color: #16ac19;"></i></a>` : ''}
+                                ${Editar ? `<a title="Editar" class="Edit" href="EditarMz.php?id=${row.id_mezcla}"><i class="fa-solid fa-pen-to-square fa-xl" style="color: #0a5ceb;"></i></a>` : ''}
+                                ${Eliminar ? `<a title="Eliminar" class="Delete" href="#${row.id_mezcla}" onclick="eliminarRegistro(${row.id_mezcla})"><i class="fa-solid fa-trash fa-xl" style="color: #ca1212;"></i></a>` : ''}
                             `;
                         } else {
                             return '';
@@ -227,16 +188,12 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
         responsive: true,
         columnDefs: [
         <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true || $Editar==true || $Eliminar==true) { ?>
-                            { responsivePriority: 1, targets: 17 },
+                            { responsivePriority: 1, targets: 8 },
         <?php  } ?>
-                            { responsivePriority: 2, targets: 15 },
-                            { responsivePriority: 2, targets: 14 },
-                            { responsivePriority: 2, targets: 13 },
-                            { responsivePriority: 2, targets: 12 },
-                            { responsivePriority: 2, targets: 11 },
-                            { responsivePriority: 2, targets: 10 },
+                            { responsivePriority: 2, targets: 5 },
+                            { responsivePriority: 2, targets: 4 },
+                            { responsivePriority: 2, targets: 3 },
                             { responsivePriority: 2, targets: 2 },
-                            { responsivePriority: 2, targets: 1 },
                             { responsivePriority: 1, targets: 0 }
                     ],
         fixedColumns: true,

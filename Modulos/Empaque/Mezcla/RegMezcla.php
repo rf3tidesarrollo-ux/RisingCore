@@ -45,7 +45,7 @@
                     <span style="color: #6c757d;">&raquo;</span>
 
                     <a href="/RisingCore/Modulos/Empaque/index.php" style="color: #6c757d; text-decoration: none;">
-                        ⚖️ Pesaje
+                        🍅 Mezclas
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
@@ -199,9 +199,17 @@
                                 </table>               
                         </label>
 
-                <div class=Center>
+                <div class=Center2>
                     <input class="Boton" id="AB" type="Submit" value="Registrar" name="Insertar">
-                    <a title="Mostrar" class="Boton" href="../../Plantillas/Mezclas/pdf_mezcla.php" target="_blank"><i class="fa-solid fa-eye fa-xl" style="color: #ffffffff;"></i></a>
+                    <?php
+                    if (isset($_SESSION['idMezcla'])) {
+                        $id = $_SESSION['idMezcla'];
+                        unset($_SESSION['idMezcla']); // Limpia después de usar
+                    ?>
+                        <a id="linkPdf" title="Mostrar" class="Boton" href="../../Plantillas/Mezclas/pdf_mezcla.php?id=<?= $id ?>" target="_blank"><i class="fa-solid fa-file-circle-check fa-2xl" style="color: #ffffffff;"></i></a>
+                    <?php } else { ?>
+                        <a id="linkPdf" title="Mostrar" class="Boton" href="" target="_blank"><i class="fa-solid fa-file-circle-exclamation fa-2xl" style="color: #ffffffff;"></i></a>
+                    <?php } ?>
                 </div>
             </section>
         </div>

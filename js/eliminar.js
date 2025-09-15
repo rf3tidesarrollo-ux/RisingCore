@@ -151,29 +151,42 @@ function mostrarRegistroU(id){
   });
 }
 
-function mostrarRegistroE(id){
-    $.ajax({
-      url: 'MostrarE.php',
-      type: 'POST',
-      async: true,
-      data: {id:id},
-      success: function(response){
-        if (response != 'error') {
-          var info = JSON.parse(response);
-          var nombre = info.nombre_edificio;
-          var abreviatura = info.abreviatura_edificio;
-          
-          swal("Información:", 
-          "NOMBRE DEL EDIFICIO: "+ nombre +"\n" + 
-          "ABREVIATURA: "+abreviatura);
-        }
-      },
-      error: function(error){
-        swal("Error!", {
-          icon: "error",
-        });
-      },
-    });
+function mostrarRegistroMz(id){
+  $.ajax({
+    url: 'MostrarMz.php',
+    type: 'POST',
+    async: true,
+    data: {id:id},
+    success: function(response){
+      if (response != 'error') {
+        var info = JSON.parse(response);
+        var folio = info.f;
+        var sede = info.s;
+        var cNombre = info.nc;
+        var cajas = info.c;
+        var kilos = info.k;
+        var F = info.fc;
+        var fecha = F.split('-').reverse().join('/');
+        var hora = info.h;
+        var nReg = info.nr;
+
+        swal("Información:", 
+        "FOLIO: " + folio + "\n" +
+        "SEDE: " + sede + "\n" +
+        "CLIENTE: " + cNombre + "\n" +
+        "CAJAS: " + cajas + "\n" +
+        "KILOS: " + kilos + "\n" +
+        "FECHA: " + fecha + "\n" +
+        "HORA: " + hora + "\n" +
+        "TITULAR: " + nReg);
+      }
+    },
+    error: function(error){
+      swal("Error!", {
+        icon: "error",
+      });
+    },
+  });
 }
 
 function mostrarRegistroP(id){

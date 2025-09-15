@@ -72,6 +72,7 @@
                                 <option value="PRODUCCIÓN" <?php if ($Tipo == "PRODUCCIÓN") echo 'selected'; ?>>PRODUCCIÓN</option>
                                 <option value="NACIONAL" <?php if ($Tipo == "NACIONAL") echo 'selected'; ?>>NACIONAL</option>
                                 <option value="EMPAQUE" <?php if ($Tipo == "EMPAQUE") echo 'selected'; ?>>EMPAQUE</option>
+                                <option value="MERMA" <?php if ($Tipo == "MERMA") echo 'selected'; ?>>MERMA</option>
                             </select>
                         </label>
                     </div>
@@ -212,11 +213,12 @@
                     </div>
                     
                     <div class="FAD">
-                        <label class="FAL">
-                            <span class="FAS">Folio</span>
-                            <input class="FAI" autocomplete="off" id="9" type="Text" name="Folio" <?php if (isset($_POST['Folio']) != ''): ?> value="<?php echo $Folio; ?>"<?php endif; ?> size="15" maxLength="50">
-                        </label>
-                    </div>
+                    <label class="FAL">
+                        <span class="FAS">Fecha</span>
+                        <?php $Fecha=date("Y-m-d");?>
+                        <input class="FAI" id="9" type="date" name="Fecha" value="<?php echo $Fecha; ?>">
+                    </label>
+                </div>
 
                 <div class=Center>
                     <input class="Boton" id="AB" type="Submit" value="Registrar" name="Insertar">

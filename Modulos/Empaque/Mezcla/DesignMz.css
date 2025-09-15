@@ -622,6 +622,7 @@ footer {
     margin-bottom: 20px;
     text-align: center;
     font-family: sans-serif;
+    font-weight: bold;
 }
 
 /*DISEÑO: INPUT*/
@@ -1202,6 +1203,10 @@ footer {
     clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%) !important;  /* Mantener la forma inclinada */
     -webkit-clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%) !important;
     border-radius: 4px;          /* Opcional: bordes redondeados para mejor estética */
+  }
+
+  .dataTables_wrapper .dataTables_scroll {
+    overflow-x: auto;
   }
 }
 

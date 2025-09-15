@@ -354,6 +354,11 @@ function generarFolio() {
     obtenerCorrelativo(folioBase).then(correlativo => {
       const folioFinal = `${folioBase}-${correlativo}`;
       folioInput.value = folioFinal;
+
+      const linkPdf = document.getElementById('linkPdf');
+        if (linkPdf) {
+        linkPdf.href = `../../Plantillas/Mezclas/pdf_mezcla.php?id=mostrar&folio=${encodeURIComponent(folioFinal)}`;
+        }
     });
 
   } else {

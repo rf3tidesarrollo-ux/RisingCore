@@ -27,6 +27,7 @@
     $Variedad = isset($_POST['Variedad']) ? $_POST['Variedad'] : '';
     $Lote = isset($_POST['Lotes']) ? $_POST['Lotes'] : '';
     $CajasA = isset($_POST['CajasA']) ? $_POST['CajasA'] : '';
+    $Activo=1;
 
     for ($i=1; $i <= 6; $i++) {
         ${"Error".$i}="";
@@ -121,8 +122,8 @@
                     exit;
                 }
                 
-                $stmtInsertMezcla = $Con->prepare("INSERT INTO mezclas (folio_m, id_sede_m, id_cliente_m, cajas_t, kilos_t, fecha_m, hora_m) VALUES (?, ?, ?, ?, ?, ?, ?)");
-                $stmtInsertMezcla->bind_param("siiidss", $Folio, $Sede, $Cliente, $CajasT, $KilosT, $FechaM, $HoraM);
+                $stmtInsertMezcla = $Con->prepare("INSERT INTO mezclas (folio_m, id_sede_m, id_cliente_m, cajas_t, kilos_t, fecha_m, hora_m, id_usuario_m, activo_m) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmtInsertMezcla->bind_param("siiidssi", $Folio, $Sede, $Cliente, $CajasT, $KilosT, $FechaM, $HoraM, $ID, $Activo);
                 $stmtInsertMezcla->execute();
                 $idMezcla = $stmtInsertMezcla->insert_id;
 
@@ -131,19 +132,34 @@
                 while ($row = $result->fetch_assoc()) {
                     $stmtInsert->bind_param("iiidss", $idMezcla, $row['id_lote'], $row['cajas_m'], $row['kilos_m'], $FechaM, $HoraM);
                     $stmtInsert->execute();
+
+                    $stmtUpdate = $Con->prepare("UPDATE registro_empaque SET 
+                    kilos_dis = kilos_dis - ?, 
+                    cajas_dis = cajas_dis - ? 
+                    WHERE id_registro_r = ?");
+
+                    $stmtUpdate->bind_param("dii", $row['kilos_m'], $row['cajas_m'], $row['id_lote']);
+                    $stmtUpdate->execute();
+                    $stmtUpdate->close();
                 }
 
                 $stmtDel = $Con->prepare("DELETE FROM mezcla_lotes_temp WHERE usuario_id = ?");
                 $stmtDel->bind_param("i", $ID);
-                $stmtDel->execute();
+                if ($stmtDel->execute()) {
+                    $_SESSION['idMezcla'] = $idMezcla;
+                    $_SESSION['correcto'] = "Se hizo el registro correctamente";
+                    header("Location: ".$_SERVER['PHP_SELF']);
+                    exit();
+                } 
+                $stmtDel->close();
 
                 //$pdf_nombre = generarPDFMezcla($id_mezcla, $Con);
 
                 // 4. Guardar ruta PDF en tabla mezcla (suponiendo que tienes campo pdf_ruta)
-                $stmt = $Con->prepare("UPDATE mezclas SET pdf_ruta = ? WHERE id_mezcla = ?");
-                $stmt->bind_param("si", $pdf_nombre, $id_mezcla);
-                $stmt->execute();
-                $stmt->close();
+                // $stmt = $Con->prepare("UPDATE mezclas SET pdf_ruta = ? WHERE id_mezcla = ?");
+                // $stmt->bind_param("si", $pdf_nombre, $id_mezcla);
+                // $stmt->execute();
+                // $stmt->close();
 
                 $Limpiar = new Cleanner($Sede,$Cliente,$Folio,$CajasT,$KilosT);
                 $Sede = $Limpiar -> LimpiarSede();

@@ -12,7 +12,9 @@ $dompdf = new Dompdf();
 
 // Capturar el HTML de la plantilla
 ob_start();
-include("plantilla_mezcla.php");
+$TD = $_GET['id'] ?? '';
+$Folio = $_GET['folio'] ?? '';
+include("recibo_mezcla.php");
 $html = ob_get_clean();
 
 // Cargar HTML en Dompdf

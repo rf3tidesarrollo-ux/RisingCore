@@ -45,7 +45,7 @@ $stmt->close();
     }
 
     table {
-        width: 100%;
+        width: 55%;
         border-collapse: collapse;
     }
 
@@ -114,7 +114,7 @@ $stmt->close();
 <head>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="../../../Images/MiniLogo.png">
-    <title>Plantilla: Mezcla</title>
+    <title>PDF: Mezcla</title>
 </head>
 <body>
 
@@ -123,7 +123,7 @@ $stmt->close();
 <tr><td height="362" valign="top">
 <table width="520" cellspacing="0">
     <tr>
-        <td><img src="<?= $_SERVER['DOCUMENT_ROOT'] ?>/ruta_completa_a/Images/Rising-core.png" width="120" height="56"></td>
+        <td><img src="<?= realpath('../../../Images/Rising-core.png') ?>" width="120" height="56"></td>
         <td></td>
         <td>
             <table align="right" cellspacing="0" width="170" style="border-collapse: collapse; border: 1px solid gray;">
@@ -182,6 +182,7 @@ $stmt->close();
 </td></tr>
 </table>
 
+<!-- Encabezado -->
 <table>
 <tr><td height="362" valign="top">
 <table width="520" cellspacing="0">
