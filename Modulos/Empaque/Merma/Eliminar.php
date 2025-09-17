@@ -6,7 +6,7 @@ if(isset($_GET['id']) && !empty($_GET['id'])) {
     $id = $_GET['id'];
     $id = $Con->real_escape_string($id);
     
-    $stmt = $Con->prepare("UPDATE registro_empaque SET activo_r = 0 WHERE id_registro_r = ?");
+    $stmt = $Con->prepare("UPDATE registro_merma SET activo_m = 0 WHERE id_registro_m = ?");
     $stmt->bind_param("i", $id);
    
     if ($stmt->execute()) {

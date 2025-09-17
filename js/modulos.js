@@ -258,11 +258,14 @@ if (icon && pass) {
 function mostrarCampo() {
     const tipo = document.getElementById("tipo_registro").value;
     const campoC = document.getElementById("campo_codigos");
+    const campoP = document.getElementById("campo_presentacion");
 
     if (tipo === "PRODUCCIÓN") {
         campoC.style.display = "block";
+        campoP.style.display = "block";
     } else {
         campoC.style.display = "none";
+        campoP.style.display = "none";
     }
 }
 
@@ -370,18 +373,26 @@ const bttn1 = document.querySelector('#C1');
 const cmb1 = document.querySelector('#F1');
 var P1 = false;
 
-bttn1.addEventListener('click', () => {
-    cmb1.classList.toggle("Close");
-    cmb1.classList.toggle("Open");
-    
-    if (P1==false) {
-        $('#Arrow1').removeClass('fa-circle-down').addClass('fa-circle-up');
-        P1=true;
-    }else{
-        $('#Arrow1').removeClass('fa-circle-up').addClass('fa-circle-down');
-        P1=false;
-    }
-});
+if (bttn1 && cmb1) {
+    bttn1.addEventListener('click', () => {
+        cmb1.classList.toggle("Close");
+        cmb1.classList.toggle("Open");
+        
+        const arrow = document.querySelector('#Arrow1');
+        if (arrow) {
+            if (P1 === false) {
+                arrow.classList.remove('fa-circle-down');
+                arrow.classList.add('fa-circle-up');
+                P1 = true;
+            } else {
+                arrow.classList.remove('fa-circle-up');
+                arrow.classList.add('fa-circle-down');
+                P1 = false;
+            }
+        }
+    });
+}
+
 
 $('#verLoteBtn').on('click', function () {
     const loteID = $('#lotes').val();

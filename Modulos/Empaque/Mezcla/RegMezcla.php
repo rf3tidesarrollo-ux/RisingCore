@@ -1,32 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <link rel="shortcut icon" href="../../../Images/MiniLogo.png">
-    <script src="https://code.jquery.com/jquery-3.7.1.js" type="text/javascript"></script>
-    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js" ></script>
-    <link href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.dataTables.css" rel="stylesheet"/>
-    <link href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.dataTables.css" rel="stylesheet"/>
-    <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js" ></script>
-    <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.dataTables.js" ></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.dataTables.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://kit.fontawesome.com/367278d2a4.js" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <script src="../../../js/select.js"></script>
-    <link rel="stylesheet" href="../../../css/eggy.css" />
-    <link rel="stylesheet" href="../../../css/progressbar.css" />
-    <link rel="stylesheet" href="../../../css/theme.css" />
-    <link rel="stylesheet" href="DesignMz.css">
-    <title>Empaque: Mezclas</title>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <link rel="shortcut icon" href="../../../Images/MiniLogo.png">
+        <script src="https://code.jquery.com/jquery-3.7.1.js" type="text/javascript"></script>
+        <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js" ></script>
+        <link href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css" rel="stylesheet">
+        <link href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.dataTables.css" rel="stylesheet"/>
+        <link href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.dataTables.css" rel="stylesheet"/>
+        <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js" ></script>
+        <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.dataTables.js" ></script>
+        <script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.js"></script>
+        <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.dataTables.js"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script src="https://kit.fontawesome.com/367278d2a4.js" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <script src="../../../js/select.js"></script>
+        <link rel="stylesheet" href="../../../css/eggy.css" />
+        <link rel="stylesheet" href="../../../css/progressbar.css" />
+        <link rel="stylesheet" href="../../../css/theme.css" />
+        <link rel="stylesheet" href="DesignMz.css">
+        <title>Empaque: Mezclas</title>
+    </head>
 
     <body onload="validar()">
         <?php
@@ -45,7 +45,7 @@
                     <span style="color: #6c757d;">&raquo;</span>
 
                     <a href="/RisingCore/Modulos/Empaque/index.php" style="color: #6c757d; text-decoration: none;">
-                        🍅 Mezclas
+                        🥗 Mezclas
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
@@ -281,7 +281,7 @@
     tablaLotes = $('#basic-datatables').DataTable({
             serverSide: true,
             ajax: {
-                url: '../../Server_side/get_lotes_temp.php',
+                url: '../../Server_side/get_lotes_temp.php?id=0',
                 type: 'POST',
             },
             columns: [

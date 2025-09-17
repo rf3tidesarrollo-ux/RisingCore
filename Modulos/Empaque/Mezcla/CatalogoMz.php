@@ -61,7 +61,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                     <span style="color: #6c757d;">&raquo;</span>
 
                     <a href="/RisingCore/Modulos/Empaque/index.php" style="color: #6c757d; text-decoration: none;">
-                        🍅 Mezclas
+                        🥗 Mezclas
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 

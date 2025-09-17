@@ -44,7 +44,7 @@
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <strong style="color: #333;">📊 Registros de merma</strong>
+                    <strong style="color: #333;">✏️ Registros de merma</strong>
                 </nav>
             </div>
             <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true) { ?> <a title="Reporte" href="CatalogoM.php"><div class="back"><i class="fa-solid fa-store fa-xl"></i></div></a><?php } ?>
@@ -70,8 +70,8 @@
                             <select class="FAI prueba" id="tipo_registro" name="TipoRegistro" onchange="mostrarCampo()">
                                 <option value="0">Seleccione un tipo de merma:</option>
                                 <option value="PRODUCCIÓN" <?php if ($Tipo == "PRODUCCIÓN") echo 'selected'; ?>>PRODUCCIÓN</option>
-                                <option value="NACIONAL" <?php if ($Tipo == "NACIONAL") echo 'selected'; ?>>NACIONAL</option>
-                                <option value="EMPAQUE" <?php if ($Tipo == "EMPAQUE") echo 'selected'; ?>>EMPAQUE</option>
+                                <option value="EMPAQUE-NACIONAL" <?php if ($Tipo == "EMPAQUE-NACIONAL") echo 'selected'; ?>>EMPAQUE-NACIONAL</option>
+                                <option value="EMPAQUE-MERMA" <?php if ($Tipo == "EMPAQUE-MERMA") echo 'selected'; ?>>EMPAQUE-MERMA</option>
                                 <option value="MERMA" <?php if ($Tipo == "MERMA") echo 'selected'; ?>>MERMA</option>
                             </select>
                         </label>
@@ -85,6 +85,38 @@
                             </select>
                         </label>
                     </div>
+
+                    <div class="FAD" id="campo_presentacion" style="display: none;">
+                    <label class="FAL">
+                        <span class="FAS">Presentación</span>
+                        <select class="FAI prueba" id="Presentacion" name="Presentacion">
+                            <option <?php if (($Presentacion) != null): ?> value="<?php echo $Presentacion; ?>"<?php endif; ?>>
+                                <?php if ($Presentacion != null) { ?>
+                                    <?php 
+                                    $stmt = $Con->prepare("SELECT nombre_p FROM tipos_presentacion WHERE id_presentacion=?");
+                                    $stmt->bind_param("i",$Presentacion);
+                                    $stmt->execute();
+                                    $Registro = $stmt->get_result();
+                                    $Reg = $Registro->fetch_assoc();
+                                    $stmt->close();
+                                    if(isset($Reg['nombre_p'])){echo $Reg['nombre_p'];}else{?> Seleccione la presentación: <?php } ?>
+                                <?php } else {?>
+                                    Seleccione la presentación:
+                                <?php } ?>
+                            </option>
+                            <?php
+                            $stmt = $Con->prepare("SELECT id_presentacion,nombre_p FROM tipos_presentacion ORDER BY id_presentacion");
+                            $stmt->execute();
+                            $Registro = $stmt->get_result();
+                    
+                            while ($Reg = $Registro->fetch_assoc()){
+                                echo '<option value="'.$Reg['id_presentacion'].'">'.$Reg['nombre_p'].'</option>';
+                            }
+                            $stmt->close();
+                            ?>
+                        </select>
+                    </label>
+                </div>
                     
                     <div class="FAD" id="campo_clasificacion">
                         <label class="FAL">
@@ -213,21 +245,21 @@
                     </div>
                     
                     <div class="FAD">
-                    <label class="FAL">
-                        <span class="FAS">Fecha</span>
-                        <?php $Fecha=date("Y-m-d");?>
-                        <input class="FAI" id="9" type="date" name="Fecha" value="<?php echo $Fecha; ?>">
-                    </label>
-                </div>
+                        <label class="FAL">
+                            <span class="FAS">Fecha</span>
+                            <?php $Fecha=date("Y-m-d");?>
+                            <input class="FAI" id="9" type="date" name="Fecha" value="<?php echo $Fecha; ?>">
+                        </label>
+                    </div>
 
                 <div class=Center>
                     <input class="Boton" id="AB" type="Submit" value="Registrar" name="Insertar">
                 </div>
                 </section>
 
-            <?php if ($Correcto < 13) {
+            <?php if ($Correcto < 14) {
                     if ($NumE>0) { 
-                        for ($i=1; $i <= 12; $i++) {
+                        for ($i=1; $i <= 13; $i++) {
                             $Error=${"Error".$i};
                             if (!empty($Error)) { ?>
                                 <script type="module">

@@ -5,466 +5,233 @@
     include_once "../../../Login/validar_sesion.php";
     // $Pagina=basename(__FILE__);
     // Historial($Pagina,$Con);
-    $Ver = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 1, $Con);
-    $Crear = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 2, $Con);
-    $Editar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 3, $Con);
-    $Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 4, $Con);
+    $Ver = TienePermiso($_SESSION['ID'], "Empaque/Mezcla", 1, $Con);
+    $Crear = TienePermiso($_SESSION['ID'], "Empaque/Mezcla", 2, $Con);
+    $Editar = TienePermiso($_SESSION['ID'], "Empaque/Mezcla", 3, $Con);
+    $Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Mezcla", 4, $Con);
 
-    $FechaR=date("Y-m-d");
-    $HoraR=date("H:i:s");
-    $SemanaR=date("Y-W");
-    $Activo=1;
+    $FechaM=date("Y-m-d");
+    $HoraM=date("H:i:s");
 
-   if ($TipoRol=="ADMINISTRADOR" || $Editar==true) {
+   if ($TipoRol=="ADMINISTRADOR" || $Crear==true) {
     $NumE=0;
     $NumI=0;
     $NumP=0;
     $Finalizado="";
     $Correcto=0;
-    $Sede = "";
-    $Codigo = "";
-    $Carro = "";
-    $Tarima = "";
-    $Caja = "";
-    $NoCaja = "";
-    $NoTarima = "";
-    $KilosB = "";
-    $Folio = "";
-    $Caja = "";
-    $Folio="";
-    $NoSerie="";
-    $CodigoR="";
-    $VariedadSeleccionada = $_POST['Codigo'] ?? '';
+    $Sede = isset($_POST['Sede']) ? $_POST['Sede'] : '';
+    $Cliente = $_POST['Clientes'] ?? $_GET['Clientes'] ?? 0;
+    $Folio = isset($_POST['Folio']) ? $_POST['Folio'] : '';
+    $CajasT = isset($_POST['CajasT']) ? $_POST['CajasT'] : '';
+    $KilosT = isset($_POST['KilosT']) ? $_POST['KilosT'] : '';
+    $Variedad = isset($_POST['Variedad']) ? $_POST['Variedad'] : '';
+    $Lote = isset($_POST['Lotes']) ? $_POST['Lotes'] : '';
+    $CajasA = isset($_POST['CajasA']) ? $_POST['CajasA'] : '';
+    $Activo=1;
 
-    for ($i=1; $i <= 10; $i++) {
+    for ($i=1; $i <= 6; $i++) {
         ${"Error".$i}="";
     }
 
-    for ($i=1; $i <= 5; $i++) { 
+    for ($i=1; $i <= 1; $i++) { 
         ${"Precaucion".$i}="";
-    }
-
-    class Val_KilosB {
-        public $KilosB;
-    
-        function __Construct($K){
-            $this -> KilosB = $K;
-        }
-    
-        public function getKilosB(){
-            return $this -> KilosB;
-        }
-    
-        public function setKilosB($KilosB){
-            $this -> KilosB = $KilosB;
-            
-            if (!empty($KilosB)) {
-                if (is_numeric($KilosB)){
-                    if ($KilosB > 0 && $KilosB <= 999999999) {
-                        $Valor = 1;
-                        return $Valor;
-                    }else{
-                        $Valor = 2;
-                        return $Valor; 
-                    }
-                }else{
-                    $Valor = 3;
-                    return $Valor;
-                }
-            }else{
-                    $Valor = 4;
-                    return $Valor;
-            }
-        }
-    }
-
-    class Val_NoCaja {
-        public $NoCaja;
-    
-        function __Construct($C){
-            $this -> NoCaja = $C;
-        }
-    
-        public function getNoCaja(){
-            return $this -> NoCaja;
-        }
-    
-        public function setNoCaja($NoCaja){
-            $this -> NoCaja = $NoCaja;
-            
-            if (!empty($NoCaja)) {
-                if (is_numeric($NoCaja)){
-                    if ($NoCaja > 0 && $NoCaja <= 9999) {
-                        $Valor = 1;
-                        return $Valor;
-                    }else{
-                        $Valor = 2;
-                        return $Valor; 
-                    }
-                }else{
-                    $Valor = 3;
-                    return $Valor;
-                }
-            }else{
-                    $Valor = 4;
-                    return $Valor;
-            }
-        }
-    }
-
-    class Val_NoTarima {
-        public $NoTarima;
-    
-        function __Construct($T){
-            $this -> NoTarima = $T;
-        }
-    
-        public function getNoTarima(){
-            return $this -> NoTarima;
-        }
-    
-        public function setNoTarima($NoTarima){
-            $this -> NoTarima = $NoTarima;
-            
-            if (!empty($NoTarima)) {
-                if (is_numeric($NoTarima)){
-                    if ($NoTarima > 0 && $NoTarima <= 99) {
-                        $Valor = 1;
-                        return $Valor;
-                    }else{
-                        $Valor = 2;
-                        return $Valor; 
-                    }
-                }else{
-                    $Valor = 3;
-                    return $Valor;
-                }
-            }else{
-                    $Valor = 4;
-                    return $Valor;
-            }
-        }
-    }
-
-    class Val_Folio {
-        public $Folio;
-    
-        function __Construct($F){
-            $this -> Folio = $F;
-        }
-    
-        public function getFolio(){
-            return $this -> Folio;
-        }
-    
-        public function setFolio($Folio){
-            $this -> Folio = $Folio;
-            
-            if (!empty($Folio)) {
-                $Folio=filter_var($Folio, FILTER_SANITIZE_SPECIAL_CHARS);
-                
-                if (!preg_match('/^[a-zñA-ZÑ0-9\s]*$/', $Folio)){
-                    $Valor = 1;
-                    return $Valor;
-                }else{
-                    $Valor = 2;
-                    return $Valor;
-                }
-            }else{
-                    $Valor = 3;
-                    return $Valor;
-            }
-        }
     }
 
     class Cleanner{
         public $Limpiar;
-        public $Folio;
-        public $KilosB;
-        public $NoCaja;
-        public $NoTarima;
-        public $Codigo;
-        public $Carro;
-        public $Tarima;
-        public $Caja;
         public $Sede;
+        public $Cliente;
+        public $Folio;
+        public $CajasT;
+        public $KilosT;
 
         function __Construct($L){
             $this -> Limpiar = $L;
+        }
+
+        public function LimpiarSede(){
+            return $this -> Sede="Seleccione la sede:";
+        }
+
+        public function LimpiarCliente(){
+            return $this -> Cliente="Seleccione el cliente:";
         }
         
         public function LimpiarFolio(){
             return $this -> Folio="";
         }
 
-        public function LimpiarKilosB(){
-            return $this -> KilosB="";
-        }
-
-        public function LimpiarNoCaja(){
-            return $this -> NoCaja="";
-        }
-
-        public function LimpiarNoTarima(){
-            return $this -> NoTarima="";
-        }
-
-        public function LimpiarCodigo(){
-            return $this -> Codigo="Seleccione la variedad:";
-        }
-
-        public function LimpiarCarro(){
-            return $this -> Carro="Seleccione la traila:";
-        }
-
-        public function LimpiarTarima(){
-            return $this -> Tarima="Seleccione la tarima:";
-        }
-
-        public function LimpiarCaja(){
-            return $this -> Caja="Seleccione la caja:";
-        }
-
-        public function LimpiarSede(){
-            return $this -> Sede="Seleccione la sede:";
+        public function LimpiarCajasT(){
+            return $this -> CajasT="";
         }
         
+        public function LimpiarKilosT(){
+            return $this -> KilosT="";
+        }
     }
-    
 
     if (isset($_POST['Modificar'])) {
-        $id=$_POST['id'];
-        $Codigo=$_POST['Codigo'];
+        $idMezcla=$_POST['id'];
         $Sede=$_POST['Sede'];
-        $Carro=$_POST['Carro'];
-        $Tarima=$_POST['Tarima'];
-        $NoTarima=$_POST['NoTarima'];
-        $Caja=$_POST['Cajas'];
-        $NoCaja=$_POST['NoCajas'];
-        $KilosB=$_POST['KilosB'];
+        $Cliente=$_POST['Clientes'];
+        $CajasT=$_POST['CajasT'];
+        $KilosT=$_POST['KilosT'];
         $Folio=$_POST['Folio'];
 
         if ($Sede == "0") {
             $Error1 = "Tienes que seleccionar una sede";
             $NumE += 1;
         }else{
-            $Correcto += 1;
-        }
-
-        if ($Codigo == "0") {
-            $Error2 = "Tienes que seleccionar una variedad";
-            $NumE += 1;
-        }else{
-            $Correcto += 1;
-        }
-
-        if ($Carro == "Seleccione la traila:") {
-            $Error3 = "Tienes que seleccionar una traila";
-            $NumE += 1;
-        }else{
-            $Correcto += 1;
-        }
-
-        if ($Tarima == "Seleccione la tarima:") {
-            $Error4 = "Tienes que seleccionar una tarima";
-            $NumE += 1;
-        }else{
-            $Correcto += 1;
-        }
-
-        $ValidarNoTarima = new Val_NoTarima($NoTarima);
-        $Retorno = $ValidarNoTarima -> setNoTarima($NoTarima);
-        $NoTarimaVal = $ValidarNoTarima -> getNoTarima();
-
-        switch ($Retorno) {
-            case '1':
-                if ($Tarima == "1") {
-                    $Correcto += 1;
-                    $NoTarima = 0;
-                }else{
-                    $Correcto += 1;
-                    break; 
-                }
-                break;
-            case '2':
-                $Precaucion1 = "Las tarimas deben ser mayor a 0 y menor o igual a 99";
-                $NumP += 1;
-                break;
-            case '3':
-                $Precaucion1 = "Tienes que ingresar solo números en el campo de tarimas";
-                $NumP += 1;
-                break;
-            case '4':
-                if ($Tarima == "1") {
-                    $Correcto += 1;
-                    $NoTarima = 0;
-                }else{
-                    $Error5 = "La cantidad de tarimas no puede ir vacío";
-                    $NumE += 1;
-                    break; 
-                }
-        }
-
-        if ($Caja == "Seleccione la caja:") {
-            $Error6 = "Tienes que seleccionar una caja";
-            $NumE += 1;
-        }else{
-            $Correcto += 1;
-        }
-
-        $ValidarKilosB = new Val_KilosB($KilosB);
-        $Retorno = $ValidarKilosB -> setKilosB($KilosB);
-        $KilosBVal = $ValidarKilosB -> getKilosB();
-
-        switch ($Retorno) {
-            case '1':
-                $Correcto += 1;
-                break;
-            case '2':
-                $Precaucion2 = "Los kilos deben ser mayor a 0";
-                $NumP += 1;
-                break;
-            case '3':
-                $Precaucion2 = "Tienes que ingresar solo números en el campo de kilos brutos";
-                $NumP += 1;
-                break;
-            case '4':
-                $Error7 = "El campo de kilos no puede ir vacío";
-                $NumE += 1;
-                break;  
-        }
-
-        $ValidarNoCaja = new Val_NoCaja($NoCaja);
-        $Retorno = $ValidarNoCaja -> setNoCaja($NoCaja);
-        $NoCajaVal = $ValidarNoCaja -> getNoCaja();
-
-        switch ($Retorno) {
-            case '1':
-                $Correcto += 1;
-                break;
-            case '2':
-                $Precaucion3 = "Las cajas deben ser mayor a 0 y menor o igual a 999";
-                $NumP += 1;
-                break;
-            case '3':
-                $Precaucion3 = "Tienes que ingresar solo números en la cantidad de cajas";
-                $NumP += 1;
-                break;
-            case '4':
-                $Error8 = "La cantidad de cajas no puede ir vacío";
-                $NumE += 1;
-                break;   
-        }
-
-        $ValidarFolio = new Val_Folio($Folio);
-        $Retorno = $ValidarFolio -> setFolio($Folio);
-        $FolioVal = $ValidarFolio -> getFolio();
-        
-        switch ($Retorno) {
-            case '1':
-                $Precaucion4 = "El campo de folio solo lleva letras y números";
-                $NumP += 1;
-                break;
-            case '2':
-                $Correcto += 1;
-                break;
-            case '3':
-                $Error9 = "El campo de folio no puede ir vacío";
-                $NumE += 1;
-                break;    
-        }
-
-        if ($FechaR!=null && $HoraR!=null && $SemanaR!=null) {
-            $Correcto += 1;
-        }else{
-            $Error10 = "Error con la fecha, hora o semana";
-            $NumE += 1;
-        }
-
-        if ($Correcto==10) {
-            $stmt = $Con->prepare("SELECT 
-                                (SELECT peso_caja FROM tipos_cajas WHERE id_caja = ?) AS cajas,
-                                (SELECT peso_tarima FROM tipos_tarimas WHERE id_tarima = ?) AS tarimas,
-                                (SELECT peso_carro FROM tipos_carros WHERE id_carro = ?) AS carros;");
-            $stmt->bind_param("iii",$Caja,$Tarima,$Carro);
-            $stmt->execute();
-            $Registro = $stmt->get_result();
-            $NumCol=$Registro->num_rows;
-
-            if ($NumCol>0) {
-                while ($Reg = $Registro->fetch_assoc()){
-                        $PesoB = $Reg['cajas'];
-                        $PesoT = $Reg['tarimas'];
-                        $PesoC = $Reg['carros'];
-                    }
-                    $stmt->close();
+            switch ($Sede) {
+                case 'RF1':
+                    $Sede=1;
+                    break;
+                case 'RF2':
+                    $Sede=2;
+                    break;
+                case 'RF3':
+                    $Sede=3;
+                    break;
             }
-            
-            $KilosT = ($PesoB * $NoCajaVal) + ($PesoT * $NoTarima) + ($PesoC * 1);
-            $KilosN = $KilosBVal - $KilosT;
-            
-            if ($KilosN > 0) {
-                $Correcto += 1;
-            }else{
-                $Precaucion5 = "El taraje supera la cantidad neta";
-                $NumP += 1;
-            }
+            $Correcto += 1;
         }
 
-        if ($Correcto==11) {
-            $Fecha = date("dmy");
-            $stmt = $Con->prepare("SELECT codigo FROM tipo_variaciones WHERE id_variedad = ?");
-            $stmt->bind_param("i",$Codigo);
-            $stmt->execute();
-            $Registro = $stmt->get_result();
-            $NumCol=$Registro->num_rows;
+        if ($Cliente == "0") {
+            $Error2 = "Tienes que seleccionar un cliente";
+            $NumE += 1;
+        }else{
+            $Correcto += 1;
+        }
 
-            if ($NumCol>0) {
-                while ($Reg = $Registro->fetch_assoc()){
-                        $CodigoR = $Reg['codigo'];
-                    }
-                    $stmt->close();
-            }
+        if ($CajasT == "" || $KilosT == "") {
+            $Error3 = "No has agregado ningún lote";
+            $NumE += 1;
+        }else{
+            $Correcto += 1;
+        }
 
-            $CodigoBase = $CodigoR . "-" . $Fecha;
-
-            $stmt = $Con->prepare("SELECT no_serie_r FROM registro_empaque WHERE fecha_r = ? AND no_serie_r LIKE CONCAT(?, '%') ORDER BY no_serie_r DESC LIMIT 1");
-            $stmt->bind_param("ss", $FechaR, $CodigoBase);
-            $stmt->execute();
-            $Registro = $stmt->get_result();
-
-            if ($Registro->num_rows > 0) {
-                $Reg = $Registro->fetch_assoc();
-                $UltimoCodigo = $Reg['no_serie_r'];
-                $Numero = (int)substr($UltimoCodigo, -3);
-                $NNS = str_pad($Numero + 1, 3, "0", STR_PAD_LEFT);
-                $NoSerieVal = $CodigoBase . "-" . $NNS;
-            } else {
-                $NoSerieVal = $CodigoBase . "-001";
-            }
-
-            $stmt->close();
-
+        if ($Correcto==3) {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $stmt = $Con->prepare("UPDATE registro_empaque SET id_codigo_r=?, folio_r=?, id_tipo_caja=?, id_tipo_tarima=?, id_tipo_carro=?, p_bruto=?, p_taraje=?, p_neto=?, cantidad_caja=?, cantidad_tarima=?, usuario_r=?, fecha_r=?, hora_r=?, activo_r=?, kilos_dis=?, cajas_dis=?, no_serie_r=?, semana_r=? WHERE id_registro_r=?");
-                $stmt->bind_param('isiiidddiisssidissi', $Codigo, $FolioVal, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCaja, $NoTarima, $Name, $FechaR, $HoraR, $Activo, $KilosN, $NoCajaVal, $NoSerieVal, $SemanaR, $id);
+                $stmt = $Con->prepare("SELECT id_lote, cajas_m, kilos_m FROM mezcla_lotes_temp WHERE usuario_id = ?");
+                $stmt->bind_param("i", $ID);
                 $stmt->execute();
+                $result = $stmt->get_result();
+
+                if ($result->num_rows === 0) {
+                    $Error4 = "No hay ningún lote registrado";
+                    $NumE += 1;
+                    exit;
+                }
+
+                $LotesActuales = [];
+                $stmt = $Con->prepare("SELECT id_lote_l, cajas_m, kilos_m FROM mezcla_lotes WHERE id_mezcla_l = ?");
+                $stmt->bind_param("i", $idMezcla);
+                $stmt->execute();
+                $res = $stmt->get_result();
+                while ($row = $res->fetch_assoc()) {
+                    $LotesActuales[$row['id_lote_l']] = ['cajas' => $row['cajas_m'], 'kilos' => $row['kilos_m']];
+                }
                 $stmt->close();
+
+                $LotesNuevos = [];
+                $stmt = $Con->prepare("SELECT id_lote, cajas_m, kilos_m FROM mezcla_lotes_temp WHERE usuario_id = ?");
+                $stmt->bind_param("i", $ID);
+                $stmt->execute();
+                $resTemp = $stmt->get_result();
+                while ($row = $resTemp->fetch_assoc()) {
+                    $LotesNuevos[$row['id_lote']] = ['cajas' => $row['cajas_m'], 'kilos' => $row['kilos_m']];
+                }
+                $stmt->close();
+
+                foreach ($LotesNuevos as $idLote => $nuevo) {
+                    if (isset($LotesActuales[$idLote])) {
+                        // Ya existía, revisamos si cambió
+                        $actual = $LotesActuales[$idLote];
+                        if ($actual['cajas'] != $nuevo['cajas'] || $actual['kilos'] != $nuevo['kilos']) {
+                            // Actualiza si cambió
+                            $stmt = $Con->prepare("UPDATE mezcla_lotes SET cajas_m=?, kilos_m=?, fecha_m=?, hora_m=? 
+                                                WHERE id_mezcla_l=? AND id_lote_l=?");
+                            $stmt->bind_param("ddssii", $nuevo['cajas'], $nuevo['kilos'], $FechaM, $HoraM, $idMezcla, $idLote);
+                            $stmt->execute();
+                            $stmt->close();
+                        }
+                    } else {
+                        // No existía, insertamos
+                        $stmt = $Con->prepare("INSERT INTO mezcla_lotes (id_mezcla_l, id_lote_l, cajas_m, kilos_m, fecha_m, hora_m) VALUES (?, ?, ?, ?, ?, ?)");
+                        $stmt->bind_param("iiddss", $idMezcla, $idLote, $nuevo['cajas'], $nuevo['kilos'], $FechaM, $HoraM);
+                        $stmt->execute();
+                        $stmt->close();
+
+                        $stmtUpdate = $Con->prepare("UPDATE registro_empaque SET kilos_dis = kilos_dis - ?, cajas_dis = cajas_dis - ? WHERE id_registro_r = ?");
+                        $stmtUpdate->bind_param("dii", $nuevo['kilos_m'], $nuevo['cajas_m'], $idLote);
+                        $stmtUpdate->execute();
+                        $stmtUpdate->close();
+                    }
+                }
+
+                foreach ($LotesActuales as $idLote => $actual) {
+                    if (!isset($LotesNuevos[$idLote])) {
+                        // Obtener kilos y cajas antes de borrar
+                        $stmtGet = $Con->prepare("SELECT kilos_m, cajas_m FROM mezcla_lotes WHERE id_mezcla_l = ? AND id_lote_l = ?");
+                        $stmtGet->bind_param("ii", $idMezcla, $idLote);
+                        $stmtGet->execute();
+                        $resultGet = $stmtGet->get_result();
+                        $row = $resultGet->fetch_assoc();
+                        $kilos_m = $row['kilos_m'];
+                        $cajas_m = $row['cajas_m'];
+                        $stmtGet->close();
+
+                        // Sumar esos kilos y cajas disponibles en registro_empaque
+                        $stmtUpdate = $Con->prepare("UPDATE registro_empaque SET kilos_dis = kilos_dis + ?, cajas_dis = cajas_dis + ? WHERE id_registro_r = ?");
+                        $stmtUpdate->bind_param("dii", $kilos_m, $cajas_m, $idLote);
+                        $stmtUpdate->execute();
+                        $stmtUpdate->close();
+
+                        // Ahora eliminar de mezcla_lotes
+                        $stmtDel = $Con->prepare("DELETE FROM mezcla_lotes WHERE id_mezcla_l = ? AND id_lote_l = ?");
+                        $stmtDel->bind_param("ii", $idMezcla, $idLote);
+                        $stmtDel->execute();
+                        $stmtDel->close();
+                    }
+                }
+
+                $stmt = $Con->prepare("SELECT folio_m, id_cliente_m, id_sede_m FROM mezclas WHERE id_mezcla=?");
+                $stmt->bind_param("i", $idMezcla);
+                $stmt->execute();
+                $resultGet = $stmt->get_result();
+                $row = $resultGet->fetch_assoc();
+                $FolioA = $row['folio_m'];
+                $ClienteA = $row['id_cliente_m'];
+                $SedeA = $row['id_sede_m'];
+                $stmt->close();   
+
+                if ($Sede == $SedeA && $Cliente == $ClienteA) {
+                    $FolioVal = $FolioA;
+                }else{
+                    $FolioVal = $Folio;
+                }
+
+                $stmtInsertMezcla = $Con->prepare("UPDATE mezclas SET folio_m=?, id_sede_m=?, id_cliente_m=?, cajas_t=?, kilos_t=?, fecha_m=?, hora_m=?, id_usuario_m=? WHERE id_mezcla=?");
+                $stmtInsertMezcla->bind_param("siiidssii", $FolioVal, $Sede, $Cliente, $CajasT, $KilosT, $FechaM, $HoraM, $ID, $idMezcla);
+                $stmtInsertMezcla->execute();
+
+                $stmtDel = $Con->prepare("DELETE FROM mezcla_lotes_temp WHERE usuario_id = ?");
+                $stmtDel->bind_param("i", $ID);
+                if ($stmtDel->execute()) {
+                    $_SESSION['idMezcla'] = $idMezcla;
+                } 
+                $stmtDel->close();
                 
-                $Limpiar = new Cleanner($Folio,$KilosB,$NoCaja,$NoTarima,$Codigo,$Carro,$Tarima,$Caja,$Sede);
-                $Folio = $Limpiar -> LimpiarFolio();
-                $KilosB = $Limpiar -> LimpiarKilosB();
-                $NoCaja = $Limpiar -> LimpiarNoCaja();
-                $Codigo = $Limpiar -> LimpiarCodigo();
-                $Carro = $Limpiar -> LimpiarCarro();
-                $Tarima = $Limpiar -> LimpiarTarima();
-                $NoTarima = $Limpiar -> LimpiarNoTarima();
-                $Caja = $Limpiar -> LimpiarCaja();
+                $Limpiar = new Cleanner($Sede,$Cliente,$Folio,$CajasT,$KilosT);
                 $Sede = $Limpiar -> LimpiarSede();
+                $Cliente = $Limpiar -> LimpiarCliente();
+                $Folio = $Limpiar -> LimpiarFolio();
+                $CajasT = $Limpiar -> LimpiarCajasT();
+                $KilosT = $Limpiar -> LimpiarKilosT();
 
                 session_start();
                 $_SESSION['correcto'] = "El registro se actualizo correctamente";
-                header("Location: EditarR.php?id=" . $id);
+                header("Location: EditarMz.php?id=" . $idMezcla);
                 exit();
             }
         }
@@ -472,68 +239,58 @@
 
     if (empty($_GET['id'])) {
         if (!empty($_POST)) {
-            $ID=$_POST['id'];
+            $IDM=$_POST['id'];
         }else{
-            header('Location: CatalogoR.php');
+            header('Location: CatalogoMz.php');
         }
-        $stmt = $Con->prepare("SELECT * FROM registro_empaque 
-                            JOIN tipo_variaciones ON registro_empaque.id_codigo_r = tipo_variaciones.id_variedad
-                            JOIN invernaderos ON tipo_variaciones.id_modulo_v = invernaderos.id_invernadero
-                            JOIN sedes ON invernaderos.id_sede_i = sedes.id_sede 
-                            WHERE id_registro_r=?");
-        $stmt->bind_param("i",$ID);
+        $stmt = $Con->prepare("SELECT * FROM mezclas m
+                            JOIN sedes s ON m.id_sede_m = s.id_sede
+                            JOIN clientes c ON m.id_cliente_m = c.id_cliente
+                            WHERE id_mezcla=?");
+        $stmt->bind_param("i",$IDM);
         $stmt->execute();
         $Registro = $stmt->get_result();
         $NumCol=$Registro->num_rows;
 
         if ($NumCol>0) {
             while ($Reg = $Registro->fetch_assoc()){
-                    $ID = $Reg['id_registro_r'];
+                    $IDM = $Reg['id_mezcla'];
                     $Sede=$Reg['codigo_s'];
-                    $Codigo=$Reg['id_variedad'];
-                    $Carro=$Reg['id_tipo_carro'];
-                    $Tarima=$Reg['id_tipo_tarima'];
-                    $NoTarima=$Reg['cantidad_tarima'];
-                    $Caja=$Reg['id_tipo_caja'];
-                    $NoCaja=$Reg['cantidad_caja'];
-                    $KilosB=$Reg['p_bruto'];
-                    $Folio=$Reg['folio_r'];
+                    $Cliente=$Reg['id_cliente_m'];
+                    $Folio=$Reg['folio_m'];
+                    $CajasT=$Reg['cajas_t'];
+                    $KilosT=$Reg['kilos_t'];
                 }
                 $stmt->close();
             }else{
-                header('Location: CatalogoR.php');
+                header('Location: CatalogoMz.php');
             }
     }else{
-        $ID=$_GET['id'];
-        $stmt = $Con->prepare("SELECT * FROM registro_empaque 
-                            JOIN tipo_variaciones ON registro_empaque.id_codigo_r = tipo_variaciones.id_variedad
-                            JOIN invernaderos ON tipo_variaciones.id_modulo_v = invernaderos.id_invernadero
-                            JOIN sedes ON invernaderos.id_sede_i = sedes.id_sede 
-                            WHERE id_registro_r=?");
-        $stmt->bind_param("i",$ID);
+        $IDM=$_GET['id'];
+        $stmt = $Con->prepare("SELECT * FROM mezclas m
+                            JOIN sedes s ON m.id_sede_m = s.id_sede
+                            JOIN clientes c ON m.id_cliente_m = c.id_cliente
+                            WHERE id_mezcla=?");
+        $stmt->bind_param("i",$IDM);
         $stmt->execute();
         $Registro = $stmt->get_result();
         $NumCol=$Registro->num_rows;
 
         if ($NumCol>0) {
             while ($Reg = $Registro->fetch_assoc()){
-                    $ID = $Reg['id_registro_r'];
+                    $IDM = $Reg['id_mezcla'];
                     $Sede=$Reg['codigo_s'];
-                    $Codigo=$Reg['id_variedad'];
-                    $Carro=$Reg['id_tipo_carro'];
-                    $Tarima=$Reg['id_tipo_tarima'];
-                    $NoTarima=$Reg['cantidad_tarima'];
-                    $Caja=$Reg['id_tipo_caja'];
-                    $NoCaja=$Reg['cantidad_caja'];
-                    $KilosB=$Reg['p_bruto'];
-                    $Folio=$Reg['folio_r'];
+                    $Cliente=$Reg['id_cliente_m'];
+                    $Folio=$Reg['folio_m'];
+                    $CajasT=$Reg['cajas_t'];
+                    $KilosT=$Reg['kilos_t'];
                 }
                 $stmt->close();
             }else{
-                header('Location: CatalogoR.php');
+                header('Location: CatalogoMz.php');
             }
     }
 
-    include 'EditRegistro.php';
-    } else { header("Location: CatalogoR.php"); }
+    include 'EditMezcla.php';
+    } else { header("Location: CatalogoMz.php"); }
 ?>

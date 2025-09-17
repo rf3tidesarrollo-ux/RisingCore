@@ -122,8 +122,8 @@
                     exit;
                 }
                 
-                $stmtInsertMezcla = $Con->prepare("INSERT INTO mezclas (folio_m, id_sede_m, id_cliente_m, cajas_t, kilos_t, fecha_m, hora_m, id_usuario_m, activo_m) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmtInsertMezcla->bind_param("siiidssi", $Folio, $Sede, $Cliente, $CajasT, $KilosT, $FechaM, $HoraM, $ID, $Activo);
+                $stmtInsertMezcla = $Con->prepare("INSERT INTO mezclas (folio_m, id_sede_m, id_cliente_m, cajas_t, kilos_t, fecha_c, fecha_m, hora_m, id_usuario_m, activo_m) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)");
+                $stmtInsertMezcla->bind_param("siiidsssi", $Folio, $Sede, $Cliente, $CajasT, $KilosT, $FechaM, $FechaM, $HoraM, $ID);
                 $stmtInsertMezcla->execute();
                 $idMezcla = $stmtInsertMezcla->insert_id;
 

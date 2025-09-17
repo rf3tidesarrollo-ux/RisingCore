@@ -111,6 +111,56 @@ function mostrarRegistroR(id){
   });
 }
 
+function mostrarRegistroM(id){
+  $.ajax({
+    url: 'MostrarM.php',
+    type: 'POST',
+    async: true,
+    data: {id:id},
+    success: function(response){
+      if (response != 'error') {
+        var info = JSON.parse(response);
+        var nSerie = info.ns;
+        var cNombre = info.tm;
+        var motivo = info.m;
+        var cCajas = info.cc; 
+        var tCaja = info.tc; 
+        var pBruto = info.pb; 
+        var pTaraje = info.pt;
+        var pNeto = info.pn; 
+        var F = info.fr;
+        var fecha = F.split('-').reverse().join('/');
+        var hora = info.hr;
+        var mSemana = info.sr;
+        var tCarro = info.tc;
+        var nTarima = info.nt;
+        var cTarima = info.ct;
+
+        swal("Información:", 
+        "NO. SERIE: " + nSerie + "\n" +
+        "CLASIFICACIÓN: " + cNombre + "\n" +
+        "MOTIVO: " + motivo + "\n" +
+        "TRAILA: " + tCarro + "\n" +
+        "TIPO DE TARIMAS: " + nTarima + "\n" +
+        "CANTIDAD DE TARIMAS: " + cTarima + "\n" +
+        "TIPO DE CAJA: " + tCaja + "\n" +
+        "CANTIDAD DE CAJAS: " + cCajas + "\n" +
+        "PESO BRUTO: " + pBruto + "\n" +
+        "PESO TARAJE: " + pTaraje + "\n" +
+        "PESO NETO: " + pNeto + "\n" +
+        "SEMANA: " + mSemana + "\n" +
+        "FECHA DE REGISTRO: " + fecha + "\n" +
+        "HORA: " + hora);
+      }
+    },
+    error: function(error){
+      swal("Error!", {
+        icon: "error",
+      });
+    },
+  });
+}
+
 function mostrarRegistroU(id){
   $.ajax({
     url: 'MostrarU.php',

@@ -81,20 +81,14 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                     <thead>
                         <tr>
                             <th>Número de serie</th>
-                            <th>Código</th>
-                            <th>Sede</th>
-                            <th>Variedad</th>
-                            <th>Tipo de merma</th>
                             <th>Clasificación</th>
-                            <th>Presentación</th>
-                            <th>Nave</th>
+                            <th>Motivo</th>
                             <th>Traila</th>
                             <th>Tipo de tarima</th>
                             <th>Cant. tarimas</th>
                             <th>Tipo de caja</th>
                             <th>Cant. cajas</th>
                             <th>Peso bruto</th>
-                            <th>Peso de taraje</th>
                             <th>Peso neto</th>
                             <th>Semana</th>
                             <th>Fecha</th>
@@ -106,20 +100,14 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                     <tfoot>
                         <tr>
                             <th>Número de serie</th>
-                            <th>Código</th>
-                            <th>Sede</th>
-                            <th>Variedad</th>
-                            <th>Tipo de merma</th>
                             <th>Clasificación</th>
-                            <th>Presentación</th>
-                            <th>Nave</th>
+                            <th>Motivo</th>
                             <th>Traila</th>
                             <th>Tipo de tarima</th>
                             <th>Cant. tarimas</th>
                             <th>Tipo de caja</th>
                             <th>Cant. cajas</th>
                             <th>Peso bruto</th>
-                            <th>Peso de taraje</th>
                             <th>Peso neto</th>
                             <th>Semana</th>
                             <th>Fecha</th>
@@ -149,38 +137,32 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
             type: 'POST',
         },
         columns: [
-                  { data: 'no_serie_r' },
-                  { data: 'codigo' },
-                  { data: 'codigo_s' },
-                  { data: 'nombre_variedad', className: 'none' },
+                  { data: 'no_serie_m' },
                   { data: 'tipo_merma' },
                   { data: 'motivo' },
-                  { data: 'nombre_p', className: 'none' },
-                  { data: 'invernadero', className: 'none' },
                   { data: 'folio_carro', className: 'none' },
                   { data: 'nombre_tarima', className: 'none' },
                   { data: 'cantidad_tarima', className: 'none' },
                   { data: 'tipo_caja', className: 'none' },
                   { data: 'cantidad_caja' },
                   { data: 'p_bruto' },
-                  { data: 'p_taraje' },
                   { data: 'p_neto' },
-                  { data: 'semana_r' },
-                  { data: 'fecha_r',
+                  { data: 'semana_m' },
+                  { data: 'fecha_reg',
                     "render": function ( data, type, row ) {
                         if(type === 'display'){
                             // Asumiendo que viene como "yyyy-mm-dd"
-                            let partes = row.fecha_r.split('-'); // [yyyy, mm, dd]
+                            let partes = row.fecha_reg.split('-'); // [yyyy, mm, dd]
                             return partes[2] + '/' + partes[1] + '/' + partes[0]; // dd/mm/yyyy
                         }else{
                             return data;
                         }
                     }
                    },
-                  { data: 'hora_r',
+                  { data: 'hora_m',
                     "render": function ( data, type, row ) {
                         if(type === 'display'){
-                            let partes = row.hora_r.split(':'); // ["18","45","20"]
+                            let partes = row.hora_m.split(':'); // ["18","45","20"]
                             let horas = partes[0].padStart(2, '0');
                             let minutos = partes[1].padStart(2, '0');
                             let segundos = partes[2] ? partes[2].padStart(2, '0') : '00';
@@ -206,9 +188,9 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 
                         if (Ver || Editar || Eliminar) {
                             return `
-                                ${Ver ? `<a title="Mostrar" href="#${row.id_registro_r}" onclick="mostrarRegistroM(${row.id_registro_r})"><i class="fa-solid fa-eye fa-xl" style="color: #16ac19;"></i></a>` : ''}
-                                ${Editar ? `<a title="Editar" class="Edit" href="EditarM.php?id=${row.id_registro_r}"><i class="fa-solid fa-pen-to-square fa-xl" style="color: #0a5ceb;"></i></a>` : ''}
-                                ${Eliminar ? `<a title="Eliminar" class="Delete" href="#${row.id_registro_r}" onclick="eliminarRegistro(${row.id_registro_r})"><i class="fa-solid fa-trash fa-xl" style="color: #ca1212;"></i></a>` : ''}
+                                ${Ver ? `<a title="Mostrar" href="#${row.id_registro_m}" onclick="mostrarRegistroM(${row.id_registro_m})"><i class="fa-solid fa-eye fa-xl" style="color: #16ac19;"></i></a>` : ''}
+                                ${Editar ? `<a title="Editar" class="Edit" href="EditarM.php?id=${row.id_registro_m}"><i class="fa-solid fa-pen-to-square fa-xl" style="color: #0a5ceb;"></i></a>` : ''}
+                                ${Eliminar ? `<a title="Eliminar" class="Delete" href="#${row.id_registro_m}" onclick="eliminarRegistro(${row.id_registro_m})"><i class="fa-solid fa-trash fa-xl" style="color: #ca1212;"></i></a>` : ''}
                             `;
                         } else {
                             return '';
@@ -222,16 +204,13 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
         responsive: true,
         columnDefs: [
         <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true || $Editar==true || $Eliminar==true) { ?>
-                            { responsivePriority: 1, targets: 19 },
+                            { responsivePriority: 1, targets: 13 },
         <?php  } ?>
-                            { responsivePriority: 2, targets: 15 },
-                            { responsivePriority: 2, targets: 14 },
-                            { responsivePriority: 2, targets: 13 },
-                            { responsivePriority: 2, targets: 12 },
                             { responsivePriority: 2, targets: 11 },
-                            { responsivePriority: 2, targets: 10 },
-                            { responsivePriority: 2, targets: 5 },
-                            { responsivePriority: 2, targets: 4 },
+                            { responsivePriority: 2, targets: 9 },
+                            { responsivePriority: 2, targets: 8 },
+                            { responsivePriority: 2, targets: 7 },
+                            { responsivePriority: 2, targets: 3 },
                             { responsivePriority: 2, targets: 2 },
                             { responsivePriority: 2, targets: 1 },
                             { responsivePriority: 1, targets: 0 }

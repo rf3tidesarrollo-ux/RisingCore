@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
     // Validar que el ID sea positivo
     if ($idTemp > 0) {
         $stmt = $Con->prepare("DELETE FROM mezcla_lotes_temp WHERE id_mezcla_temp = ? AND usuario_id = ?");
-        $stmt->bind_param("ii", $idTemp, $ID); // $ID viene de la sesión del usuario
+        $stmt->bind_param("ii", $idTemp, $ID);
         if ($stmt->execute()) {
             echo "ok";
         } else {

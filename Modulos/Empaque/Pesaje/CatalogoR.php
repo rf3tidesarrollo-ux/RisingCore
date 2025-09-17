@@ -177,7 +177,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                     "render": function ( data, type, row ) {
                         if(type === 'display'){
                             // Asumiendo que viene como "yyyy-mm-dd"
-                            let partes = row.fecha_r.split('-'); // [yyyy, mm, dd]
+                            let partes = row.fecha_reg.split('-'); // [yyyy, mm, dd]
                             return partes[2] + '/' + partes[1] + '/' + partes[0]; // dd/mm/yyyy
                         }else{
                             return data;

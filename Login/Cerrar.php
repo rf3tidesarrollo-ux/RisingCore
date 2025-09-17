@@ -5,11 +5,20 @@
         include_once 'Conexion.php';
         include_once '../Conexion/BD.php';
 
-        $User = $_SESSION['Name'];
+        $User = $_SESSION['ID'];
         $Estado = 0;
         
+        $stmt = $Con->prepare("DELETE FROM mezcla_lotes_temp WHERE usuario_id = ?");
+        $stmt->bind_param("i", $User);
+        if ($stmt->execute()) {
+            echo "ok";
+        } else {
+            echo "error";
+        }
+        $stmt->close();
+
         $stmt = $Con->prepare("UPDATE usuarios SET estado = ? WHERE username = ?");
-        $stmt->bind_param("is",$Estado,$User);
+        $stmt->bind_param("ii",$Estado,$User);
         $stmt->execute();
         $stmt->close();
 

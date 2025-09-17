@@ -6,8 +6,9 @@ $tipo = $_GET['tipo'] ?? '';
 // Mapeo de códigos a nombres
 $mapa_tipos = [
     'PRODUCCIÓN' => 'PRODUCCIÓN',
-    'NACIONAL' => 'NACIONAL',
-    'EMPAQUE' => 'EMPAQUE'
+    'EMPAQUE-NACIONAL' => 'EMPAQUE-NACIONAL',
+    'EMPAQUE-MERMA' => 'EMPAQUE-MERMA',
+    'MERMA' => 'MERMA'
 ];
 
 if (isset($mapa_tipos[$tipo])) {

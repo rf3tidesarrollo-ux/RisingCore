@@ -15,7 +15,7 @@
     $SemanaR=date("Y-W");
     $Activo=1;
 
-   if ($TipoRol=="ADMINISTRADOR" || $Editar==true) {
+   if ($TipoRol=="ADMINISTRADOR" || $Crear==true) {
     $NumE=0;
     $NumI=0;
     $NumP=0;
@@ -26,19 +26,16 @@
     $Codigo = "";
     $Carro = "";
     $Tarima = "";
+    $NoTarima = "";
     $Caja = "";
     $NoCaja = "";
-    $NoTarima = "";
     $KilosB = "";
-    $Folio = "";
-    $Caja = "";
-    $Folio="";
-    $NoSerie=NULL;
-    $Clase="MERMA";
-    $Clasificacion="";
-    $CodigoR="";
+    $Fecha = "";
+    $Presentacion = "";
+    $Clasificacion = "";
+    $CodigoR = "";
 
-    for ($i=1; $i <= 12; $i++) {
+    for ($i=1; $i <= 14; $i++) {
         ${"Error".$i}="";
     }
 
@@ -148,46 +145,51 @@
         }
     }
 
-    class Val_Folio {
-        public $Folio;
+    class Val_Fecha {
+        public $Fecha;
     
         function __Construct($F){
-            $this -> Folio = $F;
+            $this -> Fecha = $F;
         }
     
-        public function getFolio(){
-            return $this -> Folio;
+        public function getFecha(){
+            return $this -> Fecha;
         }
     
-        public function setFolio($Folio){
-            $this -> Folio = $Folio;
-            
-            if (!empty($Folio)) {
-                $Folio=filter_var($Folio, FILTER_SANITIZE_SPECIAL_CHARS);
-                
-                if (!preg_match('/^[a-zñA-ZÑ0-9\s]*$/', $Folio)){
-                    $Valor = 1;
-                    return $Valor;
+        function setFecha($Fecha){
+            if (!empty($Fecha)) {
+                $Valores = explode('-', $Fecha);
+                $FechaMin="2025/01/01";
+
+                if (strtotime($Fecha) > strtotime($FechaMin)) {
+                    if(count($Valores) == 3){
+                        $Valor = 1;
+                        return $Valor;
+                    }else{
+                        $Valor = 2;
+                        return $Valor;
+                    }
                 }else{
                     $Valor = 2;
                     return $Valor;
                 }
             }else{
-                    $Valor = 3;
-                    return $Valor;
+                $Valor = 3;
+                return $Valor;
             }
         }
     }
 
     class Cleanner{
         public $Limpiar;
-        public $Folio;
+        public $Fecha;
         public $KilosB;
         public $NoCaja;
         public $Codigo;
         public $Carro;
         public $Tarima;
         public $Caja;
+        public $Presentacion;
         public $Clasificacion;
         public $Tipo;
         public $Sede;
@@ -197,8 +199,8 @@
             $this -> Limpiar = $L;
         }
         
-        public function LimpiarFolio(){
-            return $this -> Folio="";
+        public function LimpiarFecha(){
+            return $this -> Fecha="";
         }
 
         public function LimpiarKilosB(){
@@ -225,6 +227,10 @@
             return $this -> Caja="Seleccione la caja:";
         }
 
+        public function LimpiarPresentacion(){
+            return $this -> Presentacion="Seleccione la presentación:";
+        }
+
         public function LimpiarClasificacion(){
             return $this -> Clasificacion="Seleccione la clasificación:";
         }
@@ -239,8 +245,7 @@
 
         public function LimpiarNoTarima(){
             return $this -> NoTarima="";
-        }
-        
+        }  
     }
 
     if (isset($_POST['Modificar'])) {
@@ -251,11 +256,12 @@
         $Caja=$_POST['Cajas'];
         $NoCaja=$_POST['NoCajas'];
         $KilosB=$_POST['KilosB'];
-        $Folio=$_POST['Folio'];
         $Clasificacion=$_POST['Clasificacion'];
         $Tipo=$_POST['TipoRegistro'];
-        echo $Sede=$_POST['Sede'];
+        $Sede=$_POST['Sede'];
         $NoTarima=$_POST['NoTarima'];
+        $Fecha=$_POST['Fecha'];
+        $Presentacion=$_POST['Presentacion'];
 
         if ($Sede == "0") {
             $Error1 = "Tienes que seleccionar una sede";
@@ -283,6 +289,18 @@
             $Correcto += 1;
         }
 
+        if ($Presentacion == "Seleccione la presentación:") {
+            if ($Tipo == "PRODUCCIÓN") {
+                $Error13 = "Tienes que seleccionar una presentación";
+                $NumE += 1;
+            } else {
+                $Presentacion = NULL;
+                $Correcto += 1;
+            }
+        }else{
+            $Correcto += 1;
+        }
+        
         if ($Clasificacion == "0") {
             $Error4 = "Tienes que seleccionar una clasificación";
             $NumE += 1;
@@ -388,20 +406,20 @@
                 break;  
         }
 
-        $ValidarFolio = new Val_Folio($Folio);
-        $Retorno = $ValidarFolio -> setFolio($Folio);
-        $FolioVal = $ValidarFolio -> getFolio();
-        
+        $ValidarFecha = new Val_Fecha($Fecha);
+        $Retorno = $ValidarFecha -> setFecha($Fecha);
+        $FechaVal = $ValidarFecha -> getFecha();
+
         switch ($Retorno) {
             case '1':
-                $Precaucion4 = "El campo de folio solo lleva letras y números";
-                $NumP += 1;
-                break;
-            case '2':
                 $Correcto += 1;
                 break;
+            case '2':
+                $Error11 = "La fecha ingresada es incorrecta";
+                $NumE += 1;
+                break;
             case '3':
-                $Error11 = "El campo de folio no puede ir vacío";
+                $Error11 = "El campo de fecha no puede ir vacío";
                 $NumE += 1;
                 break;    
         }
@@ -412,8 +430,8 @@
             $Error12 = "Error con la fecha, hora o semana";
             $NumE += 1;
         }
-
-        if ($Correcto==12) {
+        
+        if ($Correcto==13) {
             $stmt = $Con->prepare("SELECT 
                                 (SELECT peso_caja FROM tipos_cajas WHERE id_caja = ?) AS cajas,
                                 (SELECT peso_tarima FROM tipos_tarimas WHERE id_tarima = ?) AS tarimas,
@@ -443,7 +461,7 @@
             }
         }
 
-        if ($Correcto==13) {
+        if ($Correcto==14) {
             $Fecha = date("dmy");
             $stmt = $Con->prepare("SELECT codigo FROM tipo_variaciones WHERE id_variedad = ?");
             $stmt->bind_param("i",$Codigo);
@@ -458,20 +476,48 @@
                     $stmt->close();
             }
 
-            if ($CodigoR!=NULL) {
-                $CodigoBase = $CodigoR . "-" . $Fecha;
-            }else{
-                $CodigoBase = $Tipo . "-" . $Fecha;
+            switch ($Sede) {
+                case 'RF1':
+                    $Sede = 1;
+                    break;
+                case 'RF2':
+                    $Sede = 2;
+                    break;
+                case 'RF3':
+                    $Sede = 3;
+                    break;
+                default:
+                    $Sede = "RF";
+                    break;
             }
 
-            $stmt = $Con->prepare("SELECT no_serie_r FROM registro_empaque WHERE fecha_r = ? AND no_serie_r LIKE CONCAT(?, '%') ORDER BY no_serie_r DESC LIMIT 1");
+            if ($CodigoR=="") {
+                switch ($Tipo) {
+                    case 'PRODUCCIÓN':
+                        $CodigoR = $Sede . '-' . "PRD";
+                        break;
+                    case 'EMPAQUE-NACIONAL':
+                        $CodigoR = $Sede. '-' . "EPN";
+                        break;
+                    case 'EMPAQUE-MERMA':
+                        $CodigoR = $Sede. '-' . "EPM";
+                        break;
+                    case 'MERMA':
+                        $CodigoR = $Sede. '-' . "MER";
+                        break;
+                }
+            }
+            
+            $CodigoBase = $CodigoR . "-" . $Fecha;
+
+            $stmt = $Con->prepare("SELECT no_serie_m FROM registro_merma WHERE fecha_m = ? AND no_serie_m LIKE CONCAT(?, '%') ORDER BY no_serie_m DESC LIMIT 1");
             $stmt->bind_param("ss", $FechaR, $CodigoBase);
             $stmt->execute();
             $Registro = $stmt->get_result();
 
             if ($Registro->num_rows > 0) {
                 $Reg = $Registro->fetch_assoc();
-                $UltimoCodigo = $Reg['no_serie_r'];
+                $UltimoCodigo = $Reg['no_serie_m'];
                 $Numero = (int)substr($UltimoCodigo, -3);
                 $NNS = str_pad($Numero + 1, 3, "0", STR_PAD_LEFT);
                 $NoSerieVal = $CodigoBase . "-" . $NNS;
@@ -482,13 +528,13 @@
             $stmt->close();
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                 $stmt = $Con->prepare("UPDATE registro_empaque SET id_codigo_r=?, folio_r=?, id_tipo_caja=?, id_tipo_tarima=?, id_tipo_carro=?, p_bruto=?, p_taraje=?, p_neto=?, cantidad_caja=?, cantidad_tarima=?, usuario_r=?, fecha_r=?, hora_r=?, activo_r=?, tipo_registro=?, id_tipo_merma=?, no_serie_r=?, semana_r=? WHERE id_registro_r=?");
-                $stmt->bind_param('isiiidddiisssisissi', $Codigo, $FolioVal, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCaja, $NoTarima, $Name, $FechaR, $HoraR, $Activo, $Clase, $Clasificacion, $NoSerieVal, $SemanaR, $id);
+                $stmt = $Con->prepare("UPDATE registro_merma SET id_codigo_m=?, id_presentacion_m=?, id_clasificacion=?, id_tipo_caja=?, id_tipo_tarima=?, id_tipo_carro=?, p_bruto=?, p_taraje=?, p_neto=?, cantidad_caja=?, cantidad_tarima=?, usuario_m=?, fecha_reg=?, fecha_m=?, hora_m=?, activo_m=?, kilos_dis=?, cajas_dis=?, no_serie_m=?, semana_m=? WHERE id_registro_m=?");
+                $stmt->bind_param('iiiiiidddiiisssidissi', $Codigo, $Presentacion, $Clasificacion, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCajaVal, $NoTarima, $ID, $FechaVal, $FechaR, $HoraR, $Activo, $KilosN, $NoCajaVal, $NoSerieVal, $SemanaR, $id);
                 $stmt->execute();
                 $stmt->close();
 
-                $Limpiar = new Cleanner($Folio,$KilosB,$NoCaja,$NoTarima,$Codigo,$Carro,$Tarima,$Caja,$Sede,$Clasificacion,$Tipo);
-                $Folio = $Limpiar -> LimpiarFolio();
+                $Limpiar = new Cleanner($Fecha,$KilosB,$NoCaja,$NoTarima,$Codigo,$Carro,$Tarima,$Caja,$Sede,$Clasificacion,$Tipo);
+                $Fecha = $Limpiar -> LimpiarFecha();
                 $KilosB = $Limpiar -> LimpiarKilosB();
                 $NoCaja = $Limpiar -> LimpiarNoCaja();
                 $Codigo = $Limpiar -> LimpiarCodigo();
@@ -497,6 +543,7 @@
                 $NoTarima = $Limpiar -> LimpiarNoTarima();
                 $Caja = $Limpiar -> LimpiarCaja();
                 $Sede = $Limpiar -> LimpiarSede();
+                $Presentacion = $Limpiar -> LimpiarPresentacion();
                 $Clasificacion = $Limpiar -> LimpiarClasificacion();
                 $Tipo = $Limpiar -> LimpiarTipo();
                 
@@ -512,14 +559,14 @@
         if (!empty($_POST)) {
             $ID=$_POST['id'];
         }else{
-            header('Location: CatalogoA.php');
+            header('Location: CatalogoM.php');
         }
-        $stmt = $Con->prepare("SELECT * FROM registro_empaque 
-                            JOIN tipo_variaciones ON registro_empaque.id_codigo_r = tipo_variaciones.id_variedad
-                            JOIN invernaderos ON tipo_variaciones.id_modulo_v = invernaderos.id_invernadero
-                            JOIN sedes ON invernaderos.id_sede_i = sedes.id_sede
-                            JOIN clasificacion_merma ON registro_empaque.id_tipo_merma = clasificacion_merma.id_merma 
-                            WHERE id_registro_r=?");
+        $stmt = $Con->prepare("SELECT * FROM registro_merma 
+                            LEFT JOIN tipo_variaciones ON registro_merma.id_codigo_m = tipo_variaciones.id_variedad
+                            LEFT JOIN invernaderos ON tipo_variaciones.id_modulo_v = invernaderos.id_invernadero
+                            LEFT JOIN sedes ON invernaderos.id_sede_i = sedes.id_sede
+                            LEFT JOIN clasificacion_merma ON registro_merma.id_clasificacion = clasificacion_merma.id_merma 
+                            WHERE id_registro_m=?");
         $stmt->bind_param("i",$ID);
         $stmt->execute();
         $Registro = $stmt->get_result();
@@ -527,8 +574,32 @@
 
         if ($NumCol>0) {
             while ($Reg = $Registro->fetch_assoc()){
-                    $ID=$Reg['id_registro_r'];
+                    $ID=$Reg['id_registro_m'];
                     $Sede=$Reg['codigo_s'];
+                    $Presentacion=$Reg['id_presentacion_m'];
+                    $Tipo=$Reg['tipo_merma'];
+                    if ($Tipo=="PRODUCCIÓN") {
+                        $Sede=$Reg['codigo_s'];
+                    }else{
+                        $NS = $Reg['no_serie_m'];
+                        $PRT = explode('-', $NS);
+                        $S = $PRT[0];
+
+                        switch ($S) {
+                            case '1':
+                                $Sede = "RF1";
+                                break;
+                            case '2':
+                                $Sede = "RF2";
+                                break;
+                            case '3':
+                                $Sede = "RF3";
+                                break;
+                            default:
+                                $Sede = "RF";
+                                break;
+                        }
+                    }
                     $Tipo=$Reg['tipo_merma'];
                     $Codigo=$Reg['id_variedad'];
                     $Clasificacion=$Reg['id_merma'];
@@ -538,20 +609,20 @@
                     $Caja=$Reg['id_tipo_caja'];
                     $NoCaja=$Reg['cantidad_caja'];
                     $KilosB=$Reg['p_bruto'];
-                    $Folio=$Reg['folio_r'];
+                    $Fecha=$Reg['fecha_reg'];
                 }
                 $stmt->close();
             }else{
-                header('Location: CatalogoB.php');
+                header('Location: CatalogoM.php');
             }
     }else{
         $ID=$_GET['id'];
-        $stmt = $Con->prepare("SELECT * FROM registro_empaque 
-                            JOIN tipo_variaciones ON registro_empaque.id_codigo_r = tipo_variaciones.id_variedad
-                            JOIN invernaderos ON tipo_variaciones.id_modulo_v = invernaderos.id_invernadero
-                            JOIN sedes ON invernaderos.id_sede_i = sedes.id_sede
-                            JOIN clasificacion_merma ON registro_empaque.id_tipo_merma = clasificacion_merma.id_merma 
-                            WHERE id_registro_r=?");
+        $stmt = $Con->prepare("SELECT * FROM registro_merma 
+                            LEFT JOIN tipo_variaciones ON registro_merma.id_codigo_m = tipo_variaciones.id_variedad
+                            LEFT JOIN invernaderos ON tipo_variaciones.id_modulo_v = invernaderos.id_invernadero
+                            LEFT JOIN sedes ON invernaderos.id_sede_i = sedes.id_sede
+                            LEFT JOIN clasificacion_merma ON registro_merma.id_clasificacion = clasificacion_merma.id_merma 
+                            WHERE id_registro_m=?");
         $stmt->bind_param("i",$ID);
         $stmt->execute();
         $Registro = $stmt->get_result();
@@ -559,9 +630,31 @@
 
         if ($NumCol>0) {
             while ($Reg = $Registro->fetch_assoc()){
-                    $ID=$Reg['id_registro_r'];
-                    $Sede=$Reg['codigo_s'];
+                    $ID=$Reg['id_registro_m'];
+                    $Presentacion=$Reg['id_presentacion_m'];
                     $Tipo=$Reg['tipo_merma'];
+                    if ($Tipo=="PRODUCCIÓN") {
+                        $Sede=$Reg['codigo_s'];
+                    }else{
+                        $NS = $Reg['no_serie_m'];
+                        $PRT = explode('-', $NS);
+                        $S = $PRT[0];
+
+                        switch ($S) {
+                            case '1':
+                                $Sede = "RF1";
+                                break;
+                            case '2':
+                                $Sede = "RF2";
+                                break;
+                            case '3':
+                                $Sede = "RF3";
+                                break;
+                            default:
+                                $Sede = "RF";
+                                break;
+                        }
+                    }
                     $Codigo=$Reg['id_variedad'];
                     $Clasificacion=$Reg['id_merma'];
                     $Carro=$Reg['id_tipo_carro'];
@@ -570,11 +663,11 @@
                     $Caja=$Reg['id_tipo_caja'];
                     $NoCaja=$Reg['cantidad_caja'];
                     $KilosB=$Reg['p_bruto'];
-                    $Folio=$Reg['folio_r'];
+                    $Fecha=$Reg['fecha_reg'];
                 }
                 $stmt->close();
             }else{
-                header('Location: CatalogoC.php');
+                header('Location: CatalogoM.php');
             }
     }
 

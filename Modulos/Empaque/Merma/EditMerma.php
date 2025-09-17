@@ -28,10 +28,28 @@
         ?>
 
         <main>
-        
-        <div id="main-container">
-        <a title="Regresar" href="CatalogoM.php"><div class="back"><i class="fa-solid fa-left-long fa-xl"></i></div></a>
+        <div style="background: #f9f9f9; padding: 12px 25px; border-bottom: 1px solid #ccc; font-size: 16px;">
+                <nav style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
+                    <a href="/RisingCore/Modulos/Empaque/index.php" style="color: #6c757d; text-decoration: none;">
+                        📦 Empaque
+                    </a>
+                    <span style="color: #6c757d;">&raquo;</span>
 
+                    <a href="/RisingCore/Modulos/Empaque/Merma/index.php" style="color: #6c757d; text-decoration: none;">
+                        ♻️ Merma
+                    </a>
+                    <span style="color: #6c757d;">&raquo;</span>
+
+                    <a href="#" style="color: #6c757d; text-decoration: none;">
+                        📋 Registros
+                    </a>
+                    <span style="color: #6c757d;">&raquo;</span>
+
+                    <strong style="color: #333;">📊 Registros de merma</strong>
+                </nav>
+            </div>
+            
+            <a title="Reporte" href="CatalogoM.php"><div class="back"><i class="fa-solid fa-left-long fa-xl"></i></div></a>
 
         <section class="Registro">
             <h4>Actualizar merma</h4>
@@ -55,8 +73,9 @@
                                 <select class="FAI prueba" id="tipo_registro" name="TipoRegistro" onchange="mostrarCampo()">
                                     <option value="0">Seleccione un tipo de merma:</option>
                                     <option value="PRODUCCIÓN" <?php if ($Tipo == "PRODUCCIÓN") echo 'selected'; ?>>PRODUCCIÓN</option>
-                                    <option value="NACIONAL" <?php if ($Tipo == "NACIONAL") echo 'selected'; ?>>NACIONAL</option>
-                                    <option value="EMPAQUE" <?php if ($Tipo == "EMPAQUE") echo 'selected'; ?>>EMPAQUE</option>
+                                    <option value="EMPAQUE-NACIONAL" <?php if ($Tipo == "EMPAQUE-NACIONAL") echo 'selected'; ?>>EMPAQUE-NACIONAL</option>
+                                    <option value="EMPAQUE-MERMA" <?php if ($Tipo == "EMPAQUE-MERMA") echo 'selected'; ?>>EMPAQUE-MERMA</option>
+                                    <option value="MERMA" <?php if ($Tipo == "MERMA") echo 'selected'; ?>>MERMA</option>
                                 </select>
                             </label>
                         </div>
@@ -66,6 +85,38 @@
                                 <span class="FAS">Variedades</span>
                                 <select class="FAI prueba" name="Codigo" id="codigos">
                                     <option value="0">Seleccione la variedad</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div class="FAD" id="campo_presentacion" style="display: none;">
+                            <label class="FAL">
+                                <span class="FAS">Presentación</span>
+                                <select class="FAI prueba" id="Presentacion" name="Presentacion">
+                                    <option <?php if (($Presentacion) != null): ?> value="<?php echo $Presentacion; ?>"<?php endif; ?>>
+                                        <?php if ($Presentacion != null) { ?>
+                                            <?php 
+                                            $stmt = $Con->prepare("SELECT nombre_p FROM tipos_presentacion WHERE id_presentacion=?");
+                                            $stmt->bind_param("i",$Presentacion);
+                                            $stmt->execute();
+                                            $Registro = $stmt->get_result();
+                                            $Reg = $Registro->fetch_assoc();
+                                            $stmt->close();
+                                            if(isset($Reg['nombre_p'])){echo $Reg['nombre_p'];}else{?> Seleccione la presentación: <?php } ?>
+                                        <?php } else {?>
+                                            Seleccione la presentación:
+                                        <?php } ?>
+                                    </option>
+                                    <?php
+                                    $stmt = $Con->prepare("SELECT id_presentacion,nombre_p FROM tipos_presentacion ORDER BY id_presentacion");
+                                    $stmt->execute();
+                                    $Registro = $stmt->get_result();
+                            
+                                    while ($Reg = $Registro->fetch_assoc()){
+                                        echo '<option value="'.$Reg['id_presentacion'].'">'.$Reg['nombre_p'].'</option>';
+                                    }
+                                    $stmt->close();
+                                    ?>
                                 </select>
                             </label>
                         </div>
@@ -198,8 +249,9 @@
                         
                         <div class="FAD">
                             <label class="FAL">
-                                <span class="FAS">Folio</span>
-                                <input class="FAI" autocomplete="off" id="9" type="Text" name="Folio" value="<?php echo $Folio; ?>" size="15" maxLength="50">
+                                <span class="FAS">Fecha</span>
+                                <?php $Fecha=date("Y-m-d");?>
+                                <input class="FAI" id="9" type="date" name="Fecha" value="<?php echo $Fecha; ?>">
                             </label>
                         </div>
 
@@ -209,9 +261,9 @@
                 </section>
             </div>
 
-            <?php if ($Correcto < 11) {
+            <?php if ($Correcto < 14) {
                     if ($NumE>0) { 
-                        for ($i=1; $i <= 10; $i++) {
+                        for ($i=1; $i <= 14; $i++) {
                             $Error=${"Error".$i};
                             if (!empty($Error)) { ?>
                                 <script type="module">
