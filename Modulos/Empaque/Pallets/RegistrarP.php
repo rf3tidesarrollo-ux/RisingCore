@@ -176,6 +176,6 @@
         }
     }
 
-    include 'RegMezcla.php';
-    } else { header("Location: CatalogoMz.php"); }
+    include 'RegPallet.php';
+    } else { header("Location: CatalogoP.php"); }
 ?>

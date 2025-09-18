@@ -18,7 +18,7 @@ if (isset($mapa_tipos[$tipo])) {
     $stmt = $Con->prepare("SELECT c.id_cliente, c.nombre_cliente, c.abreviatura
                             FROM clientes c
                             JOIN sedes s ON c.id_sede_c = s.id_sede
-                            WHERE c.id_sede_c = ? ORDER BY c.id_cliente ASC");
+                            WHERE c.id_sede_c = ? AND c.activo_c = 1 ORDER BY c.id_cliente ASC");
     $stmt->bind_param("i", $clientes);
     $stmt->execute();
     $resultado = $stmt->get_result();

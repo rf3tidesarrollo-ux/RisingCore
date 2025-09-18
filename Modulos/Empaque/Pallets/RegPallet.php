@@ -24,8 +24,8 @@
         <link rel="stylesheet" href="../../../css/eggy.css" />
         <link rel="stylesheet" href="../../../css/progressbar.css" />
         <link rel="stylesheet" href="../../../css/theme.css" />
-        <link rel="stylesheet" href="DesignMz.css">
-        <title>Empaque: Mezclas</title>
+        <link rel="stylesheet" href="DesignP.css">
+        <title>Empaque: Pallets</title>
     </head>
 
     <body onload="validar()">
@@ -45,7 +45,7 @@
                     <span style="color: #6c757d;">&raquo;</span>
 
                     <a href="/RisingCore/Modulos/Empaque/index.php" style="color: #6c757d; text-decoration: none;">
-                        🥗 Mezclas
+                        🏷️ Pallets
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
@@ -54,15 +54,15 @@
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <strong style="color: #333;">✏️ Registro de Mezclas</strong>
+                    <strong style="color: #333;">✏️ Registro de Pallets</strong>
                 </nav>
             </div>
         
         <div id="main-container">
-        <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true) { ?> <a title="Reporte" href="CatalogoMz.php"><div class="back"><i class="fa-solid fa-mortar-pestle fa-xl"></i></div></a><?php } ?>
+        <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true) { ?> <a title="Reporte" href="CatalogoP.php"><div class="back"><i class="fa-solid fa-mortar-pestle fa-xl"></i></div></a><?php } ?>
 
             <section class="Registro">
-                <h4>Registro mezclas</h4>
+                <h4>Registro pallets</h4>
                 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST" name="octavo" id="">
                     <div class="FAD">
                         <label class="FAL">
@@ -76,79 +76,14 @@
                         </label>
                     </div>
 
-                    <div class="FAD" id="campo_clientes">
-                        <label class="FAL">
-                            <span class="FAS">Cliente</span>
-                            <select class="FAI prueba" name="Clientes" id="clientes">
-                                <option value="0">Seleccione el cliente:</option>
-                            </select>
-                        </label>
-                    </div>
-                    <input type="hidden" id="clienteSeleccionado" value="<?= htmlspecialchars($Cliente) ?>">
-
-                    <div id="datosCliente" style="display: none;">
-                        <div class="fila-dos-campos">
-                            <!-- Folio -->
-                            <div class="campo campo-grande">
-                                <div class="FAD">
-                                    <label class="FAL Gris">
-                                        <span class="FAS Top Gris">Folio</span>
-                                        <input class="FAI Gris" type="text" name="Folio" id="folio" <?php if (isset($_POST['Folio']) != ''): ?> value="<?php echo $Folio; ?>"<?php endif; ?> readonly>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- Contenedor para Cajas y Kilos -->
-                            <div class="campo campo-grande">
-                                <div class="contenedor-doble-campo">
-                                    <div class="campo">
-                                        <div class="FAD">
-                                            <label class="FAL Gris">
-                                                <span class="FAS Top Gris">Cajas totales</span>
-                                                <input class="FAI Gris" type="number" name="CajasT" <?php if (isset($_POST['CajasT']) != ''): ?> value="<?php echo $CajasT; ?>" <?php endif; ?> id="cajasT" readonly>
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div class="campo">
-                                        <div class="FAD">
-                                            <label class="FAL Gris">
-                                                <span class="FAS Top Gris">Kilos totales</span>
-                                                <input class="FAI Gris" type="number" name="KilosT" <?php if (isset($_POST['KilosT']) != ''): ?> value="<?php echo $KilosT; ?>" <?php endif; ?> id="kilosT" readonly>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="ARCH">
-                            <div class="AR">AGREGAR LOTE<a id="C1"><i id="Arrow1" class="fa-regular fa-circle-plus fa-lg" style="color: #fff;"></i></a></div>
+                            <div class="AR">AGREGAR MEZCLA<a id="C1"><i id="Arrow1" class="fa-regular fa-circle-plus fa-lg" style="color: #fff;"></i></a></div>
                             <div id="F1" class=Close>
-                                <div class="FAD">
+                                <div class="FAD" id="campo_mezclas">
                                     <label class="FAL">
-                                        <span class="FAS">Variedades</span>
-                                        <select class="FAI prueba" id="variedad" name="Variedad">
-                                             <option value="0" selected disabled>Seleccione la variedad:</option>
-                                            <?php
-                                            $stmt = $Con->prepare("SELECT id_nombre_v,nombre_variedad FROM variedades ORDER BY id_nombre_v");
-                                            $stmt->execute();
-                                            $Registro = $stmt->get_result();
-                                    
-                                            while ($Reg = $Registro->fetch_assoc()){
-                                                echo '<option value="'.$Reg['id_nombre_v'].'">'.$Reg['nombre_variedad'].'</option>';
-                                            }
-                                            $stmt->close();
-                                            ?>
-                                        </select>
-                                    </label>
-                                </div>
-
-                                <div class="FAD" id="campo_lotes">
-                                    <label class="FAL">
-                                        <span class="FAS">Lotes</span>
+                                        <span class="FAS">Mezcla</span>
                                         <select class="FAI prueba" name="Lotes" id="lotes">
-                                            <option value="0">Seleccione el lote:</option>
+                                            <option value="0">Seleccione la mezcla:</option>
                                         </select>
                                     </label>
                                 </div>
@@ -175,7 +110,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
                 
                     <div class="FAD">
                         <label class="FAL">

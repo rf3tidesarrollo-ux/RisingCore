@@ -59,11 +59,12 @@
             </div>
         
         <div id="main-container">
-        <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true) { ?> <a title="Reporte" href="CatalogoMz.php"><div class="back"><i class="fa-solid fa-mortar-pestle fa-xl"></i></div></a><?php } ?>
+        <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true) { ?> <a title="Reporte" href="CatalogoMz.php"><div class="back"><i class="fas fa-left-long fa-xl"></i></div></a><?php } ?>
 
             <section class="Registro">
-                <h4>Registro mezclas</h4>
+                <h4>Actualizar mezcla</h4>
                 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST" name="octavo" id="">
+                   <input class="Controles" id="0" type="hidden" name="id" value="<?php echo $IDM; ?>">
                     <div class="FAD">
                         <label class="FAL">
                             <span class="FAS">Sede</span>
@@ -80,7 +81,7 @@
                         <label class="FAL">
                             <span class="FAS">Cliente</span>
                             <select class="FAI prueba" name="Clientes" id="clientes">
-                                <option value="0">Seleccione el cliente:</option>
+                                <option value="0">Seleccione el cliente</option>
                             </select>
                         </label>
                     </div>
@@ -93,7 +94,7 @@
                                 <div class="FAD">
                                     <label class="FAL Gris">
                                         <span class="FAS Top Gris">Folio</span>
-                                        <input class="FAI Gris" type="text" name="Folio" id="folio" <?php if (isset($_POST['Folio']) != ''): ?> value="<?php echo $Folio; ?>"<?php endif; ?> readonly>
+                                        <input class="FAI Gris" type="text" name="Folio" id="folio" value="<?php echo $Folio; ?>" readonly>
                                     </label>
                                 </div>
                             </div>
@@ -105,7 +106,7 @@
                                         <div class="FAD">
                                             <label class="FAL Gris">
                                                 <span class="FAS Top Gris">Cajas totales</span>
-                                                <input class="FAI Gris" type="number" name="CajasT" <?php if (isset($_POST['CajasT']) != ''): ?> value="<?php echo $CajasT; ?>" <?php endif; ?> id="cajasT" readonly>
+                                                <input class="FAI Gris" type="number" name="CajasT" value="<?php echo $CajasT; ?>" id="cajasT" readonly>
                                             </label>
                                         </div>
                                     </div>
@@ -114,7 +115,7 @@
                                         <div class="FAD">
                                             <label class="FAL Gris">
                                                 <span class="FAS Top Gris">Kilos totales</span>
-                                                <input class="FAI Gris" type="number" name="KilosT" <?php if (isset($_POST['KilosT']) != ''): ?> value="<?php echo $KilosT; ?>" <?php endif; ?> id="kilosT" readonly>
+                                                <input class="FAI Gris" type="number" name="KilosT" value="<?php echo $KilosT; ?>" id="kilosT" readonly>
                                             </label>
                                         </div>
                                     </div>
@@ -148,7 +149,7 @@
                                     <label class="FAL">
                                         <span class="FAS">Lotes</span>
                                         <select class="FAI prueba" name="Lotes" id="lotes">
-                                            <option value="0">Seleccione el lote:</option>
+                                            <option value="0">Seleccione el lote</option>
                                         </select>
                                     </label>
                                 </div>
@@ -200,15 +201,15 @@
                         </label>
 
                 <div class=Center2>
-                    <input class="Boton" id="AB" type="Submit" value="Registrar" name="Insertar">
+                    <input class="Boton" id="AB" type="Submit" value="Actualizar" name="Modificar">
                     <?php
                     if (isset($_SESSION['idMezcla'])) {
                         $id = $_SESSION['idMezcla'];
                         unset($_SESSION['idMezcla']); // Limpia después de usar
                     ?>
-                        <a id="linkPdf" title="Mostrar" class="Boton" href="../../Plantillas/Mezclas/pdf_mezcla.php?id=<?= $id ?>" target="_blank"><i class="fa-solid fa-file-circle-check fa-2xl" style="color: #ffffffff;"></i></a>
+                        <a id="Pdf" title="Mostrar" class="Boton" href="../../Plantillas/Mezclas/pdf_mezcla.php?id=<?= $id ?>" target="_blank"><i class="fa-solid fa-file-circle-check fa-2xl" style="color: #ffffffff;"></i></a>
                     <?php } else { ?>
-                        <a id="linkPdf" title="Mostrar" class="Boton" href="" target="_blank"><i class="fa-solid fa-file-circle-exclamation fa-2xl" style="color: #ffffffff;"></i></a>
+                        <a id="Pdf" title="Mostrar" class="Boton" href="../../Plantillas/Mezclas/pdf_mezcla.php?id=mostrar&folio=<?= $Folio ?>" target="_blank"><i class="fa-solid fa-file-circle-exclamation fa-2xl" style="color: #ffffffff;"></i></a>
                     <?php } ?>
                 </div>
             </section>
@@ -281,13 +282,13 @@
     tablaLotes = $('#basic-datatables').DataTable({
             serverSide: true,
             ajax: {
-                url: '../../Server_side/get_lotes_temp.php?id=0',
+                url: '../../Server_side/get_lotes_temp.php?id=<?=$IDM?>',
                 type: 'POST',
             },
             columns: [
                     { data: 'no_serie_r' },
                     { data: 'codigo' },
-                    { data: 'fecha_r' },
+                    { data: 'fecha_reg' },
                     { data: 'codigo_s' },
                     { data: 'invernadero' },
                     { data: 'nombre_variedad' },
@@ -340,7 +341,7 @@
             <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true || $Editar==true || $Eliminar==true) { ?>
                                 { responsivePriority: 1, targets: 10 },
             <?php  } ?>
-                                { responsivePriority: 1, targets: 9 },
+                                { responsivePriority: 2, targets: 9 },
                                 { responsivePriority: 2, targets: 8 },
                                 { responsivePriority: 2, targets: 2 },
                                 { responsivePriority: 2, targets: 1 },

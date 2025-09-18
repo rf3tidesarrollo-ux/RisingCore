@@ -124,7 +124,7 @@ $(document).ready(function () {
         // Mostrar datos si el cliente ya está seleccionado
         if (clienteSeleccionado && clienteSeleccionado !== '0') {
           $('#datosCliente').show();
-          generarFolio();
+          //generarFolio();
         } else {
           $('#datosCliente').hide();
         }
@@ -326,7 +326,7 @@ function obtenerCorrelativo(base) {
 function generarFolio() {
   const sedeSelect = document.getElementById('sede2');
   const clienteSelect = document.getElementById('clientes');
-  const folioInput = document.querySelector('input[name="Folio"]'); // O usa id si prefieres
+  const folioInput = document.querySelector('input[name="Folio"]');
 
   if (!sedeSelect || !clienteSelect || !folioInput) return; // Evita errores si algo falta
 
@@ -438,30 +438,30 @@ $(document).ready(function() {
       },
       success: function(response) {
       let res;
-    try {
-        res = typeof response === 'string' ? JSON.parse(response) : response;
-    } catch (e) {
-        console.error("Error al parsear JSON:", e);
-        swal("Respuesta no válida del servidor", { icon: "error" });
-        return;
-    }
+        try {
+            res = typeof response === 'string' ? JSON.parse(response) : response;
+        } catch (e) {
+            console.error("Error al parsear JSON:", e);
+            swal("Respuesta no válida del servidor", { icon: "error" });
+            return;
+        }
 
-    if (res.status === 'ok') {
-    swal("Lote agregado correctamente", { icon: "success" });
-    $('#cajasT').val(res.total_cajas);
-    $('#kilosT').val(parseFloat(res.total_kilos).toFixed(2));
-    $('#variedad').val('0').trigger('change');
-    $('#lotes').val('0').trigger('change');
-    $('#CajasA').val('');
-    $('#CajasD').val('');
-    tablaLotes.ajax.reload(null, false);
+        if (res.status === 'ok') {
+        swal("Lote agregado correctamente", { icon: "success" });
+        $('#cajasT').val(res.total_cajas);
+        $('#kilosT').val(parseFloat(res.total_kilos).toFixed(2));
+        $('#variedad').val('0').trigger('change');
+        $('#lotes').val('0').trigger('change');
+        $('#CajasA').val('');
+        $('#CajasD').val('');
+        tablaLotes.ajax.reload(null, false);
 
-    } else if (res.status === 'duplicate') {
-        swal("Este lote ya fue agregado anteriormente", { icon: "warning" });
+        } else if (res.status === 'duplicate') {
+            swal("Este lote ya fue agregado anteriormente", { icon: "warning" });
 
-    } else {
-        swal(res.message || "Error al agregar lote", { icon: "error" });
-    }
+        } else {
+            swal(res.message || "Error al agregar lote", { icon: "error" });
+        }
 
         }
         });
@@ -476,14 +476,29 @@ $(document).ready(function() {
       method: 'POST',
       data: { id: idTemp },
       success: function(response) {
-        if (response.trim() === 'ok') {
+        let res;
+        try {
+            res = typeof response === 'string' ? JSON.parse(response) : response;
+        } catch (e) {
+            console.error("Error al parsear JSON:", e);
+            swal("Respuesta no válida del servidor", { icon: "error" });
+            return;
+        }
+
+        if (res.status === 'ok') {
             swal("Lote eliminado correctamente", { icon: "success" });
+            $('#cajasT').val(res.total_cajas);
+            $('#kilosT').val(parseFloat(res.total_kilos).toFixed(2));
             tablaLotes.ajax.reload(null, false);
             tablaLotes.ajax.reload(function() {
             tablaLotes.responsive.recalc();
           }, false);
         } else {
-            swal("Error al eliminar lote: " + response, { icon: "error" });
+            swal({
+                title: "Error al eliminar lote:",
+                text: "No puede quedar sin ningún lote el registro",
+                icon: "error"
+            });
         }
         },
       error: function() {

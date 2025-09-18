@@ -81,7 +81,7 @@
                         <label class="FAL">
                             <span class="FAS">Cliente</span>
                             <select class="FAI prueba" name="Clientes" id="clientes">
-                                <option value="0">Seleccione el cliente</option>
+                                <option value="0">Seleccione el cliente:</option>
                             </select>
                         </label>
                     </div>
@@ -149,7 +149,7 @@
                                     <label class="FAL">
                                         <span class="FAS">Lotes</span>
                                         <select class="FAI prueba" name="Lotes" id="lotes">
-                                            <option value="0">Seleccione el lote</option>
+                                            <option value="0">Seleccione el lote:</option>
                                         </select>
                                     </label>
                                 </div>
@@ -207,9 +207,9 @@
                         $id = $_SESSION['idMezcla'];
                         unset($_SESSION['idMezcla']); // Limpia después de usar
                     ?>
-                        <a id="linkPdf" title="Mostrar" class="Boton" href="../../Plantillas/Mezclas/pdf_mezcla.php?id=<?= $id ?>" target="_blank"><i class="fa-solid fa-file-circle-check fa-2xl" style="color: #ffffffff;"></i></a>
+                        <a id="Pdf" title="Mostrar" class="Boton" href="../../Plantillas/Mezclas/pdf_mezcla.php?id=<?= $id ?>" target="_blank"><i class="fa-solid fa-file-circle-check fa-2xl" style="color: #ffffffff;"></i></a>
                     <?php } else { ?>
-                        <a id="linkPdf" title="Mostrar" class="Boton" href="" target="_blank"><i class="fa-solid fa-file-circle-exclamation fa-2xl" style="color: #ffffffff;"></i></a>
+                        <a id="Pdf" title="Mostrar" class="Boton" href="../../Plantillas/Mezclas/pdf_mezcla.php?id=mostrar&folio=<?= $Folio ?>" target="_blank"><i class="fa-solid fa-file-circle-exclamation fa-2xl" style="color: #ffffffff;"></i></a>
                     <?php } ?>
                 </div>
             </section>
@@ -294,8 +294,8 @@
                     { data: 'nombre_variedad' },
                     { data: 'cantidad_caja' },
                     { data: 'p_neto' },
-                    { data: 'kilos_m'},
                     { data: 'cajas_m'},
+                    { data: 'kilos_m'},
                     { 
                         data: null,
                         "render": function (data, type, row) {
@@ -341,7 +341,7 @@
             <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true || $Editar==true || $Eliminar==true) { ?>
                                 { responsivePriority: 1, targets: 10 },
             <?php  } ?>
-                                { responsivePriority: 1, targets: 9 },
+                                { responsivePriority: 2, targets: 9 },
                                 { responsivePriority: 2, targets: 8 },
                                 { responsivePriority: 2, targets: 2 },
                                 { responsivePriority: 2, targets: 1 },
