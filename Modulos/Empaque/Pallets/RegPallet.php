@@ -59,7 +59,7 @@
             </div>
         
         <div id="main-container">
-        <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true) { ?> <a title="Reporte" href="CatalogoP.php"><div class="back"><i class="fa-solid fa-mortar-pestle fa-xl"></i></div></a><?php } ?>
+        <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true) { ?> <a title="Reporte" href="CatalogoP.php"><div class="back"><i class="fa-solid fa-tag fa-xl"></i></div></a><?php } ?>
 
             <section class="Registro">
                 <h4>Registro pallets</h4>
@@ -67,7 +67,7 @@
                     <div class="FAD">
                         <label class="FAL">
                             <span class="FAS">Sede</span>
-                            <select class="FAI prueba" id="sede2" name="Sede">
+                            <select class="FAI prueba" id="sede3" name="Sede">
                                 <option value="0">Seleccione la sede:</option>
                                 <option value="RF1"<?php if ($Sede == "RF1") echo " selected"; ?>>RF1</option>
                                 <option value="RF2"<?php if ($Sede == "RF2") echo " selected"; ?>>RF2</option>
@@ -76,40 +76,94 @@
                         </label>
                     </div>
 
+                    <div class="FAD" id="campo_presentaciones">
+                        <label class="FAL">
+                            <span class="FAS">Presentación</span>
+                            <select class="FAI prueba" name="Presentaciones" id="presentaciones">
+                                <option value="0">Seleccione una sede primero:</option>
+                            </select>
+                        </label>
+                    </div>
+                    
+                    <div class="campos-cajas">
+                        <div class="FAD" id="campo_lineas" style="flex: 1;">
+                            <label class="FAL">
+                                <span class="FAS">Línea</span>
+                                <select class="FAI prueba" name="Lineas" id="lineas">
+                                    <option value="0">Seleccione una sede primero:</option>
+                                </select>
+                            </label>
+                        </div>
+
+                            <div class="FAD" style="flex: 1;">
+                                <label class="FAL">
+                                <span class="FAS">Tipo de tomate</span>
+                                <select class="FAI prueba" id="Tipo" name="Tipo">
+                                    <option value="0">Seleccione el tipo de tomate:</option>
+                                    <option value="CHERRY"<?php if ($Tipo == "CHERRY") echo " selected"; ?>>CHERRY</option>
+                                    <option value="GRAPE"<?php if ($Tipo == "GRAPE") echo " selected"; ?>>GRAPE</option>
+                                    <option value="CHERRY Y GRAPE"<?php if ($Tipo == "CHERRY Y GRAPE") echo " selected"; ?>>CHERRY Y GRAPE</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="FAD" id="campo_tarimas">
+                        <label class="FAL">
+                            <span class="FAS">Tarimas</span>
+                            <select class="FAI prueba" name="Tarimas" id="tarimas">
+                                <option value="0">Seleccione una sede primero:</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="campos-cajas">
+                        <div class="FAD" style="flex: 1;">
+                            <label class="FAL">
+                                <span class="FAS">Fecha de empaque</span>
+                                <?php if (($Fecha == "")) { $Fecha=date("Y-m-d"); }?>
+                                <input class="FAI" id="Fecha" type="date" name="Fecha" value="<?php echo $Fecha; ?>">
+                            </label>
+                        </div>
+
+                        <div class="FAD" style="flex: 1;">
+                            <label class="FAL">
+                                <span class="FAS">Fecha de envió</span>
+                                <?php if (($FechaE == "")) { $FechaE=date("Y-m-d"); }?>
+                                <input class="FAI" id="FechaE" type="date" name="FechaE" value="<?php echo $FechaE; ?>">
+                            </label>
+                        </div>
+                    </div>
+
+                    
+
+                    <div id="datosMezcla" style="display: none;">
                         <div class="ARCH">
                             <div class="AR">AGREGAR MEZCLA<a id="C1"><i id="Arrow1" class="fa-regular fa-circle-plus fa-lg" style="color: #fff;"></i></a></div>
                             <div id="F1" class=Close>
                                 <div class="FAD" id="campo_mezclas">
                                     <label class="FAL">
                                         <span class="FAS">Mezcla</span>
-                                        <select class="FAI prueba" name="Lotes" id="lotes">
+                                        <select class="FAI prueba" name="Mezclas" id="mezclas">
                                             <option value="0">Seleccione la mezcla:</option>
                                         </select>
                                     </label>
                                 </div>
 
-                                <div class="campos-cajas">
-                                    <div class="FAD" style="flex: 1;">
-                                        <label class="FAL">
-                                            <span class="FAS">Cajas solicitadas</span>
-                                            <input class="FAI" type="number" name="CajasA" id="CajasA" size="15" maxlength="10">
-                                        </label>
-                                    </div>
-
-                                    <div class="FAD" style="flex: 1;">
-                                        <label class="FAL Gris">
-                                            <span class="FAS Top Gris">Cajas disponibles</span>
-                                            <input class="FAI Gris" type="number" name="CajasD" id="CajasD" readonly>
-                                        </label>
-                                    </div>
+                                <div class="FAD" style="flex: 1;">
+                                    <label class="FAL">
+                                        <span class="FAS">Cajas</span>
+                                        <input class="FAI" type="number" name="CajasT" id="cajasT" size="15" maxlength="10">
+                                    </label>
                                 </div>
 
                                 <div class=Center2>
-                                    <button class="BotonAgregar" type="button" id="btnAgregarLote"><i class="fa-solid fa-plus fa-xl" style="color: #ffffffff;"></i></button>
-                                    <a title="Mostrar" class="BotonAgregar" onclick="mostrarIDL()"><i class="fa-solid fa-eye fa-xl" style="color: #ffffffff;"></i></a>
+                                    <button class="BotonAgregar" type="button" id="btnAgregarMezcla"><i class="fa-solid fa-plus fa-xl" style="color: #ffffffff;"></i></button>
+                                    <a title="Mostrar" class="BotonAgregar" onclick="mostrarIDM()"><i class="fa-solid fa-eye fa-xl" style="color: #ffffffff;"></i></a>
                                 </div>
                             </div>
                         </div>
+                    </div>
                 
                     <div class="FAD">
                         <label class="FAL">
@@ -117,16 +171,12 @@
                                 <table id="basic-datatables" class="display table table-striped table-hover responsive nowrap">
                                     <thead>
                                         <tr>
-                                        <th>Lote mezcla</th>
-                                        <th>Código</th>
-                                        <th>Fecha</th>
+                                        <th>Folio de mezcla</th>
                                         <th>Sede</th>
-                                        <th>Módulo</th>
-                                        <th>Variedad</th>
-                                        <th>Cajas disponibles</th>
-                                        <th>Kilos disponibles</th>
-                                        <th>Cajas solicitadas</th>
-                                        <th>Kilos solicitados</th>
+                                        <th>Cliente</th>
+                                        <th>Cajas</th>
+                                        <th>Kilos</th>
+                                        <th>Fecha</th>
                                         <th>Acciones</th>
                                         </tr>
                                     </thead>
@@ -136,9 +186,9 @@
                 <div class=Center2>
                     <input class="Boton" id="AB" type="Submit" value="Registrar" name="Insertar">
                     <?php
-                    if (isset($_SESSION['idMezcla'])) {
-                        $id = $_SESSION['idMezcla'];
-                        unset($_SESSION['idMezcla']); // Limpia después de usar
+                    if (isset($_SESSION['idPallet'])) {
+                        $id = $_SESSION['idPallet'];
+                        unset($_SESSION['idPallet']); // Limpia después de usar
                     ?>
                         <a id="linkPdf" title="Mostrar" class="Boton" href="../../Plantillas/Mezclas/pdf_mezcla.php?id=<?= $id ?>" target="_blank"><i class="fa-solid fa-file-circle-check fa-2xl" style="color: #ffffffff;"></i></a>
                     <?php } else { ?>
@@ -198,10 +248,7 @@
         <?php }?>
 
         <script src="../../../js/modulos.js"></script>
-        <script src="../../../js/mezcla.js"></script>
-        <script>
-            const variedadSeleccionada = <?= json_encode($Variedad) ?>;
-        </script>
+        <script src="../../../js/pallet.js"></script>
         </main>
         
         <?php include '../../../Complementos/Footer.php'; ?>
@@ -209,26 +256,32 @@
 </html>
 
 <script>
-    let tablaLotes;
+    let tablaMezclas;
     
     $(document).ready(function() {
-    tablaLotes = $('#basic-datatables').DataTable({
+    tablaMezclas = $('#basic-datatables').DataTable({
             serverSide: true,
             ajax: {
-                url: '../../Server_side/get_lotes_temp.php?id=0',
+                url: '../../Server_side/get_mezclas_temp.php?id=0',
                 type: 'POST',
             },
             columns: [
-                    { data: 'no_serie_r' },
-                    { data: 'codigo' },
-                    { data: 'fecha_r' },
+                    { data: 'folio_m' },
                     { data: 'codigo_s' },
-                    { data: 'invernadero' },
-                    { data: 'nombre_variedad' },
-                    { data: 'cantidad_caja' },
-                    { data: 'p_neto' },
-                    { data: 'cajas_m'},
-                    { data: 'kilos_m'},
+                    { data: 'nombre_cliente' },
+                    { data: 'cajas_t'},
+                    { data: 'kilos_t'},
+                    { data: 'fecha_m',
+                        "render": function ( data, type, row ) {
+                            if(type === 'display'){
+                                // Asumiendo que viene como "yyyy-mm-dd"
+                                let partes = row.fecha_m.split('-'); // [yyyy, mm, dd]
+                                return partes[2] + '/' + partes[1] + '/' + partes[0]; // dd/mm/yyyy
+                            }else{
+                                return data;
+                            }
+                        }
+                    },
                     { 
                         data: null,
                         "render": function (data, type, row) {
@@ -245,7 +298,7 @@
 
                             if (Eliminar) {
                                 return `
-                                     ${Eliminar ? `<a title="Eliminar" class="Delete" href="#" data-id="${row.id_mezcla_temp}"><i class="fa-solid fa-trash fa-xl" style="color: #ca1212;"></i></a>` : ''}
+                                     ${Eliminar ? `<a title="Eliminar" class="Delete" href="#" data-id="${row.id_pallet_temp}"><i class="fa-solid fa-trash fa-xl" style="color: #ca1212;"></i></a>` : ''}
                                 `;
                             } else {
                                 return '';
@@ -272,10 +325,9 @@
             responsive: true,
             columnDefs: [
             <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true || $Editar==true || $Eliminar==true) { ?>
-                                { responsivePriority: 1, targets: 10 },
+                                { responsivePriority: 1, targets: 6 },
             <?php  } ?>
-                                { responsivePriority: 1, targets: 9 },
-                                { responsivePriority: 2, targets: 8 },
+                                { responsivePriority: 2, targets: 5 },
                                 { responsivePriority: 2, targets: 2 },
                                 { responsivePriority: 2, targets: 1 },
                                 { responsivePriority: 1, targets: 0 }

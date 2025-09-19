@@ -288,7 +288,17 @@
             columns: [
                     { data: 'no_serie_r' },
                     { data: 'codigo' },
-                    { data: 'fecha_reg' },
+                    { data: 'fecha_reg', 
+                        "render": function ( data, type, row ) {
+                            if(type === 'display'){
+                                // Asumiendo que viene como "yyyy-mm-dd"
+                                let partes = row.fecha_reg.split('-'); // [yyyy, mm, dd]
+                                return partes[2] + '/' + partes[1] + '/' + partes[0]; // dd/mm/yyyy
+                            }else{
+                                return data;
+                            }
+                        }
+                     },
                     { data: 'codigo_s' },
                     { data: 'invernadero' },
                     { data: 'nombre_variedad' },

@@ -5,7 +5,7 @@ include_once "../../../Login/validar_sesion.php";
 if (isset($ID)) {
 
     // Validar que el ID sea positivo
-    $stmt = $Con->prepare("DELETE FROM mezcla_lotes_temp WHERE usuario_id = ?");
+    $stmt = $Con->prepare("DELETE FROM pallet_mezclas_temp WHERE usuario_id = ?");
     $stmt->bind_param("i", $ID);
     if ($stmt->execute()) {
         echo "ok";

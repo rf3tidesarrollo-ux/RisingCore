@@ -257,9 +257,6 @@
             var error="<?php echo $Finalizado;?>";
             import { Eggy } from '../../../js/eggy.js';
             await Eggy({title: 'Correcto!', message: error, type: 'success', position: 'top-right', duration: 10000});
-
-            window.permisosSeleccionados = {};
-            document.querySelectorAll('#tablaPermisos input[type="checkbox"]').forEach(cb => cb.checked = false);
             </script>
         <?php }?>
 
@@ -287,7 +284,17 @@
             columns: [
                     { data: 'no_serie_r' },
                     { data: 'codigo' },
-                    { data: 'fecha_r' },
+                    { data: 'fecha_reg',
+                        "render": function ( data, type, row ) {
+                            if(type === 'display'){
+                                // Asumiendo que viene como "yyyy-mm-dd"
+                                let partes = row.fecha_reg.split('-'); // [yyyy, mm, dd]
+                                return partes[2] + '/' + partes[1] + '/' + partes[0]; // dd/mm/yyyy
+                            }else{
+                                return data;
+                            }
+                        }
+                   },
                     { data: 'codigo_s' },
                     { data: 'invernadero' },
                     { data: 'nombre_variedad' },

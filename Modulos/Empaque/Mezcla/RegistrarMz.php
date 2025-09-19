@@ -122,7 +122,7 @@
                     exit;
                 }
                 
-                $stmtInsertMezcla = $Con->prepare("INSERT INTO mezclas (folio_m, id_sede_m, id_cliente_m, cajas_t, kilos_t, fecha_c, fecha_m, hora_m, id_usuario_m, activo_m) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)");
+                $stmtInsertMezcla = $Con->prepare("INSERT INTO mezclas (folio_m, id_sede_m, id_cliente_m, cajas_t, kilos_t, fecha_c, fecha_m, hora_m, id_usuario_m, estado_m, activo_m) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1)");
                 $stmtInsertMezcla->bind_param("siiidsssi", $Folio, $SedeVal, $Cliente, $CajasT, $KilosT, $FechaM, $FechaM, $HoraM, $ID);
                 $stmtInsertMezcla->execute();
                 $idMezcla = $stmtInsertMezcla->insert_id;
@@ -152,14 +152,6 @@
                     exit();
                 } 
                 $stmtDel->close();
-
-                //$pdf_nombre = generarPDFMezcla($id_mezcla, $Con);
-
-                // 4. Guardar ruta PDF en tabla mezcla (suponiendo que tienes campo pdf_ruta)
-                // $stmt = $Con->prepare("UPDATE mezclas SET pdf_ruta = ? WHERE id_mezcla = ?");
-                // $stmt->bind_param("si", $pdf_nombre, $id_mezcla);
-                // $stmt->execute();
-                // $stmt->close();
 
                 $Limpiar = new Cleanner($Sede,$Cliente,$Folio,$CajasT,$KilosT);
                 $Sede = $Limpiar -> LimpiarSede();

@@ -300,9 +300,6 @@
                 var error="<?php echo $Finalizado;?>";
                 import { Eggy } from '../../../js/eggy.js';
                 await Eggy({title: 'Correcto!', message: error, type: 'success', position: 'top-right', duration: 10000});
-
-                window.permisosSeleccionados = {};
-                document.querySelectorAll('#tablaPermisos input[type="checkbox"]').forEach(cb => cb.checked = false);
                 </script>
             <?php }?>
             

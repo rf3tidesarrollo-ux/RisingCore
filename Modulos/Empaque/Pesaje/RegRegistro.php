@@ -111,67 +111,67 @@
                 </div>
 
                 <div class="FAD">
-                <label class="FAL">
-                    <span class="FAS">Traila</span>
-                    <select class="FAI prueba" id="3" name="Carro">
-                        <option <?php if (($Carro) != null): ?> value="<?php echo $Carro; ?>"<?php endif; ?>>
-                            <?php if ($Carro != null) { ?>
-                                <?php 
-                                $stmt = $Con->prepare("SELECT folio_carro FROM tipos_carros WHERE id_carro=?");
-                                $stmt->bind_param("i",$Carro);
-                                $stmt->execute();
-                                $Registro = $stmt->get_result();
-                                $Reg = $Registro->fetch_assoc();
-                                $stmt->close();
-                                if(isset($Reg['folio_carro'])){echo $Reg['folio_carro'];}else{?> Seleccione la traila: <?php } ?>
-                            <?php } else {?>
-                                Seleccione la traila:
-                            <?php } ?>
-                        </option>
-                        <?php
-                        $stmt = $Con->prepare("SELECT id_carro,folio_carro FROM tipos_carros ORDER BY folio_carro");
-                        $stmt->execute();
-                        $Registro = $stmt->get_result();
-                
-                        while ($Reg = $Registro->fetch_assoc()){
-                            echo '<option value="'.$Reg['id_carro'].'">'.$Reg['folio_carro'].'</option>';
-                        }
-                        $stmt->close();
-                        ?>
-                    </select>
-                </label>
+                    <label class="FAL">
+                        <span class="FAS">Traila</span>
+                        <select class="FAI prueba" id="3" name="Carro">
+                            <option <?php if (($Carro) != null): ?> value="<?php echo $Carro; ?>"<?php endif; ?>>
+                                <?php if ($Carro != null) { ?>
+                                    <?php 
+                                    $stmt = $Con->prepare("SELECT folio_carro FROM tipos_carros WHERE id_carro=?");
+                                    $stmt->bind_param("i",$Carro);
+                                    $stmt->execute();
+                                    $Registro = $stmt->get_result();
+                                    $Reg = $Registro->fetch_assoc();
+                                    $stmt->close();
+                                    if(isset($Reg['folio_carro'])){echo $Reg['folio_carro'];}else{?> Seleccione la traila: <?php } ?>
+                                <?php } else {?>
+                                    Seleccione la traila:
+                                <?php } ?>
+                            </option>
+                            <?php
+                            $stmt = $Con->prepare("SELECT id_carro,folio_carro FROM tipos_carros ORDER BY folio_carro");
+                            $stmt->execute();
+                            $Registro = $stmt->get_result();
+                    
+                            while ($Reg = $Registro->fetch_assoc()){
+                                echo '<option value="'.$Reg['id_carro'].'">'.$Reg['folio_carro'].'</option>';
+                            }
+                            $stmt->close();
+                            ?>
+                        </select>
+                    </label>
                 </div>
 
                 <div class="FAD">
-                <label class="FAL">
-                    <span class="FAS">Tipo de tarima</span>
-                    <select class="FAI prueba" id="4" name="Tarima">
-                        <option <?php if (($Tarima) != null): ?> value="<?php echo $Tarima; ?>"<?php endif; ?>>
-                            <?php if ($Tarima != null) { ?>
-                                <?php 
-                                $stmt = $Con->prepare("SELECT nombre_tarima FROM tipos_tarimas WHERE id_tarima=? ORDER BY nombre_tarima");
-                                $stmt->bind_param("i",$Tarima);
-                                $stmt->execute();
-                                $Registro = $stmt->get_result();
-                                $Reg = $Registro->fetch_assoc();
-                                $stmt->close();
-                                if(isset($Reg['nombre_tarima'])){echo $Reg['nombre_tarima'];}else{?> Seleccione la tarima: <?php } ?>
-                            <?php } else {?>
-                                Seleccione la tarima:
-                            <?php } ?>
-                        </option>
-                        <?php
-                        $stmt = $Con->prepare("SELECT id_tarima,nombre_tarima FROM tipos_tarimas ORDER BY id_tarima");
-                        $stmt->execute();
-                        $Registro = $stmt->get_result();
-                
-                        while ($Reg = $Registro->fetch_assoc()){
-                            echo '<option value="'.$Reg['id_tarima'].'">'.$Reg['nombre_tarima'].'</option>';
-                        }
-                        $stmt->close();
-                        ?>
-                    </select>
-                </label>
+                    <label class="FAL">
+                        <span class="FAS">Tipo de tarima</span>
+                        <select class="FAI prueba" id="4" name="Tarima">
+                            <option <?php if (($Tarima) != null): ?> value="<?php echo $Tarima; ?>"<?php endif; ?>>
+                                <?php if ($Tarima != null) { ?>
+                                    <?php 
+                                    $stmt = $Con->prepare("SELECT nombre_tarima FROM tipos_tarimas WHERE id_tarima=? ORDER BY nombre_tarima");
+                                    $stmt->bind_param("i",$Tarima);
+                                    $stmt->execute();
+                                    $Registro = $stmt->get_result();
+                                    $Reg = $Registro->fetch_assoc();
+                                    $stmt->close();
+                                    if(isset($Reg['nombre_tarima'])){echo $Reg['nombre_tarima'];}else{?> Seleccione la tarima: <?php } ?>
+                                <?php } else {?>
+                                    Seleccione la tarima:
+                                <?php } ?>
+                            </option>
+                            <?php
+                            $stmt = $Con->prepare("SELECT id_tarima,nombre_tarima FROM tipos_tarimas ORDER BY id_tarima");
+                            $stmt->execute();
+                            $Registro = $stmt->get_result();
+                    
+                            while ($Reg = $Registro->fetch_assoc()){
+                                echo '<option value="'.$Reg['id_tarima'].'">'.$Reg['nombre_tarima'].'</option>';
+                            }
+                            $stmt->close();
+                            ?>
+                        </select>
+                    </label>
                 </div>
 
                 <div class="FAD">
@@ -182,35 +182,35 @@
                 </div>
 
                 <div class="FAD">
-                <label class="FAL">
-                    <span class="FAS">Tipo de caja</span>
-                    <select class="FAI prueba" id="6" name="Cajas">
-                        <option <?php if (($Caja) != null): ?> value="<?php echo $Caja; ?>"<?php endif; ?>>
-                            <?php if ($Caja != null) { ?>
-                                <?php 
-                                $stmt = $Con->prepare("SELECT tipo_caja FROM tipos_cajas WHERE id_caja=? ORDER BY tipo_caja");
-                                $stmt->bind_param("i",$Caja);
-                                $stmt->execute();
-                                $Registro = $stmt->get_result();
-                                $Reg = $Registro->fetch_assoc();
-                                $stmt->close();
-                                if(isset($Reg['tipo_caja'])){echo $Reg['tipo_caja'];}else{?> Seleccione la caja: <?php } ?>
-                            <?php } else {?>
-                                Seleccione la caja:
-                            <?php } ?>
-                        </option>
-                        <?php
-                        $stmt = $Con->prepare("SELECT id_caja,tipo_caja FROM tipos_cajas ORDER BY id_caja");
-                        $stmt->execute();
-                        $Registro = $stmt->get_result();
-                
-                        while ($Reg = $Registro->fetch_assoc()){
-                            echo '<option value="'.$Reg['id_caja'].'">'.$Reg['tipo_caja'].'</option>';
-                        }
-                        $stmt->close();
-                        ?>
-                    </select>
-                </label>
+                    <label class="FAL">
+                        <span class="FAS">Tipo de caja</span>
+                        <select class="FAI prueba" id="6" name="Cajas">
+                            <option <?php if (($Caja) != null): ?> value="<?php echo $Caja; ?>"<?php endif; ?>>
+                                <?php if ($Caja != null) { ?>
+                                    <?php 
+                                    $stmt = $Con->prepare("SELECT tipo_caja FROM tipos_cajas WHERE id_caja=? ORDER BY tipo_caja");
+                                    $stmt->bind_param("i",$Caja);
+                                    $stmt->execute();
+                                    $Registro = $stmt->get_result();
+                                    $Reg = $Registro->fetch_assoc();
+                                    $stmt->close();
+                                    if(isset($Reg['tipo_caja'])){echo $Reg['tipo_caja'];}else{?> Seleccione la caja: <?php } ?>
+                                <?php } else {?>
+                                    Seleccione la caja:
+                                <?php } ?>
+                            </option>
+                            <?php
+                            $stmt = $Con->prepare("SELECT id_caja,tipo_caja FROM tipos_cajas ORDER BY id_caja");
+                            $stmt->execute();
+                            $Registro = $stmt->get_result();
+                    
+                            while ($Reg = $Registro->fetch_assoc()){
+                                echo '<option value="'.$Reg['id_caja'].'">'.$Reg['tipo_caja'].'</option>';
+                            }
+                            $stmt->close();
+                            ?>
+                        </select>
+                    </label>
                 </div>
 
                 <div class="FAD">
@@ -284,9 +284,6 @@
             var error="<?php echo $Finalizado;?>";
             import { Eggy } from '../../../js/eggy.js';
             await Eggy({title: 'Correcto!', message: error, type: 'success', position: 'top-right', duration: 10000});
-
-            window.permisosSeleccionados = {};
-            document.querySelectorAll('#tablaPermisos input[type="checkbox"]').forEach(cb => cb.checked = false);
             </script>
         <?php }?>
 

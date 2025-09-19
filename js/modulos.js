@@ -393,7 +393,6 @@ if (bttn1 && cmb1) {
     });
 }
 
-
 $('#verLoteBtn').on('click', function () {
     const loteID = $('#lotes').val();
     const loteText = $('#lotes option:selected').text();
@@ -413,7 +412,6 @@ $(document).ready(function() {
     const sede = $('#sede2').val();
     const cajasM = $('#CajasA').val();
     const cajasDis = $('#CajasD').val();
-    console.log(cajasDis);
 
     if (
     loteID === "0" ||
