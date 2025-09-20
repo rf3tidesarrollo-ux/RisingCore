@@ -1,19 +1,4 @@
 $(document).ready(function () {
-    $('#sede3').on('change', function () {
-        const sede = $('#sede3').val();
-
-        if (sede !== "0") {
-            cargarMezclas(sede);
-            cargarLineas(sede);
-            cargarTarimas(sede);
-            cargarPresentaciones(sede);
-            $('#datosMezcla').show();
-        } else {
-            $('#mezclas').html('<option value="0">Seleccione la mezcla:</option>');
-            $('#datosMezcla').hide();
-        }
-    });
-
     // Función para cargar las mezclas por sede
     function cargarMezclas(sede) {
         $.ajax({
@@ -41,85 +26,97 @@ $(document).ready(function () {
         });
     }
 
-    // Función para cargar las líneas por sede
-    function cargarLineas(sede) {
-        $.ajax({
-            url: '../../Server_side/get_lineas.php',
-            type: 'GET',
-            data: {
-                sede: sede,
-            },
-            success: function (res) {
-                const select = $('#lineas');
-                select.empty();
-                select.append('<option value="0">Seleccione la línea:</option>');
+    function cargarLineas(sede, lineaSeleccionada = null) {
+        if (!sede || sede === '0') {
+        $('#lineas').empty().append('<option value="0">Seleccione la línea:</option>');
+        return;
+        }
 
-                if (res.status === 'ok') {
-                    res.lineas.forEach(function (l) {
-                        select.append(`<option value="${l.id}">${l.linea}</option>`);
-                    });
-                } else {
-                    select.append('<option value="0">No hay líneas disponibles</option>');
-                }
-            },
-            error: function () {
-                $('#lineas').html('<option value="0">Error al cargar líneas</option>');
-            }
+        $.getJSON('../../Server_side/get_lineas.php?sede=' + sede, function (data) {
+        const selectLineas = $('#lineas');
+        selectLineas.empty().append('<option value="0">Seleccione la línea:</option>');
+
+        if (data.status === 'ok') {
+            data.lineas.forEach(function (l) {
+            const selectedAttr = (l.id == lineaSeleccionada) ? 'selected' : '';
+            selectLineas.append(`<option value="${l.id}" ${selectedAttr}>${l.linea}</option>`);
+            });
+        } else {
+            selectLineas.append('<option value="0">No hay líneas disponibles</option>');
+        }
         });
     }
 
-    // Función para cargar las mezclas por sede
-    function cargarTarimas(sede) {
-        $.ajax({
-            url: '../../Server_side/get_tarimas.php',
-            type: 'GET',
-            data: {
-                sede: sede,
-            },
-            success: function (res) {
-                const select = $('#tarimas');
-                select.empty();
-                select.append('<option value="0">Seleccione la tarima:</option>');
+    function cargarTarimas(sede, tarimaSeleccionada = null) {
+        if (!sede || sede === '0') {
+        $('#tarimas').empty().append('<option value="0">Seleccione la tarima:</option>');
+        return;
+        }
 
-                if (res.status === 'ok') {
-                    res.tarimas.forEach(function (t) {
-                        select.append(`<option value="${t.id}">${t.tarima}</option>`);
-                    });
-                } else {
-                    select.append('<option value="0">No hay tarimas disponibles</option>');
-                }
-            },
-            error: function () {
-                $('#tarimas').html('<option value="0">Error al cargar tarimas</option>');
-            }
+        $.getJSON('../../Server_side/get_tarimas.php?sede=' + sede, function (data) {
+        const selectTarimas = $('#tarimas');
+        selectTarimas.empty().append('<option value="0">Seleccione la tarima:</option>');
+
+        if (data.status === 'ok') {
+            data.tarimas.forEach(function (t) {
+            const selectedAttr = (t.id == tarimaSeleccionada) ? 'selected' : '';
+            selectTarimas.append(`<option value="${t.id}" ${selectedAttr}>${t.tarima}</option>`);
+            });
+        } else {
+            selectTarimas.append('<option value="0">No hay tarimas disponibles</option>');
+        }
         });
     }
 
-    // Función para cargar las mezclas por sede
-    function cargarPresentaciones(sede) {
-        $.ajax({
-            url: '../../Server_side/get_presentaciones.php',
-            type: 'GET',
-            data: {
-                sede: sede,
-            },
-            success: function (res) {
-                const select = $('#presentaciones');
-                select.empty();
-                select.append('<option value="0">Seleccione la presentacion:</option>');
+    function cargarPresentaciones(sede, presentacionSeleccionada = null) {
+        if (!sede || sede === '0') {
+        $('#presentaciones').empty().append('<option value="0">Seleccione la presentación:</option>');
+        return;
+        }
 
-                if (res.status === 'ok') {
-                    res.presentaciones.forEach(function (t) {
-                        select.append(`<option value="${t.id}">${t.presentacion}</option>`);
-                    });
-                } else {
-                    select.append('<option value="0">No hay presentaciones disponibles</option>');
-                }
-            },
-            error: function () {
-                $('#presentaciones').html('<option value="0">Error al cargar presentaciones</option>');
-            }
+        $.getJSON('../../Server_side/get_presentaciones.php?sede=' + sede, function (data) {
+        const selectPresentacion = $('#presentaciones');
+        selectPresentacion.empty().append('<option value="0">Seleccione la presentación:</option>');
+
+        if (data.status === 'ok') {
+            data.presentaciones.forEach(function (p) {
+            const selectedAttr = (p.id == presentacionSeleccionada) ? 'selected' : '';
+            selectPresentacion.append(`<option value="${p.id}" ${selectedAttr}>${p.presentacion}</option>`);
+            });
+        } else {
+            selectPresentacion.append('<option value="0">No hay presentaciones disponibles</option>');
+        }
         });
+    }
+
+    $('#sede3').on('change', function () {
+        const sede = $(this).val();
+        cargarTarimas(sede);
+        cargarPresentaciones(sede);
+        cargarLineas(sede);
+        cargarMezclas(sede);
+
+        if (sede !== "0") {
+            $('#datosMezcla').show();
+        } else {
+            $('#datosMezcla').hide();
+        }
+    });
+
+    // Inicializar si ya hay datos cargados
+    const sedeInicial = $('#sede3').val();
+    const presentacionInicial = $('#presentacionSeleccionada').val();
+    const lineaInicial = $('#lineaSeleccionada').val();
+    const tarimaInicial = $('#tarimaSeleccionada').val();
+
+    if (sedeInicial && sedeInicial !== '0') {
+        cargarTarimas(sedeInicial, tarimaInicial);
+        cargarPresentaciones(sedeInicial, presentacionInicial);
+        cargarLineas(sedeInicial, lineaInicial);
+        cargarMezclas(sedeInicial);
+        $('datosMezcla').show();
+    } else {
+        $('#datosMezcla').hide(); // Oculta datos si no hay selección inicial
     }
 });
 
@@ -274,3 +271,41 @@ function mostrarRegistroL(id){
     },
   });
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    const linkPdf = document.getElementById("linkPdf");
+
+    linkPdf.addEventListener("click", function (e) {
+        e.preventDefault(); // Evita el href vacío
+
+        // Obtén los valores de los campos
+        const sede = document.getElementById("sede3").value;
+        const presentacion = document.getElementById("presentaciones").value;
+        const linea = document.getElementById("lineas").value;
+        const tipo = document.getElementById("Tipo").value;
+        const tarima = document.getElementById("tarimas").value;
+        const fecha = document.getElementById("Fecha").value;
+        const fechaE = document.getElementById("FechaE").value;
+
+        // Validación simple
+        if (sede === "0") {
+            alert("Completa los campos requeridos para visualizar el recibo.");
+            return;
+        }
+
+        // Construir URL
+        const queryString = new URLSearchParams({
+            Sede: sede,
+            Presentaciones: presentacion,
+            Lineas: linea,
+            Tipo: tipo,
+            Tarima: tarima,
+            Fecha: fecha,
+            FechaE: fechaE
+        }).toString();
+
+        const url = `../../Plantillas/Pallets/pdf_pallet.php?id=mostrar&${queryString}`;
+        console.log("URL generada:", url);
+        window.open(url, "_blank");
+    });
+});
