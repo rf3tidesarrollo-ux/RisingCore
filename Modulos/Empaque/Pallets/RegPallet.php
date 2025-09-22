@@ -64,6 +64,7 @@
             <section class="Registro">
                 <h4>Registro pallets</h4>
                 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST" name="octavo" id="">
+                    <input type="hidden" id="folio" value="<?= htmlspecialchars($Folio) ?>">
                     <div class="FAD">
                         <label class="FAL">
                             <span class="FAS">Sede</span>
@@ -80,20 +81,22 @@
                         <label class="FAL">
                             <span class="FAS">Presentación</span>
                             <select class="FAI prueba" name="Presentaciones" id="presentaciones">
-                                <option value="0">Seleccione una sede primero:</option>
+                                <option value="0">Seleccione una sede primero</option>
                             </select>
                         </label>
                     </div>
+                    <input type="hidden" id="presentacionSeleccionada" value="<?= htmlspecialchars($Presentaciones) ?>">
                     
                     <div class="campos-cajas">
-                        <div class="FAD" id="campo_lineas" style="flex: 1;">
+                        <div class="FAD" id="campo_tarimas" style="flex: 1;">
                             <label class="FAL">
-                                <span class="FAS">Línea</span>
-                                <select class="FAI prueba" name="Lineas" id="lineas">
-                                    <option value="0">Seleccione una sede primero:</option>
+                                <span class="FAS">Tarimas</span>
+                                <select class="FAI prueba" name="Tarimas" id="tarimas">
+                                    <option value="0">Seleccione una sede primero</option>
                                 </select>
                             </label>
                         </div>
+                        <input type="hidden" id="tarimaSeleccionada" value="<?= htmlspecialchars($Tarima) ?>">
 
                             <div class="FAD" style="flex: 1;">
                                 <label class="FAL">
@@ -106,15 +109,6 @@
                                 </select>
                             </label>
                         </div>
-                    </div>
-
-                    <div class="FAD" id="campo_tarimas">
-                        <label class="FAL">
-                            <span class="FAS">Tarimas</span>
-                            <select class="FAI prueba" name="Tarimas" id="tarimas">
-                                <option value="0">Seleccione una sede primero:</option>
-                            </select>
-                        </label>
                     </div>
 
                     <div class="campos-cajas">
@@ -135,9 +129,7 @@
                         </div>
                     </div>
 
-                    
-
-                    <div id="datosMezcla" style="display: none;">
+                    <div id="datosMezcla">
                         <div class="ARCH">
                             <div class="AR">AGREGAR MEZCLA<a id="C1"><i id="Arrow1" class="fa-regular fa-circle-plus fa-lg" style="color: #fff;"></i></a></div>
                             <div id="F1" class=Close>
@@ -150,10 +142,19 @@
                                     </label>
                                 </div>
 
-                                <div class="FAD" style="flex: 1;">
+                                <div class="FAD">
                                     <label class="FAL">
                                         <span class="FAS">Cajas</span>
                                         <input class="FAI" type="number" name="CajasT" id="cajasT" size="15" maxlength="10">
+                                    </label>
+                                </div>
+
+                                <div class="FAD" id="campo_lineas">
+                                    <label class="FAL">
+                                        <span class="FAS">Línea</span>
+                                        <select class="FAI prueba" name="Lineas" id="lineas">
+                                            <option value="0">Seleccione la línea:</option>
+                                        </select>
                                     </label>
                                 </div>
 
@@ -190,7 +191,7 @@
                         $id = $_SESSION['idPallet'];
                         unset($_SESSION['idPallet']); // Limpia después de usar
                     ?>
-                        <a id="linkPdf" title="Mostrar" class="Boton" href="../../Plantillas/Mezclas/pdf_mezcla.php?id=<?= $id ?>" target="_blank"><i class="fa-solid fa-file-circle-check fa-2xl" style="color: #ffffffff;"></i></a>
+                        <a id="PDF" title="Mostrar" class="Boton" href="../../Plantillas/Pallets/pdf_pallet.php?id=<?= $id ?>" target="_blank"><i class="fa-solid fa-file-circle-check fa-2xl" style="color: #ffffffff;"></i></a>
                     <?php } else { ?>
                         <a id="linkPdf" title="Mostrar" class="Boton" href="" target="_blank"><i class="fa-solid fa-file-circle-exclamation fa-2xl" style="color: #ffffffff;"></i></a>
                     <?php } ?>
@@ -198,9 +199,9 @@
             </section>
         </div>
 
-        <?php if ($Correcto < 5) {
+        <?php if ($Correcto < 8) {
                  if ($NumE>0) { 
-                    for ($i=1; $i <= 5; $i++) {
+                    for ($i=1; $i <= 7; $i++) {
                         $Error=${"Error".$i};
                         if (!empty($Error)) { ?>
                             <script type="module">
@@ -212,7 +213,7 @@
                     <?php } ?>
                 <?php }
                 if ($NumP>0) { 
-                    for ($i=1; $i <= 5; $i++) {
+                    for ($i=1; $i <= 2; $i++) {
                         $Precaucion=${"Precaucion".$i};
                         if (!empty($Precaucion)) { ?>
                             <script type="module">

@@ -64,7 +64,7 @@
             <section class="Registro">
                 <h4>Actualizar mezcla</h4>
                 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST" name="octavo" id="">
-                   <input class="Controles" id="0" type="hidden" name="id" value="<?php echo $IDM; ?>">
+                   <input type="hidden" name="id" value="<?php echo $IDM; ?>">
                     <div class="FAD">
                         <label class="FAL">
                             <span class="FAS">Sede</span>

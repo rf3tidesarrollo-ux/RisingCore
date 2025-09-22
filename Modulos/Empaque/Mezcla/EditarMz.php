@@ -236,7 +236,7 @@
                 $KilosT = $Limpiar -> LimpiarKilosT();
 
                 session_start();
-                $_SESSION['correcto'] = "El registro se actualizo correctamente";
+                $_SESSION['correcto'] = "La mezcla se actualizo correctamente";
                 header("Location: EditarMz.php?id=" . $idMezcla);
                 exit();
             }

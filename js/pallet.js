@@ -1,3 +1,7 @@
+window.addEventListener('pagehide', function(e) {
+  navigator.sendBeacon('EliminarTodoTemp.php');
+});
+
 $(document).ready(function () {
     // Función para cargar las mezclas por sede
     function cargarMezclas(sede) {
@@ -168,7 +172,7 @@ $(document).ready(function() {
         }
 
         if (res.status === 'ok') {
-        swal("Lote agregado correctamente", { icon: "success" });
+        swal("Mezcla agregada correctamente", { icon: "success" });
         $('#mezclas').val('0').trigger('change');
         $('#cajasT').val('');
         tablaMezclas.ajax.reload(null, false);
@@ -184,7 +188,7 @@ $(document).ready(function() {
         });
     });
 
-  // Manejador para eliminar lote temporal desde la tabla
+  // Manejador para eliminar mezcla temporal desde la tabla
   $('#basic-datatables').on('click', '.Delete', function(e) {
     e.preventDefault();
     const idTemp = $(this).data('id');
@@ -280,6 +284,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Obtén los valores de los campos
         const sede = document.getElementById("sede3").value;
+        const folio = document.getElementById("folio").value;
         const presentacion = document.getElementById("presentaciones").value;
         const linea = document.getElementById("lineas").value;
         const tipo = document.getElementById("Tipo").value;
@@ -289,12 +294,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Validación simple
         if (sede === "0") {
-            alert("Completa los campos requeridos para visualizar el recibo.");
-            return;
+            swal("Tiene que seleccionar una sede primero", {
+            icon: "warning",
+        });
+        return;
         }
 
         // Construir URL
         const queryString = new URLSearchParams({
+            Folio: folio,
             Sede: sede,
             Presentaciones: presentacion,
             Lineas: linea,

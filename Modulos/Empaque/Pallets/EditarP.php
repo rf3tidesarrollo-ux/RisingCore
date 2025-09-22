@@ -5,13 +5,13 @@
     include_once "../../../Login/validar_sesion.php";
     // $Pagina=basename(__FILE__);
     // Historial($Pagina,$Con);
-    $Ver = TienePermiso($_SESSION['ID'], "Empaque/Mezcla", 1, $Con);
-    $Crear = TienePermiso($_SESSION['ID'], "Empaque/Mezcla", 2, $Con);
-    $Editar = TienePermiso($_SESSION['ID'], "Empaque/Mezcla", 3, $Con);
-    $Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Mezcla", 4, $Con);
+    $Ver = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 1, $Con);
+    $Crear = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 2, $Con);
+    $Editar = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 3, $Con);
+    $Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 4, $Con);
 
-    $FechaM=date("Y-m-d");
-    $HoraM=date("H:i:s");
+    $FechaP=date("d/m/Y");
+    $HoraP=date("H:i:s");
 
    if ($TipoRol=="ADMINISTRADOR" || $Crear==true) {
     $NumE=0;
@@ -20,30 +20,101 @@
     $Finalizado="";
     $Correcto=0;
     $Sede = isset($_POST['Sede']) ? $_POST['Sede'] : '';
-    $Cliente = $_POST['Clientes'] ?? $_GET['Clientes'] ?? 0;
-    $Folio = isset($_POST['Folio']) ? $_POST['Folio'] : '';
+    $Presentaciones = isset($_POST['Presentaciones']) ? $_POST['Presentaciones'] : '';
+    $Linea = $_POST['Lineas'] ?? $_GET['Lineas'] ?? 0;
+    $Tipo = isset($_POST['Tipo']) ? $_POST['Tipo'] : '';
+    $Tarima = isset($_POST['Tarimas']) ? $_POST['Tarimas'] : '';
+    $Fecha = isset($_POST['Fecha']) ? $_POST['Fecha'] : '';
+    $FechaE = isset($_POST['FechaE']) ? $_POST['FechaE'] : '';
+    $Mezclas = isset($_POST['Mezclas']) ?? $_POST['Mezclas'] ?? 0;
     $CajasT = isset($_POST['CajasT']) ? $_POST['CajasT'] : '';
-    $KilosT = isset($_POST['KilosT']) ? $_POST['KilosT'] : '';
-    $Variedad = isset($_POST['Variedad']) ? $_POST['Variedad'] : '';
-    $Lote = isset($_POST['Lotes']) ? $_POST['Lotes'] : '';
-    $CajasA = isset($_POST['CajasA']) ? $_POST['CajasA'] : '';
-    $Activo=1;
+    $Folio="";
+    $CajasP=0;
 
-    for ($i=1; $i <= 6; $i++) {
+    for ($i=1; $i <= 10; $i++) {
         ${"Error".$i}="";
     }
 
-    for ($i=1; $i <= 1; $i++) { 
+    for ($i=1; $i <= 2; $i++) { 
         ${"Precaucion".$i}="";
+    }
+
+    class Val_Fecha {
+        public $Fecha;
+    
+        function __Construct($F){
+            $this -> Fecha = $F;
+        }
+    
+        public function getFecha(){
+            return $this -> Fecha;
+        }
+    
+        function setFecha($Fecha){
+            if (!empty($Fecha)) {
+                $Valores = explode('-', $Fecha);
+                $FechaMin="2025/01/01";
+
+                if (strtotime($Fecha) > strtotime($FechaMin)) {
+                    if(count($Valores) == 3){
+                        $Valor = 1;
+                        return $Valor;
+                    }else{
+                        $Valor = 2;
+                        return $Valor;
+                    }
+                }else{
+                    $Valor = 2;
+                    return $Valor;
+                }
+            }else{
+                $Valor = 3;
+                return $Valor;
+            }
+        }
+    }
+
+    class Val_FechaE {
+        public $FechaE;
+    
+        function __Construct($E){
+            $this -> FechaE = $E;
+        }
+    
+        public function getFechaE(){
+            return $this -> FechaE;
+        }
+        
+        function setFechaE($FechaE,$Fecha){
+            if (!empty($FechaE)) {
+                $Valores = explode('-', $FechaE);
+                if ($FechaE >= $Fecha) {
+                    if(count($Valores) == 3){
+                        $Valor = 1;
+                        return $Valor;
+                    }else{
+                        $Valor = 2;
+                        return $Valor;
+                    }
+                }else{
+                    return $Valor = 3;
+                }  
+            }else{
+                $Valor = 4;
+                return $Valor;
+            }
+        }
     }
 
     class Cleanner{
         public $Limpiar;
         public $Sede;
-        public $Cliente;
-        public $Folio;
-        public $CajasT;
-        public $KilosT;
+        public $Presentaciones;
+        public $Linea;
+        public $Tipo;
+        public $Tarima;
+        public $Fecha;
+        public $FechaE;
 
         function __Construct($L){
             $this -> Limpiar = $L;
@@ -53,30 +124,40 @@
             return $this -> Sede="Seleccione la sede:";
         }
 
-        public function LimpiarCliente(){
-            return $this -> Cliente="Seleccione el cliente:";
+        public function LimpiarPresentaciones(){
+            return $this -> Presentaciones="Seleccione la presentación:";
         }
         
-        public function LimpiarFolio(){
-            return $this -> Folio="";
+        public function LimpiarLinea(){
+            return $this -> Linea="Seleccione la línea:";
         }
 
-        public function LimpiarCajasT(){
-            return $this -> CajasT="";
+        public function LimpiarTipo(){
+            return $this -> Tipo="Seleccione el tipo:";
+        }
+
+        public function LimpiarTarima(){
+            return $this -> Tarima="Seleccione la tarima:";
         }
         
-        public function LimpiarKilosT(){
-            return $this -> KilosT="";
+        public function LimpiarFecha(){
+            return $this -> Fecha="";
+        }
+
+        public function LimpiarFechaE(){
+            return $this -> FechaE="";
         }
     }
 
     if (isset($_POST['Modificar'])) {
-        $idMezcla=$_POST['id'];
+        $idPallet=$_POST['id'];
         $Sede=$_POST['Sede'];
-        $Cliente=$_POST['Clientes'];
-        $CajasT=$_POST['CajasT'];
-        $KilosT=$_POST['KilosT'];
-        $Folio=$_POST['Folio'];
+        $Presentaciones=$_POST['Presentaciones'];
+        $Linea=$_POST['Lineas'];
+        $Tipo=$_POST['Tipo'];
+        $Tarima=$_POST['Tarimas'];
+        $Fecha=$_POST['Fecha'];
+        $FechaE=$_POST['FechaE'];
 
         if ($Sede == "0") {
             $Error1 = "Tienes que seleccionar una sede";
@@ -84,219 +165,252 @@
         }else{
             switch ($Sede) {
                 case 'RF1':
-                    $Sede=1;
+                    $SedeVal=1;
                     break;
                 case 'RF2':
-                    $Sede=2;
+                    $SedeVal=2;
                     break;
                 case 'RF3':
-                    $Sede=3;
+                    $SedeVal=3;
                     break;
             }
             $Correcto += 1;
         }
 
-        if ($Cliente == "0") {
-            $Error2 = "Tienes que seleccionar un cliente";
+        if ($Presentaciones == "0") {
+            $Error2 = "Tienes que seleccionar una presentación";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
 
-        if ($CajasT == "" || $KilosT == "") {
-            $Error3 = "No has agregado ningún lote";
+        if ($Linea == "0") {
+            $Error3 = "Tienes que seleccionar una línea";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
 
-        if ($Correcto==3) {
-            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $stmt = $Con->prepare("SELECT id_lote, cajas_m, kilos_m FROM mezcla_lotes_temp WHERE usuario_id = ?");
+        if ($Tipo == "0") {
+            $Error4 = "Tienes que seleccionar un tipo";
+            $NumE += 1;
+        }else{
+            $Correcto += 1;
+        }
+        
+        if ($Tarima == "0") {
+            $Error5 = "Tienes que seleccionar una tarima";
+            $NumE += 1;
+        }else{
+            $Correcto += 1;
+        }
+
+        $ValidarFecha = new Val_Fecha($Fecha);
+        $Retorno = $ValidarFecha -> setFecha($Fecha);
+        $FechaVal = $ValidarFecha -> getFecha();
+
+        switch ($Retorno) {
+            case '1':
+                $Correcto += 1;
+                break;
+            case '2':
+                $Error6 = "La fecha ingresada es incorrecta";
+                $NumE += 1;
+                break;
+            case '3':
+                $Error6 = "El campo de fecha de empaque no puede ir vacío";
+                $NumE += 1;
+                break;    
+        }
+
+        $ValidarFechaE = new Val_FechaE($FechaE);
+        $Retorno = $ValidarFechaE -> setFechaE($FechaE,$Fecha);
+        $FechaEVal = $ValidarFechaE -> getFechaE();
+
+        switch ($Retorno) {
+            case '1':
+                $Correcto += 1;
+                break;
+            case '2':
+                $Error7 = "La fecha ingresada es incorrecta";
+                $NumE += 1;
+                break;
+            case '3':
+                $Precaucion1 = "La fecha de envió no puede ser menor a la de empaque";
+                $NumP += 1;
+                break;
+            case '4':
+                $Error7 = "El campo de fecha de envió no puede ir vacío";
+                $NumE += 1;
+                break;    
+        }
+
+        if ($Correcto==7) {
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                $stmt = $Con->prepare("SELECT id_mezcla_t, cajas_t FROM pallet_mezclas_temp WHERE usuario_id = ?");
                 $stmt->bind_param("i", $ID);
                 $stmt->execute();
                 $result = $stmt->get_result();
 
                 if ($result->num_rows === 0) {
-                    $Error4 = "No hay ningún lote registrado";
-                    $NumE += 1;
+                    $Precaucion2 = "No has agregado ninguna mezcla";
+                    $NumP += 1;
                     exit;
                 }
 
-                $LotesActuales = [];
-                $stmt = $Con->prepare("SELECT id_lote_l, cajas_m, kilos_m FROM mezcla_lotes WHERE id_mezcla_l = ?");
-                $stmt->bind_param("i", $idMezcla);
+                $MezclasActuales = [];
+                $stmt = $Con->prepare("SELECT id_mezcla_m, cajas_m FROM pallet_mezclas WHERE id_pallet_m = ?");
+                $stmt->bind_param("i", $idPallet);
                 $stmt->execute();
                 $res = $stmt->get_result();
                 while ($row = $res->fetch_assoc()) {
-                    $LotesActuales[$row['id_lote_l']] = ['cajas' => $row['cajas_m'], 'kilos' => $row['kilos_m']];
+                    $MezclasActuales[$row['id_mezcla_m']] = ['cajas' => $row['cajas_m']];
                 }
                 $stmt->close();
 
-                $LotesNuevos = [];
-                $stmt = $Con->prepare("SELECT id_lote, cajas_m, kilos_m FROM mezcla_lotes_temp WHERE usuario_id = ?");
+                $MezclasNuevas = [];
+                $stmt = $Con->prepare("SELECT id_mezcla_t, cajas_t FROM pallet_mezclas_temp WHERE usuario_id = ?");
                 $stmt->bind_param("i", $ID);
                 $stmt->execute();
                 $resTemp = $stmt->get_result();
                 while ($row = $resTemp->fetch_assoc()) {
-                    $LotesNuevos[$row['id_lote']] = ['cajas' => $row['cajas_m'], 'kilos' => $row['kilos_m']];
+                    $MezclasNuevas[$row['id_mezcla_t']] = ['cajas' => $row['cajas_t']];
                 }
                 $stmt->close();
 
-                foreach ($LotesNuevos as $idLote => $nuevo) {
-                    if (isset($LotesActuales[$idLote])) {
+                foreach ($MezclasNuevas as $idMezcla => $nuevo) {
+                    if (isset($MezclasActuales[$idMezcla])) {
                         // Ya existía, revisamos si cambió
-                        $actual = $LotesActuales[$idLote];
-                        if ($actual['cajas'] != $nuevo['cajas'] || $actual['kilos'] != $nuevo['kilos']) {
+                        $actual = $MezclasActuales[$idMezcla];
+                        if ($actual['cajas'] != $nuevo['cajas']) {
                             // Actualiza si cambió
-                            $stmt = $Con->prepare("UPDATE mezcla_lotes SET cajas_m=?, kilos_m=?, fecha_m=?, hora_m=? 
-                                                WHERE id_mezcla_l=? AND id_lote_l=?");
-                            $stmt->bind_param("ddssii", $nuevo['cajas'], $nuevo['kilos'], $FechaM, $HoraM, $idMezcla, $idLote);
+                            $stmt = $Con->prepare("UPDATE pallet_mezclas SET cajas_m=?, fecha_m=?, hora_m=? 
+                                                WHERE id_pallet_m=? AND id_mezcla_m=?");
+                            $stmt->bind_param("ddssii", $nuevo['cajas'], $FechaP, $HoraP, $idPallet, $idMezcla);
                             $stmt->execute();
                             $stmt->close();
                         }
                     } else {
                         // No existía, insertamos
-                        $stmt = $Con->prepare("INSERT INTO mezcla_lotes (id_mezcla_l, id_lote_l, cajas_m, kilos_m, fecha_m, hora_m) VALUES (?, ?, ?, ?, ?, ?)");
-                        $stmt->bind_param("iiddss", $idMezcla, $idLote, $nuevo['cajas'], $nuevo['kilos'], $FechaM, $HoraM);
+                        $stmt = $Con->prepare("INSERT INTO pallet_mezclas (id_pallet_m, id_mezcla_m, cajas_m, fecha_m, hora_m) VALUES (?, ?, ?, ?, ?)");
+                        $stmt->bind_param("iiiss", $idPallet, $idMezcla, $nuevo['cajas'], $FechaP, $HoraP);
                         $stmt->execute();
                         $stmt->close();
 
-                        $stmtUpdate = $Con->prepare("UPDATE registro_empaque SET kilos_dis = kilos_dis - ?, cajas_dis = cajas_dis - ? WHERE id_registro_r = ?");
-                        $stmtUpdate->bind_param("dii", $nuevo['kilos'], $nuevo['cajas'], $idLote);
+                        $stmtUpdate = $Con->prepare("UPDATE mezclas SET estado_m = 1 WHERE id_mezcla = ?");
+                        $stmtUpdate->bind_param("i", $idMezcla);
                         $stmtUpdate->execute();
                         $stmtUpdate->close();
                     }
                 }
 
-                foreach ($LotesActuales as $idLote => $actual) {
-                    if (!isset($LotesNuevos[$idLote])) {
-                        // Obtener kilos y cajas antes de borrar
-                        $stmtGet = $Con->prepare("SELECT kilos_m, cajas_m FROM mezcla_lotes WHERE id_mezcla_l = ? AND id_lote_l = ?");
-                        $stmtGet->bind_param("ii", $idMezcla, $idLote);
-                        $stmtGet->execute();
-                        $resultGet = $stmtGet->get_result();
-                        $row = $resultGet->fetch_assoc();
-                        $kilos_m = $row['kilos_m'];
-                        $cajas_m = $row['cajas_m'];
-                        $stmtGet->close();
-
-                        // Sumar esos kilos y cajas disponibles en registro_empaque
-                        $stmtUpdate = $Con->prepare("UPDATE registro_empaque SET kilos_dis = kilos_dis + ?, cajas_dis = cajas_dis + ? WHERE id_registro_r = ?");
-                        $stmtUpdate->bind_param("dii", $kilos_m, $cajas_m, $idLote);
+                foreach ($MezclasActuales as $idMezcla => $actual) {
+                    if (!isset($MezclasNuevas[$idMezcla])) {
+                        // Obtener cajas antes de borrar
+                        $stmtUpdate = $Con->prepare("UPDATE mezclas SET estado_m = 0 WHERE id_mezcla = ?");
+                        $stmtUpdate->bind_param("i", $idMezcla);
                         $stmtUpdate->execute();
                         $stmtUpdate->close();
 
-                        // Restar esos kilos y cajas en la mezcla
-                        $stmtUpdate = $Con->prepare("UPDATE mezclas SET kilos_t = kilos_t - ?, cajas_t = cajas_t - ? WHERE id_mezcla = ?");
-                        $stmtUpdate->bind_param("dii", $kilos_m, $cajas_m, $idMezcla);
-                        $stmtUpdate->execute();
-                        $stmtUpdate->close();
-
-                        // Ahora eliminar de mezcla_lotes
-                        $stmtDel = $Con->prepare("DELETE FROM mezcla_lotes WHERE id_mezcla_l = ? AND id_lote_l = ?");
-                        $stmtDel->bind_param("ii", $idMezcla, $idLote);
+                        // Ahora eliminar de pallet_mezclas
+                        $stmtDel = $Con->prepare("DELETE FROM pallet_mezclas WHERE id_pallet_m = ? AND id_mezcla_m = ?");
+                        $stmtDel->bind_param("ii", $idPallet, $idMezcla);
                         $stmtDel->execute();
                         $stmtDel->close();
                     }
                 }
-
-                $stmt = $Con->prepare("SELECT folio_m, id_cliente_m, id_sede_m FROM mezclas WHERE id_mezcla=?");
-                $stmt->bind_param("i", $idMezcla);
+                
+                $stmt = $Con->prepare("SELECT SUM(cajas_m) AS CajasP FROM pallet_mezclas WHERE id_pallet_m = ?");
+                $stmt->bind_param("i", $idPallet);
                 $stmt->execute();
-                $resultGet = $stmt->get_result();
-                $row = $resultGet->fetch_assoc();
-                $FolioA = $row['folio_m'];
-                $ClienteA = $row['id_cliente_m'];
-                $SedeA = $row['id_sede_m'];
-                $stmt->close();   
+                $resultSuma = $stmt->get_result();
+                $CajasP = $resultSuma->fetch_assoc()['CajasP'];
 
-                if ($Sede == $SedeA && $Cliente == $ClienteA) {
-                    $FolioVal = $FolioA;
-                }else{
-                    $FolioVal = $Folio;
-                }
-
-                $stmtInsertMezcla = $Con->prepare("UPDATE mezclas SET folio_m=?, id_sede_m=?, id_cliente_m=?, cajas_t=?, kilos_t=?, fecha_m=?, hora_m=?, id_usuario_m=? WHERE id_mezcla=?");
-                $stmtInsertMezcla->bind_param("siiidssii", $FolioVal, $Sede, $Cliente, $CajasT, $KilosT, $FechaM, $HoraM, $ID, $idMezcla);
+                $stmtInsertMezcla = $Con->prepare("UPDATE pallets SET id_sede_p=?, id_presen_p=?, id_tarima_p=?, id_linea_p=?, tipo_t=?, cajas_p=?, fecha_p=?, fecha_e=?, hora_p=?, id_usuario_p=? WHERE id_pallet=?");
+                $stmtInsertMezcla->bind_param("iiiisisssii", $SedeVal, $Presentaciones, $Tarima, $Linea, $Tipo, $CajasP, $FechaVal, $FechaEVal, $HoraP, $ID, $idPallet);
                 $stmtInsertMezcla->execute();
+                $stmtInsertMezcla->close();
+                
+                $Limpiar = new Cleanner($Sede,$Presentaciones,$Linea,$Tipo,$Tarima,$Fecha,$FechaE);
+                $Sede = $Limpiar -> LimpiarSede();
+                $Presentaciones = $Limpiar -> LimpiarPresentaciones();
+                $Linea = $Limpiar -> LimpiarLinea();
+                $Tipo = $Limpiar -> LimpiarTipo();
+                $Tarima = $Limpiar -> LimpiarTarima();
+                $Fecha = $Limpiar -> LimpiarFecha();
+                $FechaE = $Limpiar -> LimpiarFechaE();
 
-                $stmtDel = $Con->prepare("DELETE FROM mezcla_lotes_temp WHERE usuario_id = ?");
+                $stmtDel = $Con->prepare("DELETE FROM pallet_mezclas_temp WHERE usuario_id = ?");
                 $stmtDel->bind_param("i", $ID);
                 if ($stmtDel->execute()) {
-                    $_SESSION['idMezcla'] = $idMezcla;
+                    $_SESSION['idPallet'] = $idPallet;
+                    $_SESSION['correcto'] = "El pallet se actualizo correctamente";
+                    header("Location: EditarP.php?id=" . $idPallet);
+                    exit();
                 } 
                 $stmtDel->close();
-                
-                $Limpiar = new Cleanner($Sede,$Cliente,$Folio,$CajasT,$KilosT);
-                $Sede = $Limpiar -> LimpiarSede();
-                $Cliente = $Limpiar -> LimpiarCliente();
-                $Folio = $Limpiar -> LimpiarFolio();
-                $CajasT = $Limpiar -> LimpiarCajasT();
-                $KilosT = $Limpiar -> LimpiarKilosT();
-
-                session_start();
-                $_SESSION['correcto'] = "El registro se actualizo correctamente";
-                header("Location: EditarMz.php?id=" . $idMezcla);
-                exit();
             }
         }
     }
 
     if (empty($_GET['id'])) {
         if (!empty($_POST)) {
-            $IDM=$_POST['id'];
+            $IDP=$_POST['id'];
         }else{
-            header('Location: CatalogoMz.php');
+            header('Location: CatalogoP.php');
         }
-        $stmt = $Con->prepare("SELECT * FROM mezclas m
-                            JOIN sedes s ON m.id_sede_m = s.id_sede
-                            JOIN clientes c ON m.id_cliente_m = c.id_cliente
-                            WHERE id_mezcla=?");
-        $stmt->bind_param("i",$IDM);
+        $stmt = $Con->prepare("SELECT * FROM pallets p
+                            JOIN sedes s ON p.id_sede_p = s.id_sede
+                            WHERE id_pallet=?");
+        $stmt->bind_param("i",$IDP);
         $stmt->execute();
         $Registro = $stmt->get_result();
         $NumCol=$Registro->num_rows;
 
         if ($NumCol>0) {
             while ($Reg = $Registro->fetch_assoc()){
-                    $IDM = $Reg['id_mezcla'];
+                    $IDP = $Reg['id_pallet'];
+                    $Folio=$Reg['folio_p'];
                     $Sede=$Reg['codigo_s'];
-                    $Cliente=$Reg['id_cliente_m'];
-                    $Folio=$Reg['folio_m'];
-                    $CajasT=$Reg['cajas_t'];
-                    $KilosT=$Reg['kilos_t'];
+                    $Presentaciones=$Reg['id_presen_p'];
+                    $Linea=$Reg['id_linea_p'];
+                    $Tipo=$Reg['tipo_t'];
+                    $Tarima=$Reg['id_tarima_p'];
+                    $Fecha=$Reg['fecha_p'];
+                    $FechaE=$Reg['fecha_e'];
                 }
                 $stmt->close();
             }else{
-                header('Location: CatalogoMz.php');
+                header('Location: CatalogoP.php');
             }
     }else{
-        $IDM=$_GET['id'];
-        $stmt = $Con->prepare("SELECT * FROM mezclas m
-                            JOIN sedes s ON m.id_sede_m = s.id_sede
-                            JOIN clientes c ON m.id_cliente_m = c.id_cliente
-                            WHERE id_mezcla=?");
-        $stmt->bind_param("i",$IDM);
+        $IDP=$_GET['id'];
+        $stmt = $Con->prepare("SELECT * FROM pallets p
+                            JOIN sedes s ON p.id_sede_p = s.id_sede
+                            WHERE id_pallet=?");
+        $stmt->bind_param("i",$IDP);
         $stmt->execute();
         $Registro = $stmt->get_result();
         $NumCol=$Registro->num_rows;
 
         if ($NumCol>0) {
             while ($Reg = $Registro->fetch_assoc()){
-                    $IDM = $Reg['id_mezcla'];
+                    $IDP = $Reg['id_pallet'];
+                    $Folio=$Reg['folio_p'];
                     $Sede=$Reg['codigo_s'];
-                    $Cliente=$Reg['id_cliente_m'];
-                    $Folio=$Reg['folio_m'];
-                    $CajasT=$Reg['cajas_t'];
-                    $KilosT=$Reg['kilos_t'];
+                    $Presentaciones=$Reg['id_presen_p'];
+                    $Linea=$Reg['id_linea_p'];
+                    $Tipo=$Reg['tipo_t'];
+                    $Tarima=$Reg['id_tarima_p'];
+                    $Fecha=$Reg['fecha_p'];
+                    $FechaE=$Reg['fecha_e'];
                 }
                 $stmt->close();
             }else{
-                header('Location: CatalogoMz.php');
+                header('Location: CatalogoP.php');
             }
     }
 
-    include 'EditMezcla.php';
-    } else { header("Location: CatalogoMz.php"); }
+    include 'EditPallet.php';
+    } else { header("Location: CatalogoP.php"); }
 ?>

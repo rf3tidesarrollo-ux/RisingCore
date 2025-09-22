@@ -33,6 +33,7 @@
     $Caja = "";
     $NoSerie="";
     $CodigoR="";
+    $Presentacion="";
     $VariedadSeleccionada = $_POST['Codigo'] ?? '';
 
     for ($i=1; $i <= 10; $i++) {
@@ -246,6 +247,7 @@
         $NoCaja=$_POST['NoCajas'];
         $KilosB=$_POST['KilosB'];
         $Fecha=$_POST['Fecha'];
+        $Presentacion=$_POST['Presentacion'];
 
         if ($Sede == "0") {
             $Error1 = "Tienes que seleccionar una sede";
@@ -384,7 +386,14 @@
             $NumE += 1;
         }
 
-        if ($Correcto==10) {
+        if ($Presentacion == "Seleccione la presentación:") {
+            $Error11 = "Tienes que seleccionar una presenatción";
+            $NumE += 1;
+        }else{
+            $Correcto += 1;
+        }
+
+        if ($Correcto==11) {
             $stmt = $Con->prepare("SELECT 
                                 (SELECT peso_caja FROM tipos_cajas WHERE id_caja = ?) AS cajas,
                                 (SELECT peso_tarima FROM tipos_tarimas WHERE id_tarima = ?) AS tarimas,
@@ -449,8 +458,8 @@
             $stmt->close();
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $stmt = $Con->prepare("UPDATE registro_empaque SET id_codigo_r=?, id_tipo_caja=?, id_tipo_tarima=?, id_tipo_carro=?, p_bruto=?, p_taraje=?, p_neto=?, cantidad_caja=?, cantidad_tarima=?, usuario_r=?, fecha_reg=?, fecha_r=?, hora_r=?, activo_r=?, kilos_dis=?, cajas_dis=?, no_serie_r=?, semana_r=? WHERE id_registro_r=?");
-                $stmt->bind_param('iiiidddiiisssidissi', $Codigo, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCaja, $NoTarima, $ID, $FechaVal, $FechaR, $HoraR, $Activo, $KilosN, $NoCajaVal, $NoSerieVal, $SemanaR, $id);
+                $stmt = $Con->prepare("UPDATE registro_empaque SET id_codigo_r=?, id_presentacin_r=?, id_tipo_caja=?, id_tipo_tarima=?, id_tipo_carro=?, p_bruto=?, p_taraje=?, p_neto=?, cantidad_caja=?, cantidad_tarima=?, usuario_r=?, fecha_reg=?, fecha_r=?, hora_r=?, activo_r=?, kilos_dis=?, cajas_dis=?, no_serie_r=?, semana_r=? WHERE id_registro_r=?");
+                $stmt->bind_param('iiiiidddiiisssidissi', $Codigo, $Presentacion, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCaja, $NoTarima, $ID, $FechaVal, $FechaR, $HoraR, $Activo, $KilosN, $NoCajaVal, $NoSerieVal, $SemanaR, $id);
                 $stmt->execute();
                 $stmt->close();
                 
@@ -466,7 +475,7 @@
                 $Sede = $Limpiar -> LimpiarSede();
 
                 session_start();
-                $_SESSION['correcto'] = "El registro se actualizo correctamente";
+                $_SESSION['correcto'] = "El pesaje se actualizo correctamente";
                 header("Location: EditarR.php?id=" . $id);
                 exit();
             }
@@ -494,6 +503,7 @@
                     $ID = $Reg['id_registro_r'];
                     $Sede=$Reg['codigo_s'];
                     $Codigo=$Reg['id_variedad'];
+                    $Presentacion=$Reg['id_presentacion_r'];
                     $Carro=$Reg['id_tipo_carro'];
                     $Tarima=$Reg['id_tipo_tarima'];
                     $NoTarima=$Reg['cantidad_tarima'];
@@ -523,6 +533,7 @@
                     $ID = $Reg['id_registro_r'];
                     $Sede=$Reg['codigo_s'];
                     $Codigo=$Reg['id_variedad'];
+                    $Presentacion=$Reg['id_presentacion_r'];
                     $Carro=$Reg['id_tipo_carro'];
                     $Tarima=$Reg['id_tipo_tarima'];
                     $NoTarima=$Reg['cantidad_tarima'];

@@ -11,7 +11,7 @@ $modulosConfig = [
             "CatalogoU"  => "Usuarios/CatalogoU.php",
         ],
         "iconos" => [
-            "Codigos" => "fas fa-balance-scale",
+            "Codigos" => "fa-solid fa-qrcode",
             "Usuarios" => "fa-solid fa-users",
         ]
     ],
@@ -46,7 +46,7 @@ $modulosConfig = [
             "CatalogoE"  => "Estimaciones/CatalogoE.php",
         ],
         "iconos" => [
-            "Codigos" => "fas fa-balance-scale",
+            "Codigos" => "fa-solid fa-qrcode",
             "Cultivo" => "fa-solid fa-mortar-pestle",
             "Estimaciones" => "fa-solid fa-mortar-pestle",
         ]

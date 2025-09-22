@@ -20,9 +20,9 @@
     $Correcto=0;
     $Sede = isset($_POST['Sede']) ? $_POST['Sede'] : '';
     $Presentaciones = isset($_POST['Presentaciones']) ? $_POST['Presentaciones'] : '';
-    $Linea = $_POST['Linea'] ?? $_GET['Linea'] ?? 0;
+    $Linea = $_POST['Lineas'] ?? $_GET['Lineas'] ?? 0;
     $Tipo = isset($_POST['Tipo']) ? $_POST['Tipo'] : '';
-    $Tarima = isset($_POST['Tarima']) ? $_POST['Tarima'] : '';
+    $Tarima = isset($_POST['Tarimas']) ? $_POST['Tarimas'] : '';
     $Fecha = isset($_POST['Fecha']) ? $_POST['Fecha'] : '';
     $FechaE = isset($_POST['FechaE']) ? $_POST['FechaE'] : '';
     $Mezclas = isset($_POST['Mezclas']) ?? $_POST['Mezclas'] ?? 0;
@@ -73,56 +73,21 @@
         }
     }
 
-    class Val_Fecha {
-        public $FechaE;
-    
-        function __Construct($F){
-            $this -> Fecha = $F;
-        }
-    
-        public function getFecha(){
-            return $this -> Fecha;
-        }
-    
-        function setFecha($Fecha){
-            if (!empty($Fecha)) {
-                $Valores = explode('-', $Fecha);
-                $FechaMin="2025/01/01";
-
-                if (strtotime($Fecha) > strtotime($FechaMin)) {
-                    if(count($Valores) == 3){
-                        $Valor = 1;
-                        return $Valor;
-                    }else{
-                        $Valor = 2;
-                        return $Valor;
-                    }
-                }else{
-                    $Valor = 2;
-                    return $Valor;
-                }
-            }else{
-                $Valor = 3;
-                return $Valor;
-            }
-        }
-    }
-
     class Val_FechaE {
         public $FechaE;
     
-        function __Construct($FE){
-            $this -> FechaE = $FE;
+        function __Construct($E){
+            $this -> FechaE = $E;
         }
     
         public function getFechaE(){
             return $this -> FechaE;
         }
         
-        function setFechaF($FechaE,$Fecha){
+        function setFechaE($FechaE,$Fecha){
             if (!empty($FechaE)) {
                 $Valores = explode('-', $FechaE);
-                if ($FechaE < $Fecha) {
+                if ($FechaE >= $Fecha) {
                     if(count($Valores) == 3){
                         $Valor = 1;
                         return $Valor;
@@ -186,9 +151,9 @@
     if (isset($_POST['Insertar'])) {
         $Sede=$_POST['Sede'];
         $Presentaciones=$_POST['Presentaciones'];
-        $Linea=$_POST['Linea'];
+        $Linea=$_POST['Lineas'];
         $Tipo=$_POST['Tipo'];
-        $Tarima=$_POST['Tarima'];
+        $Tarima=$_POST['Tarimas'];
         $Fecha=$_POST['Fecha'];
         $FechaE=$_POST['FechaE'];
 
@@ -269,16 +234,16 @@
                 $NumE += 1;
                 break;
             case '3':
-                $Error7 = "La fecha de envió no puede ser menor a la de empaque";
-                $NumE += 1;
+                $Precaucion1 = "La fecha de envió no puede ser menor a la de empaque";
+                $NumP += 1;
                 break;
             case '4':
-                $Precaucion1 = "El campo de fecha de envió no puede ir vacío";
-                $NumP += 1;
+                $Error7 = "El campo de fecha de envió no puede ir vacío";
+                $NumE += 1;
                 break;    
         }
 
-        $stmt = $Con->prepare("SELECT id_pallet_temp FROM pallet_mezclas_temp WHERE usuario_id = ?");
+        $stmt = $Con->prepare("SELECT id_mezcla_t, cajas_t FROM pallet_mezclas_temp WHERE usuario_id = ?");
         $stmt->bind_param("i", $ID);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -289,33 +254,46 @@
         }else{
             $Correcto += 1;
         }
-
+        
         if ($Correcto==8) {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $Folio = $Sede . $idPallet;
-                
+                $stmt = $Con->prepare("SELECT COUNT(id_pallet) AS Suma FROM pallets WHERE id_Sede_p = ?");
+                $stmt->bind_param("i", $SedeVal);
+                $stmt->execute();
+                $resultSuma = $stmt->get_result();
+                $Suma = $resultSuma->fetch_assoc()['Suma'];
+                $Numero = str_pad($Suma + 1, 4, "0", STR_PAD_LEFT);
+                $Folio = $Sede . "-" . $Numero;
+
                 $stmt = $Con->prepare("SELECT SUM(cajas_t) AS CajasP FROM pallet_mezclas_temp WHERE usuario_id = ?");
                 $stmt->bind_param("i", $ID);
                 $stmt->execute();
                 $resultSuma = $stmt->get_result();
                 $CajasP = $resultSuma->fetch_assoc()['CajasP'];
 
-                $stmtInsertMezcla = $Con->prepare("INSERT INTO pallets (folio_p, id_sede_p, fecha_c, fecha_p, hora_p, id_linea_p, tipo_t, fecha_e, cajas_p, id_tarima_p, id_presen_p, id_usuario_p, estado_p, activo_p) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1)");
-                $stmtInsertMezcla->bind_param("sisssiisissi", $Folio, $SedeVal, $FechaVal, $FechaVal, $HoraP, $Linea, $Tipo, $FechaEVal, $CajasP, $Tarima, $Presentaciones, $ID);
+                $stmtInsertMezcla = $Con->prepare("INSERT INTO pallets (folio_p, id_sede_p, fecha_c, fecha_p, hora_p, id_linea_p, tipo_t, fecha_e, cajas_p, id_tarima_p, id_presen_p, id_usuario_p, estado_p, activo_p) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1)");
+                $stmtInsertMezcla->bind_param("sisssissisii", $Folio, $SedeVal, $FechaVal, $FechaVal, $HoraP, $Linea, $Tipo, $FechaEVal, $CajasP, $Tarima, $Presentaciones, $ID);
                 $stmtInsertMezcla->execute();
                 $idPallet= $stmtInsertMezcla->insert_id;
 
-                // Insertar todos los lotes a tabla final
-                $stmtInsert = $Con->prepare("INSERT INTO pallet_mezclas (id_pallets, id_pallet_m, id_mezcla_m, cajas_m, fecha_m, hora_m) VALUES (?, ?, ?, ?, ?, ?)");
-                while ($row = $result->fetch_assoc()) {
-                    $stmtInsert->bind_param("iiiss", $idPallet, $row['id_mezcla_m'], $row['cajas_m'], $FechaVal, $HoraP);
+                // VOLVER A OBTENER LAS MEZCLAS
+                $stmtMezclas = $Con->prepare("SELECT id_mezcla_t, cajas_t FROM pallet_mezclas_temp WHERE usuario_id = ?");
+                $stmtMezclas->bind_param("i", $ID);
+                $stmtMezclas->execute();
+                $resultMezclas = $stmtMezclas->get_result();
+
+                $stmtInsert = $Con->prepare("INSERT INTO pallet_mezclas ( id_pallet_m, id_mezcla_m, cajas_m, fecha_m, hora_m) VALUES (?, ?, ?, ?, ?)");
+                $stmtUpdate = $Con->prepare("UPDATE mezclas SET estado_m = 1 WHERE id_mezcla = ?");
+
+                while ($row = $resultMezclas->fetch_assoc()) {
+                    $stmtInsert->bind_param("iiiss", $idPallet, $row['id_mezcla_t'], $row['cajas_t'], $FechaVal, $HoraP);
                     $stmtInsert->execute();
 
-                    $stmtUpdate = $Con->prepare("UPDATE mezclas SET estado = 1 WHERE id_mezclas = ?");
-                    $stmtUpdate->bind_param("i", $row['id_mezcla_m']);
+                    $stmtUpdate->bind_param("i", $row['id_mezcla_t']);
                     $stmtUpdate->execute();
-                    $stmtUpdate->close();
                 }
+                $stmtInsert->close();
+                $stmtUpdate->close();
 
                 $Limpiar = new Cleanner($Sede,$Presentaciones,$Linea,$Tipo,$Tarima,$Fecha,$FechaE);
                 $Sede = $Limpiar -> LimpiarSede();

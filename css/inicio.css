@@ -50,7 +50,23 @@ input:-webkit-autofill:focus {
 
 input:-webkit-autofill {
     -webkit-text-fill-color: #000000;
-  }
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+main {
+  flex: 1;
+}
 
 body {
     /* background-image: url("../../Images/Logo_rising.png");

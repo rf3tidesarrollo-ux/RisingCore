@@ -548,7 +548,7 @@
                 $Tipo = $Limpiar -> LimpiarTipo();
                 
                 session_start();
-                $_SESSION['correcto'] = "Se hizo el registro correctamente";
+                $_SESSION['correcto'] = "La merma se actualizo correctamente";
                 header("Location: EditarM.php?id=" . $id);
                 exit();
             }

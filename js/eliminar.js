@@ -248,35 +248,27 @@ function mostrarRegistroP(id){
     success: function(response){
       if (response != 'error') {
         var info = JSON.parse(response);
-        var nombre = info.nombre_proveedor;
-        var telefono = info.telefono_proveedor;
-        var correo = info.correo_proveedor;
-        var estado = info.estado_proveedor;
-        var ciudad = info.ciudad_proveedor;
-        var calle = info.calle_proveedor;
-        var numero = info.numero_proveedor;
-        var cp = info.cp_proveedor;
-        if (telefono == null) {
-          telefono = "SIN TELÉFONO";
-        }
-        if (correo == null) {
-          correo = "SIN CORREO";
-        }
-        if (numero == 0) {
-          numero = "SIN NÚMERO";
-        }
-        if (cp == 0) {
-          cp = "SIN CP";
-        }
+        var folio = info.f;
+        var sede = info.s;
+        var pNombre = info.np;
+        var cNombre = info.nc;
+        var cajas = info.c;
+        var tipo = info.t;
+        var F = info.fc;
+        var fecha = F.split('-').reverse().join('/');
+        var hora = info.h;
+        var nReg = info.nr;
+
         swal("Información:", 
-        "NOMBRE DEL PROVEEDOR: "+ nombre +"\n" + 
-        "TELÉFONO: "+ telefono +"\n" + 
-        "CORREO: "+ correo +"\n" + 
-        "ESTADO: "+ estado +"\n" + 
-        "CIUDAD: "+ ciudad +"\n" + 
-        "CALLE: "+ calle +"\n" + 
-        "NÚMERO: "+ numero +"\n" + 
-        "CÓDIGO POSTAL: "+cp);
+        "FOLIO: " + folio + "\n" +
+        "SEDE: " + sede + "\n" +
+        "PRESENTACIÓN: " + pNombre + "\n" +
+        "CLIENTE: " + cNombre + "\n" +
+        "CAJAS: " + cajas + "\n" +
+        "TIPO: " + tipo + "\n" +
+        "FECHA: " + fecha + "\n" +
+        "HORA: " + hora + "\n" +
+        "REGISTRÓ: " + nReg);
       }
     },
     error: function(error){

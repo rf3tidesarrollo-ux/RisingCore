@@ -5,10 +5,10 @@ $RutaSC = "../../../index.php";
 include_once "../../../Login/validar_sesion.php";
 // $Pagina=basename(__FILE__);
 // Historial($Pagina,$Con);
-$Ver = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 1, $Con);
-$Crear = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 2, $Con);
-$Editar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 3, $Con);
-$Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 4, $Con);
+$Ver = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 1, $Con);
+$Crear = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 2, $Con);
+$Editar = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 3, $Con);
+$Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 4, $Con);
 
 if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 ?>
@@ -39,7 +39,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="../../../js/script.js"></script>
     <script src="../../../js/eliminar.js"></script>
-    <link rel="stylesheet" href="DesignMz.css">
+    <link rel="stylesheet" href="DesignP.css">
     <title>Empaque: Reporte</title>
 </head>
 
@@ -52,7 +52,6 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
         ?>
 
         <main>
-            
             <div style="background: #f9f9f9; padding: 12px 25px; border-bottom: 1px solid #ccc; font-size: 16px;">
                 <nav style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
                     <a href="/RisingCore/Modulos/index.php" style="color: #6c757d; text-decoration: none;">
@@ -61,16 +60,16 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                     <span style="color: #6c757d;">&raquo;</span>
 
                     <a href="/RisingCore/Modulos/Empaque/index.php" style="color: #6c757d; text-decoration: none;">
-                        🥗 Mezclas
+                        🏷️ Pallets
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
                     <a href="/RisingCore/Modulos/Empaque/Pesajes" style="color: #6c757d; text-decoration: none;">
-                        📋 Reportes
+                        📋 Registros
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <strong style="color: #333;">📊 Reportes de Mezclas</strong>
+                    <strong style="color: #333;">📊 Reporte de Pallets</strong>
                 </nav>
             </div>
 
@@ -81,11 +80,12 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
             <table id="basic-datatables" class="display table table-striped table-hover responsive nowrap" style="width:95%">
                     <thead>
                         <tr>
-                            <th>Folio de mezcla</th>
+                            <th>Folio de pallet</th>
                             <th>Sede</th>
+                            <th>Presentación</th>
                             <th>Cliente</th>
                             <th>Cajas</th>
-                            <th>Kilos</th>
+                            <th>Tipo</th>
                             <th>Fecha</th>
                             <th>Hora</th>
                             <th>Registró</th>
@@ -95,11 +95,12 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                     
                     <tfoot>
                         <tr>
-                            <th>Folio de mezcla</th>
+                            <th>Folio de pallet</th>
                             <th>Sede</th>
+                            <th>Presentación</th>
                             <th>Cliente</th>
                             <th>Cajas</th>
-                            <th>Kilos</th>
+                            <th>Tipo</th>
                             <th>Fecha</th>
                             <th>Hora</th>
                             <th>Registró</th>
@@ -124,30 +125,31 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     $('#basic-datatables').DataTable({
         serverSide: true,
         ajax: {
-            url: '../../Server_side/tabla_mezcla.php',
+            url: '../../Server_side/tabla_pallet.php',
             type: 'POST',
         },
         columns: [
-                  { data: 'folio_m' },
+                  { data: 'folio_p' },
                   { data: 'codigo_s' },
-                  { data: 'nombre_cliente' },
-                  { data: 'cajas_t' },
-                  { data: 'kilos_t' },
-                  { data: 'fecha_m',
+                  { data: 'presentacion' },
+                  { data: 'cliente_id' },
+                  { data: 'cajas_p' },
+                  { data: 'tipo_t' },
+                  { data: 'fecha_p',
                     "render": function ( data, type, row ) {
                         if(type === 'display'){
                             // Asumiendo que viene como "yyyy-mm-dd"
-                            let partes = row.fecha_m.split('-'); // [yyyy, mm, dd]
+                            let partes = row.fecha_p.split('-'); // [yyyy, mm, dd]
                             return partes[2] + '/' + partes[1] + '/' + partes[0]; // dd/mm/yyyy
                         }else{
                             return data;
                         }
                     }
                    },
-                  { data: 'hora_m',
+                  { data: 'hora_p',
                     "render": function ( data, type, row ) {
                         if(type === 'display'){
-                            let partes = row.hora_m.split(':'); // ["18","45","20"]
+                            let partes = row.hora_p.split(':'); // ["18","45","20"]
                             let horas = partes[0].padStart(2, '0');
                             let minutos = partes[1].padStart(2, '0');
                             let segundos = partes[2] ? partes[2].padStart(2, '0') : '00';
@@ -174,9 +176,9 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 
                         if (Ver || Editar || Eliminar) {
                             return `
-                                ${Ver ? `<a title="Mostrar" href="#${row.id_mezcla}" onclick="mostrarRegistroMz(${row.id_mezcla})"><i class="fa-solid fa-eye fa-xl" style="color: #16ac19;"></i></a>` : ''}
-                                ${Editar ? `<a title="Editar" class="Edit" href="EditarMz.php?id=${row.id_mezcla}"><i class="fa-solid fa-pen-to-square fa-xl" style="color: #0a5ceb;"></i></a>` : ''}
-                                ${Eliminar ? `<a title="Eliminar" class="Delete" href="#${row.id_mezcla}" onclick="eliminarRegistro(${row.id_mezcla})"><i class="fa-solid fa-trash fa-xl" style="color: #ca1212;"></i></a>` : ''}
+                                ${Ver ? `<a title="Mostrar" href="#${row.id_pallet}" onclick="mostrarRegistroP(${row.id_pallet})"><i class="fa-solid fa-eye fa-xl" style="color: #16ac19;"></i></a>` : ''}
+                                ${Editar ? `<a title="Editar" class="Edit" href="EditarP.php?id=${row.id_pallet}"><i class="fa-solid fa-pen-to-square fa-xl" style="color: #0a5ceb;"></i></a>` : ''}
+                                ${Eliminar ? `<a title="Eliminar" class="Delete" href="#${row.id_pallet}" onclick="eliminarRegistro(${row.id_pallet})"><i class="fa-solid fa-trash fa-xl" style="color: #ca1212;"></i></a>` : ''}
                             `;
                         } else {
                             return '';
@@ -188,9 +190,10 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
         responsive: true,
         columnDefs: [
         <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true || $Editar==true || $Eliminar==true) { ?>
-                            { responsivePriority: 1, targets: 8 },
+                            { responsivePriority: 1, targets: 9 },
         <?php  } ?>
-                            { responsivePriority: 2, targets: 5 },
+                            { responsivePriority: 2, targets: 7 },
+                            { responsivePriority: 2, targets: 6 },
                             { responsivePriority: 2, targets: 4 },
                             { responsivePriority: 2, targets: 3 },
                             { responsivePriority: 2, targets: 2 },

@@ -52,7 +52,7 @@ input:-webkit-autofill {
     -webkit-text-fill-color: #000000;
   }
 
-  html, body {
+html, body {
   height: 100%;
   margin: 0;
 }
@@ -593,13 +593,6 @@ footer {
 .back:hover {
     background: var(--fondo-form);
     color: var(--verde-principal);
-}
-
-.campos-cajas {
-    max-width: 95%;
-    margin: auto auto;
-    display: flex;
-    flex-wrap: wrap;
 }
 
 /* FORMULARIO */

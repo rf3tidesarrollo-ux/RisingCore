@@ -45,7 +45,7 @@
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <strong style="color: #333;">📊 Registros de merma</strong>
+                    <strong style="color: #333;">✏️ Registros de merma</strong>
                 </nav>
             </div>
             
