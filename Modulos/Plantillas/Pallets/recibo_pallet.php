@@ -44,27 +44,49 @@ if ($TD=="mostrar") {
         $Tarima = $row['tarima'];
     }
 
-    $stmt = $Con->prepare("SELECT presentacion AS pre, item_cliente AS cliente FROM presentaciones_pallet WHERE id_presentacion_p = ? ");
+    $stmt = $Con->prepare("SELECT nombre_s AS Sede FROM sedes WHERE codigo_s = ? ");
+    $stmt->bind_param("s", $Sede);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($row = $result->fetch_assoc()) {
+        $nSede = $row['Sede'];
+    }
+
+    $stmt = $Con->prepare("SELECT presentacion AS pre, item_cliente AS cliente, item_local AS Item FROM presentaciones_pallet WHERE id_presentacion_p = ? ");
     $stmt->bind_param("i", $Pre);
     $stmt->execute();
     $resultPre = $stmt->get_result();
 
     if ($row = $resultPre->fetch_assoc()) {
-        $Presentacion = $row['pre'];       // guarda el valor de 'presentacion' en $presentacion
-        $Cliente = $row['cliente'];     // guarda el valor de 'cliente_id' en $cliente_id
+        $Presentacion = $row['pre'];
+        $Cliente = $row['cliente']; 
+        $Item = $row['Item']; 
     } else {
         $Presentacion = null;
         $Cliente = null;
+        $Item = null;
     }
     $stmt->close();
 
+    $stmt = $Con->prepare("SELECT COUNT(id_pallet) AS Folio FROM pallets p JOIN sedes s ON p.id_sede_p = s.id_sede WHERE codigo_s = ?");
+    $stmt->bind_param("s", $Sede);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($row = $result->fetch_assoc()) {
+        $Suma = $row['Folio'];
+    }
+
     if ($Folio == '') {
-        $Folio=$Sede . "-0000";
+        $Numero = str_pad($Suma + 1, 4, "0", STR_PAD_LEFT);
+        $Folio = $Sede . "-" . $Numero;
     }
     
-    $stmt = $Con->prepare("SELECT m.folio_m AS Mezcla, p.cajas_t AS Cajas
+    $stmt = $Con->prepare("SELECT m.folio_m AS Mezcla, p.cajas_t AS Cajas, e.linea AS Linea, e.selladora AS Selladora
                             FROM pallet_mezclas_temp p
-                            JOIN mezclas m ON p.id_mezcla_t = m.id_mezcla 
+                            JOIN mezclas m ON p.id_mezcla_t = m.id_mezcla
+                            JOIN empaque_lineas e ON p.id_linea_t = e.id_linea
                             WHERE p.usuario_id = ?");
     $stmt->bind_param("i", $ID);
     $stmt->execute();
@@ -93,7 +115,7 @@ if ($TD=="mostrar") {
         $Folio = $row['Folio'];
         $Tarima = $row['Tarima'];
         $Cliente = $row['Cliente'];
-        $Sede = $row['Sede'];
+        $nSede = $row['Sede'];
         $Presentacion = $row['Pre'];
         $Cliente = $row['Cliente'];
         $Item = $row['Item'];
@@ -106,7 +128,7 @@ if ($TD=="mostrar") {
     $stmt = $Con->prepare("SELECT m.folio_m AS Mezcla, t.cajas_m AS Cajas, e.linea AS Linea, e.selladora AS Selladora
                             FROM pallet_mezclas t
                             JOIN mezclas m ON t.id_mezcla_m = m.id_mezcla
-                            JOIN empaque_lineas e ON p.id_linea_p = e.id_linea
+                            JOIN empaque_lineas e ON t.id_linea_m = e.id_linea
                             WHERE id_pallet_m = ?");
     $stmt->bind_param("i", $TD);
     $stmt->execute();
@@ -133,7 +155,7 @@ if ($TD=="mostrar") {
         .contenedor {
             border: 1px solid #ccc;
             padding: 15px;
-            margin-bottom: 100px;
+            margin-bottom: 50px;
         }
 
         .encabezado {
@@ -229,7 +251,7 @@ if ($TD=="mostrar") {
     </div>
 
     <div class="detalles">
-        <b>Company:</b> <?= $Sede ?? '-' ?> S.A.P.I de C.V. <br><br>
+        <b>Company:</b> <?= $nSede ?? '-' ?> S.A.P.I de C.V. <br><br>
         <b>Date:</b> <?= $FechaActual ?? '-' ?> &nbsp;&nbsp; <b>Commodity:</b> Greenhouse Tomatoes <br><br>
         <b>Description:</b> <?= $Cliente ?? '-' ?> - <?= $Presentacion ?? '-' ?> &nbsp;&nbsp;<br>
     </div>
@@ -259,13 +281,13 @@ if ($TD=="mostrar") {
                 </tr>
                 <?php endforeach; ?>
             <tr class="total-row">
-                <td colspan="3">BOXES</td>
+                <td colspan="6">BOXES</td>
                 <td><?= $totals['Suma'] ?? 0 ?></td>
             </tr>
         </tbody>
     </table>
     <br>
-    <b>Estibado en tarima:</b> <?= $Tarima ?? '-' ?> &nbsp;&nbsp;&nbsp;&nbsp; <b>Expedido en </b> <?= $Sede ?? '-' ?> S.A.P.I de C.V.<br>
+    <b>Estibado en tarima:</b> <?= $Tarima ?? '-' ?> &nbsp;&nbsp;&nbsp;&nbsp; <b>Expedido en </b> <?= $nSede ?? '-' ?> S.A.P.I de C.V.<br>
 </div>
     
 <?php } ?>

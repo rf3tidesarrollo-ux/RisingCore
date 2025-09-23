@@ -10,7 +10,6 @@ if (!empty($_POST)) {
 
     $stmt = $Con->prepare("SELECT p.folio_p AS f, s.codigo_s AS s, pp.presentacion AS np, pp.cliente_id AS nc, p.cajas_p AS c, p.tipo_t AS t, p.fecha_p AS fc, p.hora_p AS h, c.nombre_completo AS nr
                     FROM pallets p
-                    JOIN empaque_lineas e ON p.id_linea_p = e.id_linea
                     JOIN usuarios u ON p.id_usuario_p = u.id_usuario
                     JOIN cargos c ON u.id_cargo = c.id_cargo
                     JOIN tipos_tarimas t ON p.id_tarima_p = t.id_tarima

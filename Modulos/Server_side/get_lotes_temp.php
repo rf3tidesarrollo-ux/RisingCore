@@ -52,7 +52,6 @@ if ($IDM == 0) {
     $dataStmt->execute();
     $dataResult = $dataStmt->get_result();
 }else{
-    // Verifica si ya se han copiado los lotes a la tabla temporal
     $stmtCheckTemp = $Con->prepare("SELECT COUNT(*) as total FROM mezcla_lotes_temp WHERE usuario_id = ? AND confirmado = 0");
     $stmtCheckTemp->bind_param("i", $ID);
     $stmtCheckTemp->execute();
@@ -60,7 +59,6 @@ if ($IDM == 0) {
     $tempCount = $resultTemp->fetch_assoc()['total'];
 
     if ($tempCount == 0) {
-        // Copiar desde mezcla_lotes a mezcla_lotes_temp
         $stmtCopy = $Con->prepare("SELECT id_lote_l, cajas_m, kilos_m FROM mezcla_lotes WHERE id_mezcla_l = ?");
         $stmtCopy->bind_param("i", $IDM);
         $stmtCopy->execute();

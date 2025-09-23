@@ -173,11 +173,10 @@
                                     <thead>
                                         <tr>
                                         <th>Folio de mezcla</th>
-                                        <th>Sede</th>
-                                        <th>Cliente</th>
                                         <th>Cajas</th>
-                                        <th>Kilos</th>
-                                        <th>Fecha</th>
+                                        <th>Linea</th>
+                                        <th>Selladora</th>
+                                        <th>Produce</th>
                                         <th>Acciones</th>
                                         </tr>
                                     </thead>
@@ -199,7 +198,7 @@
             </section>
         </div>
 
-        <?php if ($Correcto < 8) {
+        <?php if ($Correcto < 7) {
                  if ($NumE>0) { 
                     for ($i=1; $i <= 7; $i++) {
                         $Error=${"Error".$i};
@@ -268,10 +267,9 @@
             },
             columns: [
                     { data: 'folio_m' },
-                    { data: 'codigo_s' },
-                    { data: 'nombre_cliente' },
-                    { data: 'cajas_t'},
-                    { data: 'kilos_t'},
+                    { data: 'cajas_t' },
+                    { data: 'linea'},
+                    { data: 'selladora'},
                     { data: 'fecha_m',
                         "render": function ( data, type, row ) {
                             if(type === 'display'){
@@ -326,10 +324,9 @@
             responsive: true,
             columnDefs: [
             <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true || $Editar==true || $Eliminar==true) { ?>
-                                { responsivePriority: 1, targets: 6 },
+                                { responsivePriority: 1, targets: 5 },
             <?php  } ?>
-                                { responsivePriority: 2, targets: 5 },
-                                { responsivePriority: 2, targets: 2 },
+                                { responsivePriority: 2, targets: 4 },
                                 { responsivePriority: 2, targets: 1 },
                                 { responsivePriority: 1, targets: 0 }
                         ],

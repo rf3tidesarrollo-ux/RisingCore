@@ -7,6 +7,7 @@ include_once "../../../Login/validar_sesion.php";
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addMezcla'])) {
     $Mezcla = $_POST['mezcla'] ?? '';
     $Cajas = $_POST['cajas'] ?? '';
+    $Linea = $_POST['lineas'] ?? '';
 
     if ($Mezcla !== "0" && !empty($Cajas)) {
 
@@ -26,8 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addMezcla'])) {
         $verificar->close();
 
         // Insertar nuevo lote
-        $stmt = $Con->prepare("INSERT INTO pallet_mezclas_temp (usuario_id, id_mezcla_t, cajas_t) VALUES (?, ?, ?)");
-        $stmt->bind_param("iii", $ID, $Mezcla, $Cajas);
+        $stmt = $Con->prepare("INSERT INTO pallet_mezclas_temp (usuario_id, id_mezcla_t, cajas_t, id_linea_t) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("iiii", $ID, $Mezcla, $Cajas, $Linea);
         $stmt->execute();
         $stmt->close();
 

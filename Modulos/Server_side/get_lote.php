@@ -28,7 +28,7 @@ if (isset($sede) && isset($variedad)) {
                             JOIN tipo_variaciones tv ON re.id_codigo_r = tv.id_variedad
                             JOIN invernaderos m ON tv.id_modulo_v = m.id_invernadero
                             JOIN ciclos c ON tv.id_ciclo_v = c.id_ciclo
-                            WHERE m.id_sede_i = ? AND tv.id_nombre_v = ? AND c.ciclo = ? AND activo_r = 1 ORDER BY re.no_serie_r ASC");
+                            WHERE m.id_sede_i = ? AND tv.id_nombre_v = ? AND c.ciclo = ? AND activo_r = 1  AND cajas_dis > 0 ORDER BY re.no_serie_r ASC");
     $stmt->bind_param("iis", $sede, $variedad, $ciclo);
     $stmt->execute();
     $resultado = $stmt->get_result();

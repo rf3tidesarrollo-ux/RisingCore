@@ -89,15 +89,15 @@
                     <input type="hidden" id="presentacionSeleccionada" value="<?= htmlspecialchars($Presentaciones) ?>">
                     
                     <div class="campos-cajas">
-                        <div class="FAD" id="campo_lineas" style="flex: 1;">
+                        <div class="FAD" id="campo_tarimas" style="flex: 1;">
                             <label class="FAL">
-                                <span class="FAS">Línea</span>
-                                <select class="FAI prueba" name="Lineas" id="lineas">
+                                <span class="FAS">Tarimas</span>
+                                <select class="FAI prueba" name="Tarimas" id="tarimas">
                                     <option value="0">Seleccione una sede primero</option>
                                 </select>
                             </label>
                         </div>
-                        <input type="hidden" id="lineaSeleccionada" value="<?= htmlspecialchars($Linea) ?>">
+                        <input type="hidden" id="tarimaSeleccionada" value="<?= htmlspecialchars($Tarima) ?>">
 
                             <div class="FAD" style="flex: 1;">
                                 <label class="FAL">
@@ -111,16 +111,6 @@
                             </label>
                         </div>
                     </div>
-
-                    <div class="FAD" id="campo_tarimas">
-                        <label class="FAL">
-                            <span class="FAS">Tarimas</span>
-                            <select class="FAI prueba" name="Tarimas" id="tarimas">
-                                <option value="0">Seleccione una sede primero</option>
-                            </select>
-                        </label>
-                    </div>
-                    <input type="hidden" id="tarimaSeleccionada" value="<?= htmlspecialchars($Tarima) ?>">
 
                     <div class="campos-cajas">
                         <div class="FAD" style="flex: 1;">
@@ -160,6 +150,15 @@
                                     </label>
                                 </div>
 
+                                <div class="FAD" id="campo_lineas">
+                                    <label class="FAL">
+                                        <span class="FAS">Línea</span>
+                                        <select class="FAI prueba" name="Lineas" id="lineas">
+                                            <option value="0">Seleccione la línea:</option>
+                                        </select>
+                                    </label>
+                                </div>
+
                                 <div class=Center2>
                                     <button class="BotonAgregar" type="button" id="btnAgregarMezcla"><i class="fa-solid fa-plus fa-xl" style="color: #ffffffff;"></i></button>
                                     <a title="Mostrar" class="BotonAgregar" onclick="mostrarIDM()"><i class="fa-solid fa-eye fa-xl" style="color: #ffffffff;"></i></a>
@@ -175,11 +174,10 @@
                                     <thead>
                                         <tr>
                                         <th>Folio de mezcla</th>
-                                        <th>Sede</th>
-                                        <th>Cliente</th>
                                         <th>Cajas</th>
-                                        <th>Kilos</th>
-                                        <th>Fecha</th>
+                                        <th>Linea</th>
+                                        <th>Selladora</th>
+                                        <th>Produce</th>
                                         <th>Acciones</th>
                                         </tr>
                                     </thead>
@@ -201,7 +199,7 @@
             </section>
         </div>
 
-<?php if ($Correcto < 7) {
+<?php if ($Correcto < 6) {
                  if ($NumE>0) { 
                     for ($i=1; $i <= 7; $i++) {
                         $Error=${"Error".$i};
@@ -270,10 +268,9 @@
             },
             columns: [
                     { data: 'folio_m' },
-                    { data: 'codigo_s' },
-                    { data: 'nombre_cliente' },
-                    { data: 'cajas_t'},
-                    { data: 'kilos_t'},
+                    { data: 'cajas_t' },
+                    { data: 'linea'},
+                    { data: 'selladora'},
                     { data: 'fecha_m',
                         "render": function ( data, type, row ) {
                             if(type === 'display'){
@@ -328,10 +325,9 @@
             responsive: true,
             columnDefs: [
             <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true || $Editar==true || $Eliminar==true) { ?>
-                                { responsivePriority: 1, targets: 6 },
+                                { responsivePriority: 1, targets: 5 },
             <?php  } ?>
-                                { responsivePriority: 2, targets: 5 },
-                                { responsivePriority: 2, targets: 2 },
+                                { responsivePriority: 2, targets: 4 },
                                 { responsivePriority: 2, targets: 1 },
                                 { responsivePriority: 1, targets: 0 }
                         ],

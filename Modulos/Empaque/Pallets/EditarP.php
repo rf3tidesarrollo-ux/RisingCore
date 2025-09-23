@@ -31,7 +31,7 @@
     $Folio="";
     $CajasP=0;
 
-    for ($i=1; $i <= 10; $i++) {
+    for ($i=1; $i <= 6; $i++) {
         ${"Error".$i}="";
     }
 
@@ -110,7 +110,6 @@
         public $Limpiar;
         public $Sede;
         public $Presentaciones;
-        public $Linea;
         public $Tipo;
         public $Tarima;
         public $Fecha;
@@ -126,10 +125,6 @@
 
         public function LimpiarPresentaciones(){
             return $this -> Presentaciones="Seleccione la presentación:";
-        }
-        
-        public function LimpiarLinea(){
-            return $this -> Linea="Seleccione la línea:";
         }
 
         public function LimpiarTipo(){
@@ -153,7 +148,6 @@
         $idPallet=$_POST['id'];
         $Sede=$_POST['Sede'];
         $Presentaciones=$_POST['Presentaciones'];
-        $Linea=$_POST['Lineas'];
         $Tipo=$_POST['Tipo'];
         $Tarima=$_POST['Tarimas'];
         $Fecha=$_POST['Fecha'];
@@ -184,22 +178,15 @@
             $Correcto += 1;
         }
 
-        if ($Linea == "0") {
-            $Error3 = "Tienes que seleccionar una línea";
-            $NumE += 1;
-        }else{
-            $Correcto += 1;
-        }
-
         if ($Tipo == "0") {
-            $Error4 = "Tienes que seleccionar un tipo";
+            $Error3 = "Tienes que seleccionar un tipo";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
         
         if ($Tarima == "0") {
-            $Error5 = "Tienes que seleccionar una tarima";
+            $Error4 = "Tienes que seleccionar una tarima";
             $NumE += 1;
         }else{
             $Correcto += 1;
@@ -214,11 +201,11 @@
                 $Correcto += 1;
                 break;
             case '2':
-                $Error6 = "La fecha ingresada es incorrecta";
+                $Error5 = "La fecha ingresada es incorrecta";
                 $NumE += 1;
                 break;
             case '3':
-                $Error6 = "El campo de fecha de empaque no puede ir vacío";
+                $Error5 = "El campo de fecha de empaque no puede ir vacío";
                 $NumE += 1;
                 break;    
         }
@@ -232,7 +219,7 @@
                 $Correcto += 1;
                 break;
             case '2':
-                $Error7 = "La fecha ingresada es incorrecta";
+                $Error6 = "La fecha ingresada es incorrecta";
                 $NumE += 1;
                 break;
             case '3':
@@ -240,12 +227,12 @@
                 $NumP += 1;
                 break;
             case '4':
-                $Error7 = "El campo de fecha de envió no puede ir vacío";
+                $Error6 = "El campo de fecha de envió no puede ir vacío";
                 $NumE += 1;
                 break;    
         }
 
-        if ($Correcto==7) {
+        if ($Correcto==6) {
                 if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt = $Con->prepare("SELECT id_mezcla_t, cajas_t FROM pallet_mezclas_temp WHERE usuario_id = ?");
                 $stmt->bind_param("i", $ID);
@@ -259,22 +246,22 @@
                 }
 
                 $MezclasActuales = [];
-                $stmt = $Con->prepare("SELECT id_mezcla_m, cajas_m FROM pallet_mezclas WHERE id_pallet_m = ?");
+                $stmt = $Con->prepare("SELECT id_mezcla_m, cajas_m, id_linea_m FROM pallet_mezclas WHERE id_pallet_m = ?");
                 $stmt->bind_param("i", $idPallet);
                 $stmt->execute();
                 $res = $stmt->get_result();
                 while ($row = $res->fetch_assoc()) {
-                    $MezclasActuales[$row['id_mezcla_m']] = ['cajas' => $row['cajas_m']];
+                    $MezclasActuales[$row['id_mezcla_m']] = ['cajas' => $row['cajas_m'], 'linea' => $row['id_linea_m']];
                 }
                 $stmt->close();
 
                 $MezclasNuevas = [];
-                $stmt = $Con->prepare("SELECT id_mezcla_t, cajas_t FROM pallet_mezclas_temp WHERE usuario_id = ?");
+                $stmt = $Con->prepare("SELECT id_mezcla_t, cajas_t, id_linea_t FROM pallet_mezclas_temp WHERE usuario_id = ?");
                 $stmt->bind_param("i", $ID);
                 $stmt->execute();
                 $resTemp = $stmt->get_result();
                 while ($row = $resTemp->fetch_assoc()) {
-                    $MezclasNuevas[$row['id_mezcla_t']] = ['cajas' => $row['cajas_t']];
+                    $MezclasNuevas[$row['id_mezcla_t']] = ['cajas' => $row['cajas_t'], 'linea' => $row['id_linea_t']];
                 }
                 $stmt->close();
 
@@ -284,16 +271,16 @@
                         $actual = $MezclasActuales[$idMezcla];
                         if ($actual['cajas'] != $nuevo['cajas']) {
                             // Actualiza si cambió
-                            $stmt = $Con->prepare("UPDATE pallet_mezclas SET cajas_m=?, fecha_m=?, hora_m=? 
+                            $stmt = $Con->prepare("UPDATE pallet_mezclas SET cajas_m=?, id_linea_m=?, fecha_m=?, hora_m=? 
                                                 WHERE id_pallet_m=? AND id_mezcla_m=?");
-                            $stmt->bind_param("ddssii", $nuevo['cajas'], $FechaP, $HoraP, $idPallet, $idMezcla);
+                            $stmt->bind_param("ddssii", $nuevo['cajas'], $nuevo['linea'], $FechaP, $HoraP, $idPallet, $idMezcla);
                             $stmt->execute();
                             $stmt->close();
                         }
                     } else {
                         // No existía, insertamos
-                        $stmt = $Con->prepare("INSERT INTO pallet_mezclas (id_pallet_m, id_mezcla_m, cajas_m, fecha_m, hora_m) VALUES (?, ?, ?, ?, ?)");
-                        $stmt->bind_param("iiiss", $idPallet, $idMezcla, $nuevo['cajas'], $FechaP, $HoraP);
+                        $stmt = $Con->prepare("INSERT INTO pallet_mezclas (id_pallet_m, id_mezcla_m, cajas_m, id_linea_m, fecha_m, hora_m) VALUES (?, ?, ?, ?, ?, ?)");
+                        $stmt->bind_param("iiiiss", $idPallet, $idMezcla, $nuevo['cajas'], $nuevo['linea'], $FechaP, $HoraP);
                         $stmt->execute();
                         $stmt->close();
 
@@ -326,15 +313,14 @@
                 $resultSuma = $stmt->get_result();
                 $CajasP = $resultSuma->fetch_assoc()['CajasP'];
 
-                $stmtInsertMezcla = $Con->prepare("UPDATE pallets SET id_sede_p=?, id_presen_p=?, id_tarima_p=?, id_linea_p=?, tipo_t=?, cajas_p=?, fecha_p=?, fecha_e=?, hora_p=?, id_usuario_p=? WHERE id_pallet=?");
-                $stmtInsertMezcla->bind_param("iiiisisssii", $SedeVal, $Presentaciones, $Tarima, $Linea, $Tipo, $CajasP, $FechaVal, $FechaEVal, $HoraP, $ID, $idPallet);
+                $stmtInsertMezcla = $Con->prepare("UPDATE pallets SET id_sede_p=?, id_presen_p=?, id_tarima_p=?, tipo_t=?, cajas_p=?, fecha_p=?, fecha_e=?, hora_p=?, id_usuario_p=? WHERE id_pallet=?");
+                $stmtInsertMezcla->bind_param("iiisisssii", $SedeVal, $Presentaciones, $Tarima, $Tipo, $CajasP, $FechaVal, $FechaEVal, $HoraP, $ID, $idPallet);
                 $stmtInsertMezcla->execute();
                 $stmtInsertMezcla->close();
                 
-                $Limpiar = new Cleanner($Sede,$Presentaciones,$Linea,$Tipo,$Tarima,$Fecha,$FechaE);
+                $Limpiar = new Cleanner($Sede,$Presentaciones,$Tipo,$Tarima,$Fecha,$FechaE);
                 $Sede = $Limpiar -> LimpiarSede();
                 $Presentaciones = $Limpiar -> LimpiarPresentaciones();
-                $Linea = $Limpiar -> LimpiarLinea();
                 $Tipo = $Limpiar -> LimpiarTipo();
                 $Tarima = $Limpiar -> LimpiarTarima();
                 $Fecha = $Limpiar -> LimpiarFecha();
@@ -373,7 +359,6 @@
                     $Folio=$Reg['folio_p'];
                     $Sede=$Reg['codigo_s'];
                     $Presentaciones=$Reg['id_presen_p'];
-                    $Linea=$Reg['id_linea_p'];
                     $Tipo=$Reg['tipo_t'];
                     $Tarima=$Reg['id_tarima_p'];
                     $Fecha=$Reg['fecha_p'];
@@ -399,7 +384,6 @@
                     $Folio=$Reg['folio_p'];
                     $Sede=$Reg['codigo_s'];
                     $Presentaciones=$Reg['id_presen_p'];
-                    $Linea=$Reg['id_linea_p'];
                     $Tipo=$Reg['tipo_t'];
                     $Tarima=$Reg['id_tarima_p'];
                     $Fecha=$Reg['fecha_p'];
