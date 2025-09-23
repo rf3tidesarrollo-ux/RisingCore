@@ -30,24 +30,29 @@ $(document).ready(function () {
         });
     }
 
-    function cargarLineas(sede, lineaSeleccionada = null) {
-        if (!sede || sede === '0') {
-        $('#lineas').empty().append('<option value="0">Seleccione la línea:</option>');
-        return;
-        }
+    function cargarLineas(sede) {
+        $.ajax({
+            url: '../../Server_side/get_lineas.php',
+            type: 'GET',
+            data: {
+                sede: sede,
+            },
+            success: function (res) {
+                const select = $('#lineas');
+                select.empty();
+                select.append('<option value="0">Seleccione la línea:</option>');
 
-        $.getJSON('../../Server_side/get_lineas.php?sede=' + sede, function (data) {
-        const selectLineas = $('#lineas');
-        selectLineas.empty().append('<option value="0">Seleccione la línea:</option>');
-
-        if (data.status === 'ok') {
-            data.lineas.forEach(function (l) {
-            const selectedAttr = (l.id == lineaSeleccionada) ? 'selected' : '';
-            selectLineas.append(`<option value="${l.id}" ${selectedAttr}>${l.linea}</option>`);
-            });
-        } else {
-            selectLineas.append('<option value="0">No hay líneas disponibles</option>');
-        }
+                if (res.status === 'ok') {
+                    res.lineas.forEach(function (l) {
+                        select.append(`<option value="${l.id}">${l.linea}</option>`);
+                    });
+                } else {
+                    select.append('<option value="0">No hay líneas disponibles</option>');
+                }
+            },
+            error: function () {
+                $('#lineas').html('<option value="0">Error al cargar líneas</option>');
+            }
         });
     }
 
@@ -110,13 +115,12 @@ $(document).ready(function () {
     // Inicializar si ya hay datos cargados
     const sedeInicial = $('#sede3').val();
     const presentacionInicial = $('#presentacionSeleccionada').val();
-    const lineaInicial = $('#lineaSeleccionada').val();
     const tarimaInicial = $('#tarimaSeleccionada').val();
 
     if (sedeInicial && sedeInicial !== '0') {
         cargarTarimas(sedeInicial, tarimaInicial);
         cargarPresentaciones(sedeInicial, presentacionInicial);
-        cargarLineas(sedeInicial, lineaInicial);
+        cargarLineas(sedeInicial);
         cargarMezclas(sedeInicial);
         $('datosMezcla').show();
     } else {
@@ -141,15 +145,17 @@ $(document).ready(function() {
     const mezclaID = $('#mezclas').val();
     const sede = $('#sede3').val();
     const cajasT = $('#cajasT').val();
+    const lineas = $('#lineas').val();
 
     if (
     mezclaID === "0" ||
     sede === "0" ||
     cajasT === "" ||
+    lineas === "0" ||
     isNaN(cajasT) ||
     cajasT <= 0
     ) {
-        swal("Por favor selecciona sede, mezcla y cajas.", { icon: "warning" });
+        swal("Por favor selecciona sede, mezcla, cajas y linea.", { icon: "warning" });
         return;
     }
 
@@ -159,6 +165,7 @@ $(document).ready(function() {
       data: {
         mezcla: mezclaID,
         cajas: cajasT,
+        lineas : lineas,
         addMezcla: true
       },
       success: function(response) {
@@ -175,6 +182,7 @@ $(document).ready(function() {
         swal("Mezcla agregada correctamente", { icon: "success" });
         $('#mezclas').val('0').trigger('change');
         $('#cajasT').val('');
+        $('#lineas').val('0').trigger('change');
         tablaMezclas.ajax.reload(null, false);
 
         } else if (res.status === 'duplicate') {
@@ -286,7 +294,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const sede = document.getElementById("sede3").value;
         const folio = document.getElementById("folio").value;
         const presentacion = document.getElementById("presentaciones").value;
-        const linea = document.getElementById("lineas").value;
         const tipo = document.getElementById("Tipo").value;
         const tarima = document.getElementById("tarimas").value;
         const fecha = document.getElementById("Fecha").value;
@@ -305,7 +312,6 @@ document.addEventListener("DOMContentLoaded", function () {
             Folio: folio,
             Sede: sede,
             Presentaciones: presentacion,
-            Lineas: linea,
             Tipo: tipo,
             Tarima: tarima,
             Fecha: fecha,
