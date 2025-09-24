@@ -10,7 +10,7 @@
     $Editar = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 3, $Con);
     $Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 4, $Con);
 
-    $FechaP=date("d/m/Y");
+    $FechaP=date("Y-m-d");
     $HoraP=date("H:i:s");
 
    if ($TipoRol=="ADMINISTRADOR" || $Crear==true) {
@@ -269,7 +269,7 @@
                     if (isset($MezclasActuales[$idMezcla])) {
                         // Ya existía, revisamos si cambió
                         $actual = $MezclasActuales[$idMezcla];
-                        if ($actual['cajas'] != $nuevo['cajas']) {
+                        if ($actual['cajas'] != $nuevo['cajas'] && $actual['linea'] != $nuevo['linea']) {
                             // Actualiza si cambió
                             $stmt = $Con->prepare("UPDATE pallet_mezclas SET cajas_m=?, id_linea_m=?, fecha_m=?, hora_m=? 
                                                 WHERE id_pallet_m=? AND id_mezcla_m=?");

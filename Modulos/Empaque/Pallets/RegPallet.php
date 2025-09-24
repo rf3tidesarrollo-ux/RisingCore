@@ -176,7 +176,7 @@
                                         <th>Cajas</th>
                                         <th>Linea</th>
                                         <th>Selladora</th>
-                                        <th>Produce</th>
+                                        <th>Fecha</th>
                                         <th>Acciones</th>
                                         </tr>
                                     </thead>

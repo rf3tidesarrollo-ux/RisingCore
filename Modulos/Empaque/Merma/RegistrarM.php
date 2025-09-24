@@ -485,15 +485,12 @@
                 case 'RF3':
                     $Sede = 3;
                     break;
-                default:
-                    $Sede = "RF";
-                    break;
             }
-
+            
             if ($CodigoR=="") {
                 switch ($Tipo) {
-                    case 'PRODUCCIÓN':
-                        $CodigoR = $Sede . '-' . "PRD";
+                    case 'PRODUCCIÓN-NACIONAL':
+                        $CodigoR = $Sede . '-' . "PRN";
                         break;
                     case 'EMPAQUE-NACIONAL':
                         $CodigoR = $Sede. '-' . "EPN";
@@ -501,8 +498,8 @@
                     case 'EMPAQUE-MERMA':
                         $CodigoR = $Sede. '-' . "EPM";
                         break;
-                    case 'MERMA':
-                        $CodigoR = $Sede. '-' . "MER";
+                    case 'PRODUCCIÓN-MERMA':
+                        $CodigoR = $Sede. '-' . "PRM";
                         break;
                 }
             }
@@ -527,8 +524,8 @@
             $stmt->close();
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $stmt = $Con->prepare("INSERT INTO registro_merma (id_codigo_m, id_presentacion_m, id_clasificacion, id_tipo_caja , id_tipo_tarima, id_tipo_carro, p_bruto, p_taraje, p_neto, cantidad_caja, cantidad_tarima, usuario_m, fecha_reg, fecha_m, hora_m, activo_m, kilos_dis, cajas_dis, no_serie_m, semana_m) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param('iiiiiidddiiisssidiss', $Codigo, $Presentacion, $Clasificacion, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCajaVal, $NoTarima, $ID, $FechaVal, $FechaR, $HoraR, $Activo, $KilosN, $NoCajaVal, $NoSerieVal, $SemanaR);
+                $stmt = $Con->prepare("INSERT INTO registro_merma (id_codigo_m, id_sede_m, id_presentacion_m, id_clasificacion, id_tipo_caja , id_tipo_tarima, id_tipo_carro, p_bruto, p_taraje, p_neto, cantidad_caja, cantidad_tarima, usuario_m, fecha_reg, fecha_m, hora_m, activo_m, kilos_dis, cajas_dis, no_serie_m, semana_m) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param('iiiiiiidddiiisssidiss', $Codigo, $Sede, $Presentacion, $Clasificacion, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCajaVal, $NoTarima, $ID, $FechaVal, $FechaR, $HoraR, $Activo, $KilosN, $NoCajaVal, $NoSerieVal, $SemanaR);
                 $stmt->execute();
                 $stmt->close();
                 

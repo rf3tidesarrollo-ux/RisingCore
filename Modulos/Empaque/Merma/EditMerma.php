@@ -71,11 +71,34 @@
                             <label class="FAL">
                                 <span class="FAS">Tipo de merma</span>
                                 <select class="FAI prueba" id="tipo_registro" name="TipoRegistro" onchange="mostrarCampo()">
-                                    <option value="0">Seleccione un tipo de merma:</option>
-                                    <option value="PRODUCCIÓN" <?php if ($Tipo == "PRODUCCIÓN") echo 'selected'; ?>>PRODUCCIÓN</option>
-                                    <option value="EMPAQUE-NACIONAL" <?php if ($Tipo == "EMPAQUE-NACIONAL") echo 'selected'; ?>>EMPAQUE-NACIONAL</option>
-                                    <option value="EMPAQUE-MERMA" <?php if ($Tipo == "EMPAQUE-MERMA") echo 'selected'; ?>>EMPAQUE-MERMA</option>
-                                    <option value="MERMA" <?php if ($Tipo == "MERMA") echo 'selected'; ?>>MERMA</option>
+                                    <?php
+                                    if ($Tipo != null) {
+                                        $stmt = $Con->prepare("SELECT tipo_merma FROM clasificacion_merma WHERE tipo_merma = ? GROUP BY tipo_merma");
+                                        $stmt->bind_param("s", $Tipo);
+                                        $stmt->execute();
+                                        $Registro = $stmt->get_result();
+                                        $Reg = $Registro->fetch_assoc();
+                                        $stmt->close();
+
+                                        if (isset($Reg['tipo_merma'])) {
+                                            echo '<option value="' . htmlspecialchars($Reg['tipo_merma']) . '" selected>' . htmlspecialchars($Reg['tipo_merma']) . '</option>';
+                                        } else {
+                                            echo '<option value="0">Seleccione un tipo de merma:</option>';
+                                        }
+                                    } else {
+                                        echo '<option value="0">Seleccione un tipo de merma:</option>';
+                                    }
+
+                                    $stmt = $Con->prepare("SELECT tipo_merma FROM clasificacion_merma GROUP BY tipo_merma");
+                                    $stmt->execute();
+                                    $Registro = $stmt->get_result();
+
+                                    while ($Reg = $Registro->fetch_assoc()) {
+                                        if ($Tipo != null && $Reg['tipo_merma'] == $Tipo) continue;
+                                        echo '<option value="' . htmlspecialchars($Reg['tipo_merma']) . '">' . htmlspecialchars($Reg['tipo_merma']) . '</option>';
+                                    }
+                                    $stmt->close();
+                                    ?>
                                 </select>
                             </label>
                         </div>
@@ -261,9 +284,9 @@
                 </section>
             </div>
 
-            <?php if ($Correcto < 14) {
+            <?php if ($Correcto < 13) {
                     if ($NumE>0) { 
-                        for ($i=1; $i <= 14; $i++) {
+                        for ($i=1; $i <= 13; $i++) {
                             $Error=${"Error".$i};
                             if (!empty($Error)) { ?>
                                 <script type="module">

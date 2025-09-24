@@ -493,8 +493,8 @@
 
             if ($CodigoR=="") {
                 switch ($Tipo) {
-                    case 'PRODUCCIÓN':
-                        $CodigoR = $Sede . '-' . "PRD";
+                    case 'PRODUCCIÓN-NACIONAL':
+                        $CodigoR = $Sede . '-' . "PRN";
                         break;
                     case 'EMPAQUE-NACIONAL':
                         $CodigoR = $Sede. '-' . "EPN";
@@ -502,8 +502,8 @@
                     case 'EMPAQUE-MERMA':
                         $CodigoR = $Sede. '-' . "EPM";
                         break;
-                    case 'MERMA':
-                        $CodigoR = $Sede. '-' . "MER";
+                    case 'PRODUCCIÓN-MERMA':
+                        $CodigoR = $Sede. '-' . "PRM";
                         break;
                 }
             }
@@ -564,7 +564,7 @@
         $stmt = $Con->prepare("SELECT * FROM registro_merma 
                             LEFT JOIN tipo_variaciones ON registro_merma.id_codigo_m = tipo_variaciones.id_variedad
                             LEFT JOIN invernaderos ON tipo_variaciones.id_modulo_v = invernaderos.id_invernadero
-                            LEFT JOIN sedes ON invernaderos.id_sede_i = sedes.id_sede
+                            LEFT JOIN sedes ON registro_merma.id_sede_m = sedes.id_sede
                             LEFT JOIN clasificacion_merma ON registro_merma.id_clasificacion = clasificacion_merma.id_merma 
                             WHERE id_registro_m=?");
         $stmt->bind_param("i",$ID);
@@ -578,29 +578,7 @@
                     $Sede=$Reg['codigo_s'];
                     $Presentacion=$Reg['id_presentacion_m'];
                     $Tipo=$Reg['tipo_merma'];
-                    if ($Tipo=="PRODUCCIÓN") {
-                        $Sede=$Reg['codigo_s'];
-                    }else{
-                        $NS = $Reg['no_serie_m'];
-                        $PRT = explode('-', $NS);
-                        $S = $PRT[0];
-
-                        switch ($S) {
-                            case '1':
-                                $Sede = "RF1";
-                                break;
-                            case '2':
-                                $Sede = "RF2";
-                                break;
-                            case '3':
-                                $Sede = "RF3";
-                                break;
-                            default:
-                                $Sede = "RF";
-                                break;
-                        }
-                    }
-                    $Tipo=$Reg['tipo_merma'];
+                    $Sede = $Reg['codigo_s'];
                     $Codigo=$Reg['id_variedad'];
                     $Clasificacion=$Reg['id_merma'];
                     $Carro=$Reg['id_tipo_carro'];
@@ -620,7 +598,7 @@
         $stmt = $Con->prepare("SELECT * FROM registro_merma 
                             LEFT JOIN tipo_variaciones ON registro_merma.id_codigo_m = tipo_variaciones.id_variedad
                             LEFT JOIN invernaderos ON tipo_variaciones.id_modulo_v = invernaderos.id_invernadero
-                            LEFT JOIN sedes ON invernaderos.id_sede_i = sedes.id_sede
+                            LEFT JOIN sedes ON registro_merma.id_sede_m = sedes.id_sede
                             LEFT JOIN clasificacion_merma ON registro_merma.id_clasificacion = clasificacion_merma.id_merma 
                             WHERE id_registro_m=?");
         $stmt->bind_param("i",$ID);
@@ -633,28 +611,7 @@
                     $ID=$Reg['id_registro_m'];
                     $Presentacion=$Reg['id_presentacion_m'];
                     $Tipo=$Reg['tipo_merma'];
-                    if ($Tipo=="PRODUCCIÓN") {
-                        $Sede=$Reg['codigo_s'];
-                    }else{
-                        $NS = $Reg['no_serie_m'];
-                        $PRT = explode('-', $NS);
-                        $S = $PRT[0];
-
-                        switch ($S) {
-                            case '1':
-                                $Sede = "RF1";
-                                break;
-                            case '2':
-                                $Sede = "RF2";
-                                break;
-                            case '3':
-                                $Sede = "RF3";
-                                break;
-                            default:
-                                $Sede = "RF";
-                                break;
-                        }
-                    }
+                    $Sede=$Reg['codigo_s'];
                     $Codigo=$Reg['id_variedad'];
                     $Clasificacion=$Reg['id_merma'];
                     $Carro=$Reg['id_tipo_carro'];

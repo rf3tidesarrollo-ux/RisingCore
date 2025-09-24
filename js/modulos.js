@@ -21,6 +21,7 @@ $(document).ready(function () {
                 if (clasificacionSeleccionada !== "" && $('#clasificacion option[value="' + clasificacionSeleccionada + '"]').length > 0) {
                     $('#clasificacion').val(clasificacionSeleccionada).trigger('change');
                 } else {
+                    console.warn(clasificacionSeleccionada);
                     console.warn("La clasificación seleccionada no está entre las opciones");
                 }
             },
@@ -257,10 +258,11 @@ if (icon && pass) {
 
 function mostrarCampo() {
     const tipo = document.getElementById("tipo_registro").value;
+
     const campoC = document.getElementById("campo_codigos");
     const campoP = document.getElementById("campo_presentacion");
 
-    if (tipo === "PRODUCCIÓN") {
+    if (tipo === "PRODUCCIÓN-NACIONAL") {
         campoC.style.display = "block";
         campoP.style.display = "block";
     } else {
@@ -268,6 +270,7 @@ function mostrarCampo() {
         campoP.style.display = "none";
     }
 }
+
 
 function mostrarCampo2() {
     const tipo = document.getElementById("sedes").value;
@@ -392,3 +395,5 @@ if (bttn1 && cmb1) {
         }
     });
 }
+
+
