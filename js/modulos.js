@@ -11,7 +11,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: '/RisingCore/Modulos/Server_side/get_clasificaciones.php',
+            url: '/RisingCore/Modulos/Server_side/Merma/get_clasificaciones.php',
             method: 'GET',
             data: { tipo: tipo },
             success: function (data) {
@@ -45,7 +45,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: '/RisingCore/Modulos/Server_side/get_naves.php',
+            url: '/RisingCore/Modulos/Server_side/Pesaje/get_naves.php',
             method: 'GET',
             data: { tipo: tipo },
             success: function (data) {
@@ -79,7 +79,7 @@ $(document).ready(function () {
 
     function cargarVariedades(sede, seleccionada) {
         $.ajax({
-            url: '../../Server_side/get_codigos.php',
+            url: '../../Server_side/Pesaje/get_codigos.php',
             type: 'GET',
             data: { tipo: sede },
             success: function (res) {
@@ -112,7 +112,7 @@ $(document).ready(function () {
       return;
     }
 
-    $.getJSON('../../Server_side/get_clientes.php?tipo=' + sede, function (data) {
+    $.getJSON('../../Server_side/Mezcla/get_clientes.php?tipo=' + sede, function (data) {
       const selectClientes = $('#clientes');
       selectClientes.empty().append('<option value="0">Seleccione el cliente</option>');
 
@@ -184,7 +184,7 @@ $(document).ready(function () {
     // Función para cargar los lotes con sede y variedad
     function cargarLotes(sede, variedad) {
         $.ajax({
-            url: '../../Server_side/get_lote.php',
+            url: '../../Server_side/Mezcla/get_lote.php',
             type: 'GET',
             data: {
                 sede: sede,
@@ -320,7 +320,7 @@ $(document).ready(function () {
 });
 
 function obtenerCorrelativo(base) {
-  return fetch(`../../Server_side/get_correlativo.php?base=${base}`)
+  return fetch(`../../Server_side/Mezcla/get_correlativo.php?base=${base}`)
     .then(response => response.json())
     .then(data => data.correlativo || '01')
     .catch(() => '01');

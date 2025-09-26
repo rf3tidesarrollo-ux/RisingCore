@@ -6,7 +6,7 @@ $(document).ready(function () {
     // Función para cargar las mezclas por sede
     function cargarMezclas(sede) {
         $.ajax({
-            url: '../../Server_side/get_mezcla.php',
+            url: '../../Server_side/Pallet/get_mezcla.php',
             type: 'GET',
             data: {
                 sede: sede,
@@ -32,7 +32,7 @@ $(document).ready(function () {
 
     function cargarLineas(sede) {
         $.ajax({
-            url: '../../Server_side/get_lineas.php',
+            url: '../../Server_side/Pallet/get_lineas.php',
             type: 'GET',
             data: {
                 sede: sede,
@@ -62,7 +62,7 @@ $(document).ready(function () {
         return;
         }
 
-        $.getJSON('../../Server_side/get_tarimas.php?sede=' + sede, function (data) {
+        $.getJSON('../../Server_side/Pallet/get_tarimas.php?sede=' + sede, function (data) {
         const selectTarimas = $('#tarimas');
         selectTarimas.empty().append('<option value="0">Seleccione la tarima:</option>');
 
@@ -77,13 +77,34 @@ $(document).ready(function () {
         });
     }
 
+    function cargarEmbarques(sede, embarqueSeleccionado = null) {
+        if (!sede || sede === '0') {
+        $('#embarques').empty().append('<option value="0">Seleccione el embarque:</option>');
+        return;
+        }
+
+        $.getJSON('../../Server_side/Pallet/get_embarques.php?sede=' + sede, function (data) {
+        const selectEmbarques = $('#embarques');
+        selectEmbarques.empty().append('<option value="0">Seleccione el embarque:</option>');
+
+        if (data.status === 'ok') {
+            data.embarques.forEach(function (e) {
+            const selectedAttr = (e.id == embarqueSeleccionado) ? 'selected' : '';
+            selectEmbarques.append(`<option value="${e.id}" ${selectedAttr}>${e.embarque}</option>`);
+            });
+        } else {
+            selectEmbarques.append('<option value="0">No hay embarques disponibles</option>');
+        }
+        });
+    }
+
     function cargarPresentaciones(sede, presentacionSeleccionada = null) {
         if (!sede || sede === '0') {
         $('#presentaciones').empty().append('<option value="0">Seleccione la presentación:</option>');
         return;
         }
 
-        $.getJSON('../../Server_side/get_presentaciones.php?sede=' + sede, function (data) {
+        $.getJSON('../../Server_side/Pallet/get_presentaciones.php?sede=' + sede, function (data) {
         const selectPresentacion = $('#presentaciones');
         selectPresentacion.empty().append('<option value="0">Seleccione la presentación:</option>');
 
@@ -101,6 +122,7 @@ $(document).ready(function () {
     $('#sede3').on('change', function () {
         const sede = $(this).val();
         cargarTarimas(sede);
+        cargarEmbarques(sede);
         cargarPresentaciones(sede);
         cargarLineas(sede);
         cargarMezclas(sede);
@@ -116,9 +138,11 @@ $(document).ready(function () {
     const sedeInicial = $('#sede3').val();
     const presentacionInicial = $('#presentacionSeleccionada').val();
     const tarimaInicial = $('#tarimaSeleccionada').val();
+    const embarqueInicial = $('#embarqueSeleccionado').val();
 
     if (sedeInicial && sedeInicial !== '0') {
         cargarTarimas(sedeInicial, tarimaInicial);
+        cargarEmbarques(sedeInicial, embarqueInicial);
         cargarPresentaciones(sedeInicial, presentacionInicial);
         cargarLineas(sedeInicial);
         cargarMezclas(sedeInicial);
