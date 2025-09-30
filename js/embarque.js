@@ -36,7 +36,7 @@ $(document).ready(function () {
     const destinoInicial = $('#destinoSeleccionado').val();
 
     if (sedeInicial && sedeInicial !== '0') {
-        cargarEmbarques(sedeInicial, destinoInicial);
+        cargarDestinos(sedeInicial, destinoInicial);
 
         $('campo_destino').show();
     } else {

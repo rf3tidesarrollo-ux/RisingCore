@@ -279,44 +279,47 @@ function mostrarRegistroP(id){
   });
 }
 
-function mostrarRegistroPT(id){
+function mostrarRegistroEm(id){
   $.ajax({
-    url: 'MostrarPT.php',
+    url: 'MostrarE.php',
     type: 'POST',
     async: true,
     data: {id:id},
     success: function(response){
       if (response != 'error') {
         var info = JSON.parse(response);
-        var folio = info.art; 
-        var prestador = info.na + ' ' + info.ap + ' ' + info.am;
-        var prestatario = info.nc + ' ' + info.pc + ' ' + info.mc;
-        var F = info.fecha_pres;
+        var sede = info.fs;
+        var folio = info.fe;
+        var po = info.po;
+        var destino = info.de;
+        var cajasE = info.ce;
+        var kilosE = info.ke;
+        var cajasT = info.ct;
+        var kilosT = info.kt;
+        var F = info.fe;
         var fecha = F.split('-').reverse().join('/');
-        var FF = info.fecha_fin;
-          if (FF!=null) {
-            var fechaF = FF.split('-').reverse().join('/');
-          }else{
-            var fechaF="SIN FINALIZAR";
-          }
-        var estado = info.estado;
-          if (estado=="1") {
+        var semana = info.se;
+        var cNmbre = info.nc;
+        var estado = info.ee;
+          if (estado=="0") {
             estado = "PENDIENTE";
-          }else if(estado=="2"){
-            estado = "ACEPTADO";
           }else{
-            estado = "FINALIZADO";
+            estado = "ENVIADO";
           }
-        var creador = info.creador;
 
-        swal("Información:", 
+        swal("Información:",
+        "SEDE: " + sede + "\n" +
         "FOLIO: " + folio + "\n" +
-        "PRESTADOR: " + prestador + "\n" +
-        "PRESTATARIO: " + prestatario + "\n" +
-        "FECHA INICIO: " + fecha + "\n" +
-        "FECHA FINALIZADO: " + fechaF + "\n" +
-        "Estado: " + estado + "\n" +
-        "CREADOR: " + creador);
+        "PO: " + po + "\n" +
+        "DESTINO: " + destino + "\n" +
+        "CAJAS REQUERIDAS: " + cajasE + "\n" +
+        "KILOS REQUERIDAS: " + kilosE + "\n" +
+        "CAJAS EMBARCADAS: " + cajasT + "\n" +
+        "KILOS EMBARCADOS: " + kilosT + "\n" +
+        "FECHA DE ENVIÓ: " + fecha + "\n" +
+        "SEMANA: " + semana + "\n" +
+        "REGISTRÓ: " + cNmbre + "\n" +
+        "ESTADO: " + estado);
       }
     },
     error: function(error){

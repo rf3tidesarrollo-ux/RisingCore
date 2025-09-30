@@ -27,6 +27,7 @@ $modulosConfig = [
             "CatalogoP"  => "Pallets/CatalogoP.php",
             "RegistrarE" => "Embarque/RegistrarE.php",
             "CatalogoE"  => "Embarque/CatalogoE.php",
+            "RegistrarCF"   => "CamaraFria/RegistrarCF.php",
         ],
         "iconos" => [
             "Pesaje" => "fas fa-balance-scale",
@@ -34,6 +35,7 @@ $modulosConfig = [
             "Mezcla" => "fa-solid fa-mortar-pestle",
             "Pallets" => "fa-solid fa-tag",
             "Embarque" => "fa-solid fa-truck",
+            "CamaraFria" => "fa-solid fa-temperature-low"
         ]
     ],
     "Produccion" => [
@@ -68,9 +70,22 @@ $claveMap = [
     'Mz'  => 'Mezcla',
     'P'   => 'Pallets',
     'E'   => 'Embarque',
+    'CF'  => 'CamaraFria',
     'C'   => 'Codigos',
     'Cl'  => 'Cultivo',
-    'U'  => 'Usuarios',
+    'U'   => 'Usuarios',
+];
+
+$claveLabel = [
+    'Pesaje'     => 'Pesaje',
+    'Merma'      => 'Merma',
+    'Mezcla'     => 'Mezcla',
+    'Pallets'    => 'Pallets',
+    'Embarque'   => 'Embarque',
+    'CamaraFria' => 'Cámara Fría',
+    'Codigos'    => 'Códigos',
+    'Cultivo'    => 'Cultivo',
+    'Usuarios'   => 'Usuarios'
 ];
 
 $submodulos = [
@@ -79,10 +94,11 @@ $submodulos = [
     'Mezcla'       => "$modulo/Mezcla",
     'Pallets'      => "$modulo/Pallets",
     'Embarque'     => "$modulo/Embarque",
+    'CamaraFria'  => "$modulo/CamaraFria",
     'Codigos'      => "$modulo/Codigos",
     'Cultivo'      => "$modulo/Cultivo",
     'Estimaciones' => "$modulo/Estimaciones",
-    'Usuarios' => "$modulo/Usuarios"
+    'Usuarios'     => "$modulo/Usuarios"
 ];
 
 // Función para generar ruta absoluta desde la raíz del sitio
@@ -137,7 +153,7 @@ $modulosInicio = [
                                 ?>
                                     <li>
                                         <a href="<?= path_abs($ruta) ?>">
-                                            <i class="<?= $config['iconos'][$clave] ?>"></i> <?= $clave ?>
+                                            <i class="<?= $config['iconos'][$clave] ?>"></i> <?= $claveLabel[$clave] ?? $clave ?>
                                         </a>
                                     </li>
                                 <?php endif; ?>
@@ -167,7 +183,7 @@ $modulosInicio = [
                                 ?>
                                     <li>
                                         <a href="<?= path_abs($ruta) ?>">
-                                            <i class="<?= $config['iconos'][$clave] ?>"></i> <?= $clave ?>
+                                            <i class="<?= $config['iconos'][$clave] ?>"></i> <?= $claveLabel[$clave] ?? $clave ?>
                                         </a>
                                     </li>
                                 <?php endif; ?>

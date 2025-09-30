@@ -8,7 +8,7 @@
     $Host = "localhost";
     $User = "root";
     $Pass = "";
-    $DB = "bd_risingfarms3";
+    $DB = "bd_risingfarms";
     
 
     $Con = mysqli_connect($Host, $User, $Pass, $DB) or die ("Problema al conectar");

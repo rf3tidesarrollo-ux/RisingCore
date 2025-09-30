@@ -17,7 +17,7 @@ $columnMap = [
     'cajas_emt'      => 'em.cajas_emt',
     'kilos_emt'      => 'em.kilos_emt',
     'fecha_em'       => 'em.fecha_em',
-    'semana'         => 'em.semana',
+    'semana'         => 'em.semana_em',
     'nombre_completo'=> 'c.nombre_completo',
 ];
 
