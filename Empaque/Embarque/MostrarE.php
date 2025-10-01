@@ -8,18 +8,13 @@ if (!empty($_POST)) {
 
     $id = $_POST['id'];
 
-    $stmt = $Con->prepare("SELECT m.no_serie_m AS ns, cm.tipo_merma AS tm, cm.motivo AS m, tc.folio_carro AS tc, tt.nombre_tarima AS nt, m.cantidad_tarima AS ct, tb.tipo_caja AS tp, m.cantidad_caja AS cc, m.p_bruto AS pb, m.p_taraje AS pt, m.p_neto AS pn, m.semana_m AS sr, m.fecha_reg AS fr, m.hora_m AS hr FROM registro_merma m
-                    LEFT JOIN tipo_variaciones tv ON m.id_codigo_m = tv.id_variedad
-                    LEFT JOIN tipos_cajas tb ON m.id_tipo_caja = tb.id_caja
-                    LEFT JOIN tipos_tarimas tt ON m.id_tipo_tarima = tt.id_tarima
-                    LEFT JOIN tipos_carros tc ON m.id_tipo_carro = tc.id_carro
-                    LEFT JOIN variedades v ON tv.id_nombre_v = v.id_nombre_v
-                    LEFT JOIN tipos_presentacion tp ON tv.id_presentacion_v = tp.id_presentacion
-                    LEFT JOIN ciclos c ON tv.id_ciclo_v = c.id_ciclo
-                    LEFT JOIN invernaderos i ON tv.id_modulo_v = i.id_invernadero
-                    LEFT JOIN sedes s ON i.id_sede_i = s.id_sede
-                    LEFT JOIN clasificacion_merma cm ON m.id_clasificacion = cm.id_merma
-                    WHERE m.id_registro_m=?");
+    $stmt = $Con->prepare("SELECT s.codigo_s AS fs, em.folio_em AS fe, em.po_em AS po, em.cajas_em AS ce, em.kilos_em AS ke, em.cajas_emt AS ct, em.kilos_emt AS kt, em.fecha_em AS fe, em.semana_em AS se, d.folio_d AS de, c.nombre_completo AS nc, estado_em AS ee 
+                    FROM embarques_pallets em
+                    LEFT JOIN usuarios u ON em.usuario_id = u.id_usuario
+                    LEFT JOIN cargos c ON u.id_cargo = c.id_cargo
+                    LEFT JOIN sedes s ON em.id_sede_em= s.id_sede
+                    LEFT JOIN destinos_embarque d ON em.id_destino_em = d.id_destino
+                    WHERE em.id_embarque=?");
     $stmt->bind_param("i",$id);
     $stmt->execute();
     $Registro = $stmt->get_result();
@@ -36,7 +31,7 @@ if (!empty($_POST)) {
     exit;
     
 }else{ 
-    header("Location: CatalogoR.php"); 
+    header("Location: CatalogoE.php"); 
 }
 
 ?>

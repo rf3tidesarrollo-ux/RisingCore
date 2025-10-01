@@ -112,9 +112,9 @@
                         </label>
                     </div>
 
-                <div class=Center>
-                    <input class="Boton" id="AB" type="Submit" value="Registrar" name="Insertar">
-                </div>
+                    <div class=Center>
+                        <input class="Boton" id="AB" type="Submit" value="Registrar" name="Insertar">
+                    </div>
                 </section>
 
             <?php if ($Correcto < 7) {

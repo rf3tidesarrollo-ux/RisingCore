@@ -10,9 +10,7 @@
     $Editar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 3, $Con);
     $Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 4, $Con);
 
-    $FechaR=date("Y-m-d");
     $HoraR=date("H:i:s");
-    $SemanaR=date("Y-W");
     $Activo=1;
 
    if ($TipoRol=="ADMINISTRADOR" || $Editar==true) {
@@ -379,21 +377,14 @@
                 break;    
         }
 
-        if ($FechaR!=null && $HoraR!=null && $SemanaR!=null) {
-            $Correcto += 1;
-        }else{
-            $Error10 = "Error con la fecha, hora o semana";
-            $NumE += 1;
-        }
-
         if ($Presentacion == "Seleccione la presentación:") {
             $Error11 = "Tienes que seleccionar una presenatción";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
-
-        if ($Correcto==11) {
+        
+        if ($Correcto==10) {
             $stmt = $Con->prepare("SELECT 
                                 (SELECT peso_caja FROM tipos_cajas WHERE id_caja = ?) AS cajas,
                                 (SELECT peso_tarima FROM tipos_tarimas WHERE id_tarima = ?) AS tarimas,
@@ -456,10 +447,12 @@
             }
 
             $stmt->close();
+            $fechaObj = new DateTime($FechaVal); 
+            $SemanaR = $fechaObj->format("Y-W");
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $stmt = $Con->prepare("UPDATE registro_empaque SET id_codigo_r=?, id_presentacin_r=?, id_tipo_caja=?, id_tipo_tarima=?, id_tipo_carro=?, p_bruto=?, p_taraje=?, p_neto=?, cantidad_caja=?, cantidad_tarima=?, usuario_r=?, fecha_reg=?, fecha_r=?, hora_r=?, activo_r=?, kilos_dis=?, cajas_dis=?, no_serie_r=?, semana_r=? WHERE id_registro_r=?");
-                $stmt->bind_param('iiiiidddiiisssidissi', $Codigo, $Presentacion, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCaja, $NoTarima, $ID, $FechaVal, $FechaR, $HoraR, $Activo, $KilosN, $NoCajaVal, $NoSerieVal, $SemanaR, $id);
+                $stmt = $Con->prepare("UPDATE registro_empaque SET id_codigo_r=?, id_presentacion_r=?, id_tipo_caja=?, id_tipo_tarima=?, id_tipo_carro=?, p_bruto=?, p_taraje=?, p_neto=?, cantidad_caja=?, cantidad_tarima=?, usuario_r=?, fecha_reg=?, activo_r=?, kilos_dis=?, cajas_dis=?, no_serie_r=?, semana_r=? WHERE id_registro_r=?");
+                $stmt->bind_param('iiiiidddiiisidissi', $Codigo, $Presentacion, $Caja, $Tarima, $Carro, $KilosB, $KilosT, $KilosN, $NoCaja, $NoTarima, $ID, $FechaVal, $Activo, $KilosN, $NoCajaVal, $NoSerieVal, $SemanaR, $id);
                 $stmt->execute();
                 $stmt->close();
                 

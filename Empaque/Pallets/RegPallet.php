@@ -180,6 +180,7 @@
                                     </thead>
                                 </table>               
                         </label>
+                    </div>
 
                 <div class=Center2>
                     <input class="Boton" id="AB" type="Submit" value="Registrar" name="Insertar">
