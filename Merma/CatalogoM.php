@@ -5,10 +5,10 @@ $RutaSC = "../../../index.php";
 include_once "../../../Login/validar_sesion.php";
 // $Pagina=basename(__FILE__);
 // Historial($Pagina,$Con);
-$Ver = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 1, $Con);
-$Crear = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 2, $Con);
-$Editar = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 3, $Con);
-$Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 4, $Con);
+$Ver = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 1, $Con);
+$Crear = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 2, $Con);
+$Editar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 3, $Con);
+$Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 4, $Con);
 
 if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 ?>
@@ -39,7 +39,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="../../../js/script.js"></script>
     <script src="../../../js/eliminar.js"></script>
-    <link rel="stylesheet" href="DesignP.css">
+    <link rel="stylesheet" href="DesignM.css">
     <title>Empaque: Reporte</title>
 </head>
 
@@ -54,59 +54,65 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
         <main>
             <div style="background: #f9f9f9; padding: 12px 25px; border-bottom: 1px solid #ccc; font-size: 16px;">
                 <nav style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
-                    <a href="/RisingCore/Modulos/index.php" style="color: #6c757d; text-decoration: none;">
+                    <a href="/RisingCore/Modulos/Empaque/index.php" style="color: #6c757d; text-decoration: none;">
                         📦 Empaque
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <a href="/RisingCore/Modulos/Empaque/index.php" style="color: #6c757d; text-decoration: none;">
-                        🏷️ Pallets
+                    <a href="/RisingCore/Modulos/Empaque/Merma/index.php" style="color: #6c757d; text-decoration: none;">
+                        ♻️ Merma
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <a href="/RisingCore/Modulos/Empaque/Pesajes" style="color: #6c757d; text-decoration: none;">
+                    <a href="#" style="color: #6c757d; text-decoration: none;">
                         📋 Registros
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <strong style="color: #333;">📊 Reporte de Pallets</strong>
+                    <strong style="color: #333;">📊 Registros de merma</strong>
                 </nav>
             </div>
 
             <div class="tabla">
-            <?php if ($TipoRol=="ADMINISTRADOR" || $Crear==true) { ?> <a title="Agregar" href="RegistrarR.php"><div id="wizard" class="btn-up"><i class="fa-solid fa-plus fa-2xl" style="color: #ffffff;"></i></div></a> <?php } ?>
+            <?php if ($TipoRol=="ADMINISTRADOR" || $Crear==true) { ?> <a title="Agregar" href="RegistrarM.php"><div id="wizard" class="btn-up"><i class="fa-solid fa-plus fa-2xl" style="color: #ffffff;"></i></div></a> <?php } ?>
                     
             
             <table id="basic-datatables" class="display table table-striped table-hover responsive nowrap" style="width:95%">
                     <thead>
                         <tr>
-                            <th>Folio de pallet</th>
-                            <th>Sede</th>
-                            <th>Presentación</th>
-                            <th>Cliente</th>
-                            <th>Cajas</th>
-                            <th>Embarque</th>
-                            <th>Fecha de empaque</th>
-                            <th>Hora de empaque</th>
-                            <th>Fecha de envió</th>
-                            <th>Registró</th>
-                            <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
+                            <th>Número de serie</th>
+                            <th>Clasificación</th>
+                            <th>Motivo</th>
+                            <th>Traila</th>
+                            <th>Tipo de tarima</th>
+                            <th>Cant. tarimas</th>
+                            <th>Tipo de caja</th>
+                            <th>Cant. cajas</th>
+                            <th>Peso bruto</th>
+                            <th>Peso neto</th>
+                            <th>Semana</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <?php if ($TipoRol=="ADMINISTRADOR" || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
                         </tr>
                     </thead>
                     
                     <tfoot>
                         <tr>
-                            <th>Folio de pallet</th>
-                            <th>Sede</th>
-                            <th>Presentación</th>
-                            <th>Cliente</th>
-                            <th>Cajas</th>
-                            <th>Embarque</th>
-                            <th>Fecha de empaque</th>
-                            <th>Hora de empaque</th>
-                            <th>Fecha de envió</th>
-                            <th>Registró</th>
-                            <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
+                            <th>Número de serie</th>
+                            <th>Clasificación</th>
+                            <th>Motivo</th>
+                            <th>Traila</th>
+                            <th>Tipo de tarima</th>
+                            <th>Cant. tarimas</th>
+                            <th>Tipo de caja</th>
+                            <th>Cant. cajas</th>
+                            <th>Peso bruto</th>
+                            <th>Peso neto</th>
+                            <th>Semana</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <?php if ($TipoRol=="ADMINISTRADOR" || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
                         </tr>
                     </tfoot>
                 </table>
@@ -127,31 +133,36 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     $('#basic-datatables').DataTable({
         serverSide: true,
         ajax: {
-            url: '../../Server_side/Pallet/tabla_pallet.php',
+            url: '../../Server_side/Merma/tabla_merma.php',
             type: 'POST',
         },
         columns: [
-                  { data: 'folio_p' },
-                  { data: 'codigo_s' },
-                  { data: 'presentacion' },
-                  { data: 'cliente_id' },
-                  { data: 'cajas_p' },
-                  { data: 'folio_em' },
-                  { data: 'fecha_p',
+                  { data: 'no_serie_m' },
+                  { data: 'tipo_merma' },
+                  { data: 'motivo' },
+                  { data: 'folio_carro', },
+                  { data: 'nombre_tarima', },
+                  { data: 'cantidad_tarima', },
+                  { data: 'tipo_caja', },
+                  { data: 'cantidad_caja' },
+                  { data: 'p_bruto' },
+                  { data: 'p_neto' },
+                  { data: 'semana_m' },
+                  { data: 'fecha_reg',
                     "render": function ( data, type, row ) {
                         if(type === 'display'){
                             // Asumiendo que viene como "yyyy-mm-dd"
-                            let partes = row.fecha_p.split('-'); // [yyyy, mm, dd]
+                            let partes = row.fecha_reg.split('-'); // [yyyy, mm, dd]
                             return partes[2] + '/' + partes[1] + '/' + partes[0]; // dd/mm/yyyy
                         }else{
                             return data;
                         }
                     }
                    },
-                  { data: 'hora_p',
+                  { data: 'hora_m',
                     "render": function ( data, type, row ) {
                         if(type === 'display'){
-                            let partes = row.hora_p.split(':'); // ["18","45","20"]
+                            let partes = row.hora_m.split(':'); // ["18","45","20"]
                             let horas = partes[0].padStart(2, '0');
                             let minutos = partes[1].padStart(2, '0');
                             let segundos = partes[2] ? partes[2].padStart(2, '0') : '00';
@@ -161,18 +172,6 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                         }
                     }
                    },
-                   { data: 'fecha_e',
-                    "render": function ( data, type, row ) {
-                        if(type === 'display'){
-                            // Asumiendo que viene como "yyyy-mm-dd"
-                            let partes = row.fecha_e.split('-'); // [yyyy, mm, dd]
-                            return partes[2] + '/' + partes[1] + '/' + partes[0]; // dd/mm/yyyy
-                        }else{
-                            return data;
-                        }
-                    }
-                   },
-                   { data: 'nombre_completo' },
                   { 
                     data: null,
                     "render": function (data, type, row) {
@@ -189,9 +188,9 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 
                         if (Ver || Editar || Eliminar) {
                             return `
-                                ${Ver ? `<a title="Mostrar" href="#${row.id_pallet}" onclick="mostrarRegistroP(${row.id_pallet})"><i class="fa-solid fa-eye fa-xl" style="color: #16ac19;"></i></a>` : ''}
-                                ${Editar ? `<a title="Editar" class="Edit" href="EditarP.php?id=${row.id_pallet}"><i class="fa-solid fa-pen-to-square fa-xl" style="color: #0a5ceb;"></i></a>` : ''}
-                                ${Eliminar ? `<a title="Eliminar" class="Delete" href="#${row.id_pallet}" onclick="eliminarRegistro(${row.id_pallet})"><i class="fa-solid fa-trash fa-xl" style="color: #ca1212;"></i></a>` : ''}
+                                ${Ver ? `<a title="Mostrar" href="#${row.id_registro_m}" onclick="mostrarRegistroM(${row.id_registro_m})"><i class="fa-solid fa-eye fa-xl" style="color: #16ac19;"></i></a>` : ''}
+                                ${Editar ? `<a title="Editar" class="Edit" href="EditarM.php?id=${row.id_registro_m}"><i class="fa-solid fa-pen-to-square fa-xl" style="color: #0a5ceb;"></i></a>` : ''}
+                                ${Eliminar ? `<a title="Eliminar" class="Delete" href="#${row.id_registro_m}" onclick="eliminarRegistro(${row.id_registro_m})"><i class="fa-solid fa-trash fa-xl" style="color: #ca1212;"></i></a>` : ''}
                             `;
                         } else {
                             return '';
@@ -199,21 +198,26 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                     }
                 }
                 ],
+        pageLength: 25,
+        lengthMenu: [[10,25,50,100,500],[10,25,50,100,500]],
         stateSave: true,
         responsive: true,
         columnDefs: [
         <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true || $Editar==true || $Eliminar==true) { ?>
-                            { responsivePriority: 1, targets: 10 },
+                            { responsivePriority: 1, targets: 13 },
         <?php  } ?>
+                            { responsivePriority: 3, targets: 12 },
+                            { responsivePriority: 2, targets: 11 },
+                            { responsivePriority: 3, targets: 10 },
                             { responsivePriority: 2, targets: 9 },
-                            { responsivePriority: 3, targets: 8 },
+                            { responsivePriority: 2, targets: 8 },
                             { responsivePriority: 2, targets: 7 },
-                            { responsivePriority: 2, targets: 6 },
+                            { responsivePriority: 3, targets: 6 },
                             { responsivePriority: 3, targets: 5 },
-                            { responsivePriority: 2, targets: 4 },
+                            { responsivePriority: 3, targets: 4 },
                             { responsivePriority: 2, targets: 3 },
                             { responsivePriority: 2, targets: 2 },
-                            { responsivePriority: 3, targets: 1 },
+                            { responsivePriority: 2, targets: 1 },
                             { responsivePriority: 1, targets: 0 }
                     ],
         fixedColumns: true,
@@ -229,8 +233,8 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                 if (title !== "Acciones") {
                     $(column.footer()).empty();
 
-                    const selectColumns = [1, 2, 3,  9]; // columnas con select
-                    const dateColumns = [6, 8]; // columna fecha
+                    const selectColumns = [1, 2, 3, 4, 6]; // columnas con select
+                    const dateColumns = [11]; // columna fecha
 
                     if (selectColumns.includes(column.index())) {
                         const select = $('<select><option value="">Todos</option></select>')
@@ -242,7 +246,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 
                         // 🔹 Llenar las opciones del select vía AJAX
                         $.ajax({
-                            url: '../../Server_side/Pallet/vuPallet.php', // tu endpoint PHP
+                            url: '../../Server_side/Merma/vuMerma.php', // tu endpoint PHP
                             type: 'POST',
                             data: { columna: column.index() }, // le mandas qué columna quieres
                             dataType: 'json',
@@ -313,14 +317,90 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
         },
         layout: {
             top1Start: {
-                buttons: [
-                    {
-                        extend: 'colvis',
-                        text: ['Mostrar/Ocultar'],
-                    },
-                ]
-            }
-        }
+        buttons: [
+            // {
+            //     extend: 'excelHtml5',
+            //     titleAttr: 'Exportar a Excel',
+            //     footer: false,
+            //     className: "btn btn-success btn-border btn-round",
+            //     text: '<i class="fa-solid fa-file-excel fa-2xl" style="color: #1b7c0e;"></i>',
+            //     exportOptions: {
+            //         columns: ':not(.no-export)',
+            //     },
+            // },
+            // {
+            //     extend: 'pdfHtml5',
+            //     pageSize: 'LEGAL',
+            //     footer: false,
+            //     orientation: 'landscape',
+            //     className: "btn btn-danger btn-border btn-round",
+            //     text: '<i class="fa-solid fa-file-pdf fa-2xl" style="color: #c60c0c;"></i>',
+            //     titleAttr: 'Exportar a PDF',
+            //     exportOptions: {
+            //         columns: ':not(.no-export)',
+            //         format: {
+            //             body: function(data, row, column, node) {
+            //                 return truncateText(data, 50);
+            //             }
+            //         },
+            //     },    
+            //     customize: function (doc) {
+            //         doc.content.splice(0, 1);
+            //         doc.defaultStyle.fontSize = 7;
+            //         doc.styles.tableHeader.fontSize = 7;
+            //         doc.styles.tableHeader.fillColor = '#1b7c0e';
+            //         doc.styles.tableHeader.color = 'white';
+            //         doc.content[0].table.widths = [
+            //             '*',
+            //             '5%', '5%', '4%', '4%', '7%', '3.7%', '4.5%', '4%', '*', 
+            //             '5%', '4.8%', '7%', '5%', '5%', '4%',
+            //             '*'
+            //         ];
+
+            //         if (doc.content[0] && doc.content[0].table) {
+            //         var rowCount = doc.content[0].table.body.length;
+            //         for (var i = 1; i < rowCount; i++) {
+            //             var colCount = doc.content[0].table.body[i].length;
+            //             for (var j = 0; j < colCount; j++) {
+            //                 doc.content[0].table.body[i][j].alignment = 'center';
+            //             }
+            //         }
+            //         doc.content.forEach(function(section) {
+            //             if (section.table) {
+            //             section.margin = [0, 0, 0, 0];
+            //         }
+            //         });
+
+            //         var objLayout = {};
+            //         objLayout['hLineWidth'] = function(i) { return 0.5; };
+            //         objLayout['vLineWidth'] = function(i) { return 0.5; };
+            //         objLayout['hLineColor'] = function(i) { return '#000000'; };
+            //         objLayout['vLineColor'] = function(i) { return '#000000'; };
+            //         objLayout['paddingLeft'] = function(i) { return 4; };
+            //         objLayout['paddingRight'] = function(i) { return 4; };
+            //         objLayout['paddingTop'] = function(i) { return 2; };
+            //         objLayout['paddingBottom'] = function(i) { return 2; };
+            //         doc.content[0].layout = objLayout;
+            //     }
+            //     // Define el encabezado con la imagen
+            //     doc['header'] = function(currentPage, pageCount) {
+            //         return {
+            //             width: 930,
+            //             height: 40,
+            //             margin: [0, 10, 0, 40],
+            //             alignment: 'center'
+            //         };
+            //     };
+            //     doc.pageMargins = [50, 60, 50, 50];
+            // }
+            // },
+            {
+                extend: 'colvis',
+                text: ['Mostrar/Ocultar'],
+            },
+        ]
+    }
+},
     });
 });
 

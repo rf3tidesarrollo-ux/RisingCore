@@ -7,289 +7,441 @@ include_once "../../../Login/validar_sesion.php";
 $imgPath = realpath('../../../Images/Rising_Logo.jpg');
 $imgData = base64_encode(file_get_contents($imgPath));
 $src = 'data:image/jpeg;base64,' . $imgData;
+$embarque_id = $_GET['embarque'] ?? '';
+$Fecha = date('d/m/Y');
 
-$datosMezcla = [];
-$tabla = [];
-$TD = $_GET['id'] ?? '';
-$FechaActual = date("d/m/Y");
-$Sede = $_GET['Sede'] ?? '';
-$Folio = $_GET['Folio'] ?? '';
-$Pre = $_GET['Presentaciones'] ?? '';
-$Linea = $_GET['Lineas'] ?? '';
-$Tipo = $_GET['Tipo'] ?? '';
-$Ta = $_GET['Tarima'] ?? '';
-$Fecha = $_GET['Fecha'] ?? '';
-$FechaE = $_GET['FechaE'] ?? '';
+$stmt = $Con->prepare("SELECT c.nombre_completo FROM usuarios u JOIN cargos c ON u.id_cargo = c.id_cargo WHERE u.id_usuario = ?");
+$stmt->bind_param("i", $ID);
+$stmt->execute();
+$result = $stmt->get_result();
+$Usuario = $result->fetch_assoc()['nombre_completo'];
+$stmt->close();
 
-if ($Tipo == 0) {
-    $Tipo = "-";
-}
-
-
-if ($TD=="mostrar") {
-    // Obtener datos de mezcla
-    $sum = $Con->prepare("SELECT SUM(cajas_t) AS Suma FROM pallet_mezclas_temp WHERE usuario_id = ?");
-    $sum->bind_param("i", $ID);
-    $sum->execute();
-    $datosMezcla = $sum->get_result();
-    $totals = $datosMezcla->fetch_assoc();
-    $sum->close();
-
-    $stmt = $Con->prepare("SELECT nombre_tarima AS tarima FROM tipos_tarimas WHERE id_tarima = ? ");
-    $stmt->bind_param("i", $Ta);
+if ($embarque_id != 0) {
+    $stmt = $Con->prepare("SELECT em.folio_em AS Folio, em.po_em AS PO, em.fecha_em AS Fecha, d.lugar_d AS Destino
+                        FROM embarques_pallets em
+                        LEFT JOIN destinos_embarque d ON em.id_destino_em = d.id_destino
+                        WHERE em.id_embarque = ?");
+    $stmt->bind_param("i", $embarque_id);
     $stmt->execute();
-    $result = $stmt->get_result();
+    $Registro = $stmt->get_result();
+    $NumCol=$Registro->num_rows;
 
-    if ($row = $result->fetch_assoc()) {
-        $Tarima = $row['tarima'];
+    if ($NumCol>0) {
+        while ($Reg = $Registro->fetch_assoc()){
+            $Folio = $Reg['Folio'];
+            $PO = $Reg['PO'];
+            $Destino = $Reg['Destino'];
+        }
+        $stmt->close();
     }
-
-    $stmt = $Con->prepare("SELECT nombre_s AS Sede FROM sedes WHERE codigo_s = ? ");
-    $stmt->bind_param("s", $Sede);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($row = $result->fetch_assoc()) {
-        $nSede = $row['Sede'];
-    }
-
-    $stmt = $Con->prepare("SELECT presentacion AS pre, item_cliente AS cliente, item_local AS Item FROM presentaciones_pallet WHERE id_presentacion_p = ? ");
-    $stmt->bind_param("i", $Pre);
-    $stmt->execute();
-    $resultPre = $stmt->get_result();
-
-    if ($row = $resultPre->fetch_assoc()) {
-        $Presentacion = $row['pre'];
-        $Cliente = $row['cliente']; 
-        $Item = $row['Item']; 
-    } else {
-        $Presentacion = null;
-        $Cliente = null;
-        $Item = null;
-    }
-    $stmt->close();
-
-    $stmt = $Con->prepare("SELECT COUNT(id_pallet) AS Folio FROM pallets p JOIN sedes s ON p.id_sede_p = s.id_sede WHERE codigo_s = ?");
-    $stmt->bind_param("s", $Sede);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($row = $result->fetch_assoc()) {
-        $Suma = $row['Folio'];
-    }
-
-    if ($Folio == '') {
-        $Numero = str_pad($Suma + 1, 4, "0", STR_PAD_LEFT);
-        $Folio = $Sede . "-" . $Numero;
-    }
-    
-    $stmt = $Con->prepare("SELECT m.folio_m AS Mezcla, p.cajas_t AS Cajas, e.linea AS Linea, e.selladora AS Selladora
-                            FROM pallet_mezclas_temp p
-                            JOIN mezclas m ON p.id_mezcla_t = m.id_mezcla
-                            JOIN empaque_lineas e ON p.id_linea_t = e.id_linea
-                            WHERE p.usuario_id = ?");
-    $stmt->bind_param("i", $ID);
-    $stmt->execute();
-    $tabla = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-    $stmt->close();
 }else{
-    // Obtener datos de mezcla
-    $sum = $Con->prepare("SELECT SUM(cajas_m) AS Suma FROM pallet_mezclas WHERE id_pallet_m = ?");
-    $sum->bind_param("i", $TD);
-    $sum->execute();
-    $datosMezcla = $sum->get_result();
-    $totals = $datosMezcla->fetch_assoc();
-    $sum->close();
-
-    $stmt = $Con->prepare("SELECT r.item_local AS Item, p.folio_p AS Folio, t.nombre_tarima AS Tarima, r.item_cliente AS Cliente, r.presentacion AS Pre, s.nombre_s AS Sede, p.tipo_t AS Tipo, p.fecha_p AS FechaP, p.fecha_e AS FechaE
-                            FROM pallets p
-                            JOIN tipos_tarimas t ON p.id_tarima_p = t.id_tarima
-                            JOIN presentaciones_pallet r ON p.id_presen_p = r.id_presentacion_p
-                            JOIN sedes s ON p.id_sede_p = s.id_sede
-                            WHERE p.id_pallet = ?");
-    $stmt->bind_param("i", $TD);
-    $stmt->execute();
-    $results = $stmt->get_result();
-
-    if ($row = $results->fetch_assoc()) {
-        $Folio = $row['Folio'];
-        $Tarima = $row['Tarima'];
-        $Cliente = $row['Cliente'];
-        $nSede = $row['Sede'];
-        $Presentacion = $row['Pre'];
-        $Cliente = $row['Cliente'];
-        $Item = $row['Item'];
-        $Tipo = $row['Tipo'];
-        $Fecha = $row['FechaP'];
-        $FehaE = $row['FechaE'];
-    }
-    $stmt->close();
-
-    $stmt = $Con->prepare("SELECT m.folio_m AS Mezcla, t.cajas_m AS Cajas, e.linea AS Linea, e.selladora AS Selladora
-                            FROM pallet_mezclas t
-                            JOIN mezclas m ON t.id_mezcla_m = m.id_mezcla
-                            JOIN empaque_lineas e ON t.id_linea_m = e.id_linea
-                            WHERE id_pallet_m = ?");
-    $stmt->bind_param("i", $TD);
-    $stmt->execute();
-    $tabla = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-    $stmt->close();
+    $Folio = "---";
+    $PO = "---";
+    $Destino = "---";
 }
 
+$stmt = $Con->prepare("SELECT CONCAT(pp.item_cliente, ' - ', pp.presentacion) AS presentacion_p, p.folio_p, p.mapeo, p.ubicacion
+                        FROM pallets p
+                        LEFT JOIN presentaciones_pallet pp ON p.id_presen_p = pp.id_presentacion_p
+                        WHERE p.id_embarque_p = ?");
+$stmt->bind_param("i", $embarque_id);
+$stmt->execute();
+$mapa = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+// Normalizamos el array por posición
+$datosMapa = [];
+foreach ($mapa as $m) {
+    $datosMapa[$m['mapeo']] = $m;
+}
+$stmt->close();
 ?>
 
-<!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <style>
-        @page {
-            margin: 30px;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-        }
-
-        .contenedor {
-            border: 1px solid #ccc;
-            padding: 15px;
-            margin-bottom: 50px;
-        }
-
-        .encabezado {
-            display: table;
-            width: 100%;
-            margin-bottom: 10px;
-        }
-
-        .logo {
-            display: table-cell;
-            vertical-align: middle;
-            width: 33%;
-        }
-
-        .titulo {
-            display: table-cell;
-            vertical-align: middle;
-            text-align: center;
-            font-size: 16px;
-            font-weight: bold;
-            width: 33%;
-        }
-
-        .folio {
-            display: table-cell;
-            vertical-align: middle;
-            text-align: right;
-            width: 33%;
-        }
-
-        .folio-box {
-            background-color: #f2f2f2;
-            display: inline-block;
-            padding: 5px 10px;
-            font-weight: bold;
-            color: #b30000;
-            border-radius: 4px;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        .detalles {
-            margin-bottom: 10px;
-        }
-
-        .detalles b {
-            font-weight: bold;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-        }
-
-        th, td {
-            border: 1px solid #aca9a9ff;
-            padding: 6px;
-            text-align: center;
-        }
-
-        th {
-            background-color: rgba(226, 226, 226, 1);
-            font-weight: bold;
-        }
-
-        .total-row td {
-            font-weight: bold;
-            background-color: rgba(226, 226, 226, 1);
-            text-align: center;
-        }
-
-        .total-row td:last-child {
-            text-align: center;
-        }
-
-    </style>
+<meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+<style>
+</style>
 </head>
-<body>
 
-<?php for ($i=0; $i < 2; $i++) { ?>
-<div class="contenedor">
-    <div class="encabezado">
-        <div class="logo">
-            <img src="<?= $src ?>" width="100" height="70"/>
-        </div>
-        <div class="titulo">
-            PALLET TRAZABLE
-        </div>
-        <div class="folio">
-            <span class="folio-box">No. Pallet<br><?= htmlspecialchars($Folio, ENT_QUOTES, 'UTF-8'); ?></span>
-        </div>
-    </div>
+<style>
+  body {
+    font-family: DejaVu Sans, sans-serif; /* compatible con dompdf */
+    font-size: 10px;
+  }
 
-    <div class="detalles">
-        <b>Company:</b> <?= $nSede ?? '-' ?> S.A.P.I de C.V. <br><br>
-        <b>Date:</b> <?= $FechaActual ?? '-' ?> &nbsp;&nbsp; <b>Commodity:</b> Greenhouse Tomatoes <br><br>
-        <b>Description:</b> <?= $Cliente ?? '-' ?> - <?= $Presentacion ?? '-' ?> &nbsp;&nbsp;<br>
-    </div>
+  .contenedor {
+    width: 100%;
+    max-width: 730px; /* aprox. ancho útil en A4 menos márgenes */
+    margin: 0 auto;
+  table-layout: fixed;
+}
 
-    <table>
-        <thead>
-            <tr>
-                <th>Item</th>
-                <th>Batch Code</th>
-                <th>Line</th>
-                <th>TS</th>
-                <th>Packing Date</th>
-                <th>PTI Date</th>
-                <th>Cases</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($tabla as $tbl): ?>
-                <tr>
-                    <td align="center"><?= $Item ?></td>
-                    <td align="center"><?= $tbl['Mezcla'] ?></td>
-                    <td align="center"><?= $tbl['Linea'] ?></td>
-                    <td align="center"><?= $tbl['Selladora'] ?></td>
-                    <td align="center"><?=  date("d/m/Y", strtotime($Fecha))?></td>
-                    <td align="center"><?=  date("d/m/Y", strtotime($FechaE))?></td>
-                    <td align="center"><?= $tbl['Cajas'] ?></td>
-                </tr>
-                <?php endforeach; ?>
-            <tr class="total-row">
-                <td colspan="6">BOXES</td>
-                <td><?= $totals['Suma'] ?? 0 ?></td>
-            </tr>
-        </tbody>
-    </table>
-    <br>
-    <b>Estibado en tarima:</b> <?= $Tarima ?? '-' ?> &nbsp;&nbsp;&nbsp;&nbsp; <b>Expedido en </b> <?= $nSede ?? '-' ?> S.A.P.I de C.V.<br>
-</div>
-    
-<?php } ?>
-</body>
+  .tabla-principal {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  .tabla-principal td {
+    border: 0.5px solid #727272ff;
+    text-align: center;
+    vertical-align: middle;
+    width: 12.6mm;   /* 190mm ÷ 15 */
+    height: 15mm;    /* 277mm ÷ 6 */
+    font-size: 7pt;
+    word-wrap: break-word;
+  }
+
+  .title {
+    border: 1px solid gray;
+    text-align: left;
+    vertical-align: top;
+    position: relative;
+    font-size: 9pt;
+    padding-bottom: 0px;
+  }
+
+
+.celda-num {
+  border: 0.5px solid #727272ff;
+  width: 48px;    /* ancho fijo */
+  height: 68px;   /* alto fijo para calcular */
+  padding: 0;
+  position: relative;
+}
+
+.dato-top {
+  flex: 8;   /* 80% de 48px */
+  font-size: 4pt;
+  /* font-weight: 600; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  vertical-align: middle;
+  overflow: hidden;
+  word-wrap: break-word;
+  line-height: 1.1;
+  text-align: center;
+  padding: 1px;
+}
+
+.dato-middle {
+  flex: 1;   /* 10% de 61px */
+  font-size: 6pt;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 0.5px solid #727272ff;
+  border-bottom: 0.5px solid #727272ff;
+  background-color: rgb(210, 221, 226);
+}
+
+.dato-bottom {
+  flex: 1;       /* 10% de 61px */
+  font-size: 6pt;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: black;
+}
+
+  .dato {
+    font-size: 6pt;
+    color: #555;
+  }
+
+  .w364 { width: 337px; }
+  .w208 { width: 186px; }
+  .w104 { width: 102px; }
+  .ma1 { width: 310px; }
+  .ma2 { width: 256px; }
+  .na1 { width: 65px; }
+  .na2 { width: 95px; }
+  .muelle {
+    background: #aaa;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+  }
+  .vacio {
+    background: #ebebebff;
+    color: black;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .tabla-doble {
+    text-align: center;
+    border-collapse: separate;
+    border-spacing: 20px;
+    font-size: 7pt;
+  }
+
+ .bloque {
+    border: 0.5px solid #727272ff;
+    padding: 5px;
+    vertical-align: top !important;
+  }
+
+  .bloque table {
+    border-collapse: collapse;
+    width: 100%;
+    text-align: center;
+  }
+
+  .bloque th {
+    background: #0fb948ff;
+    color: #fff;
+    padding: 4px;
+  }
+
+  .bloque td {
+    border: none;
+    padding: 3px;
+  }
+
+.numeracion {
+  position: absolute;
+  top: 2px;      /* distancia desde arriba */
+  right: 4px;    /* distancia desde la derecha */
+  color: red;
+  font-weight: bold;
+  font-size: 10pt; /* ajusta según tamaño */
+}
+
+</style>
+
+    <body>
+        <div class="contenedor">
+                <table width="100%" height="12" >
+                    <tr height="6">
+                        <td rowspan="3" style="width:90px; height:70px; padding:0; margin:0; overflow:hidden;"><img src="<?= $src ?>" width="90" height="70"/></td>
+                        <td colspan="2" class="title" style="text-align:center">Mapa de Camára Fría y Check List de carga</td>
+                        <td class="title">Fecha: <?=$Fecha?></td>
+                    </tr>
+                    <tr height="6">
+                        <td class="title" style="width:30%">Embarque: <?=$Folio?></td>
+                        <td class="title" style="width:30%">PO#: <?=$PO?></td>
+                        <td class="title" style="width:40%">Destino: <?=$Destino?></td>
+                    </tr>
+                    <tr height="6">
+                        <td class="title" colspan="4">Elaboró: <?=$Usuario?></td>
+                    </tr>
+                </table>
+                <br>
+                <table cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td class="w364"></td>
+                        <td class="w104 muelle">MUELLE 3</td>
+                        <td class="w208"></td>
+                        <td class="w104 muelle">MUELLE 2</td>
+                    </tr>
+                </table>
+                <table class="tabla-principal" cellspacing="0"  cellpadding="0">
+                    <tr>
+                        <td style="border: none"></td>
+                        <?php for ($i = 1; $i <= 7; $i++): ?>
+                            <td class="celda-num">
+                                <?php if (isset($datosMapa[$i])): ?>
+                                    <div class="dato-top"><?= $datosMapa[$i]['presentacion_p'] ?></div>
+                                    <div class="dato-middle"><?= $datosMapa[$i]['folio_p'] ?></div>
+                                    <div class="dato-bottom"><?= $datosMapa[$i]['ubicacion'] ?></div>
+                                <?php else: ?>
+                                    <div class="numeracion"><?= $i ?></div>
+                                <?php endif; ?>
+                            </td>
+                        <?php endfor; ?>
+                        <td style="background-color: rgb(210, 221, 226); border: none;"></td>
+                        <td style="background-color: rgb(210, 221, 226); border: none;"></td>
+                         <?php for ($i = 8; $i <= 12; $i++): ?>
+                            <td class="celda-num">
+                                <?php if (isset($datosMapa[$i])): ?>
+                                    <div class="dato-top"><?= $datosMapa[$i]['presentacion_p'] ?></div>
+                                    <div class="dato-middle"><?= $datosMapa[$i]['folio_p'] ?></div>
+                                    <div class="dato-bottom"><?= $datosMapa[$i]['ubicacion'] ?></div>
+                                <?php else: ?>
+                                    <div class="numeracion"><?= $i ?></div>
+                                <?php endif; ?>
+                            </td>
+                        <?php endfor; ?>
+                    </tr>
+                     <tr>
+                        <?php for ($i = 13; $i <= 20; $i++): ?>
+                            <td class="celda-num">
+                                <?php if (isset($datosMapa[$i])): ?>
+                                    <div class="dato-top"><?= $datosMapa[$i]['presentacion_p'] ?></div>
+                                    <div class="dato-middle"><?= $datosMapa[$i]['folio_p'] ?></div>
+                                    <div class="dato-bottom"><?= $datosMapa[$i]['ubicacion'] ?></div>
+                                <?php else: ?>
+                                    <div class="numeracion"><?= $i ?></div>
+                                <?php endif; ?>
+                            </td>
+                        <?php endfor; ?>
+                        <td style="background-color: rgb(210, 221, 226); border: none;"></td>
+                        <td style="background-color: rgb(210, 221, 226); border: none;"></td>
+                        <?php for ($i = 21; $i <= 25; $i++): ?>
+                            <td class="celda-num">
+                                <?php if (isset($datosMapa[$i])): ?>
+                                    <div class="dato-top"><?= $datosMapa[$i]['presentacion_p'] ?></div>
+                                    <div class="dato-middle"><?= $datosMapa[$i]['folio_p'] ?></div>
+                                    <div class="dato-bottom"><?= $datosMapa[$i]['ubicacion'] ?></div>
+                                <?php else: ?>
+                                    <div class="numeracion"><?= $i ?></div>
+                                <?php endif; ?>
+                            </td>
+                        <?php endfor; ?>
+                    </tr>
+                    <tr>
+                        <?php for ($i = 26; $i <= 32; $i++): ?>
+                            <td class="celda-num">
+                                <?php if (isset($datosMapa[$i])): ?>
+                                    <div class="dato-top"><?= $datosMapa[$i]['presentacion_p'] ?></div>
+                                    <div class="dato-middle"><?= $datosMapa[$i]['folio_p'] ?></div>
+                                    <div class="dato-bottom"><?= $datosMapa[$i]['ubicacion'] ?></div>
+                                <?php else: ?>
+                                    <div class="numeracion"><?= $i ?></div>
+                                <?php endif; ?>
+                            </td>
+                        <?php endfor; ?>
+                        <td style="border: none"></td>
+                        <td style="background-color: rgb(210, 221, 226); border: none;"></td>
+                        <td style="background-color: rgb(210, 221, 226); border: none;"></td>
+                        <?php for ($i = 33; $i <= 37; $i++): ?>
+                            <td class="celda-num">
+                                <?php if (isset($datosMapa[$i])): ?>
+                                    <div class="dato-top"><?= $datosMapa[$i]['presentacion_p'] ?></div>
+                                    <div class="dato-middle"><?= $datosMapa[$i]['folio_p'] ?></div>
+                                    <div class="dato-bottom"><?= $datosMapa[$i]['ubicacion'] ?></div>
+                                <?php else: ?>
+                                    <div class="numeracion"><?= $i ?></div>
+                                <?php endif; ?>
+                            </td>
+                        <?php endfor; ?>
+                    </tr>
+                    <tr>
+                        <td style="background-color: rgb(210, 221, 226); border: none;"></td>
+                        <td style="background-color: rgb(210, 221, 226); border: none;"></td>
+                        <td style="background-color: rgb(210, 221, 226); border: none;"></td>
+                        <td style="background-color: rgb(210, 221, 226); border: none;"></td>
+                        <td style="background-color: rgb(210, 221, 226); border: none;"></td>
+                        <td style="background-color: rgb(210, 221, 226); border: none;"></td>
+                        <td style="background-color: rgb(210, 221, 226); border: none;"></td>
+                        <td style="background-color: rgb(210, 221, 226); border: none;"></td>
+                        <td style="background-color: rgb(210, 221, 226); border: none;"></td>
+                        <td style="background-color: rgb(210, 221, 226); border: none;"></td>
+                        <?php for ($i = 38; $i <= 42; $i++): ?>
+                            <td class="celda-num">
+                                <?php if (isset($datosMapa[$i])): ?>
+                                    <div class="dato-top"><?= $datosMapa[$i]['presentacion_p'] ?></div>
+                                    <div class="dato-middle"><?= $datosMapa[$i]['folio_p'] ?></div>
+                                    <div class="dato-bottom"><?= $datosMapa[$i]['ubicacion'] ?></div>
+                                <?php else: ?>
+                                    <div class="numeracion"><?= $i ?></div>
+                                <?php endif; ?>
+                            </td>
+                        <?php endfor; ?>
+                    </tr>
+                    <tr>
+                        <td style="border: none"></td>
+                        <?php for ($i = 43; $i <= 56; $i++): ?>
+                            <td class="celda-num">
+                                <?php if (isset($datosMapa[$i])): ?>
+                                    <div class="dato-top"><?= $datosMapa[$i]['presentacion_p'] ?></div>
+                                    <div class="dato-middle"><?= $datosMapa[$i]['folio_p'] ?></div>
+                                    <div class="dato-bottom"><?= $datosMapa[$i]['ubicacion'] ?></div>
+                                <?php else: ?>
+                                    <div class="numeracion"><?= $i ?></div>
+                                <?php endif; ?>
+                            </td>
+                        <?php endfor; ?>
+                    </tr>
+                    <tr>
+                        <td style="border: none"></td>
+                        <?php for ($i = 57; $i <= 70; $i++): ?>
+                            <td class="celda-num">
+                                <?php if (isset($datosMapa[$i])): ?>
+                                    <div class="dato-top"><?= $datosMapa[$i]['presentacion_p'] ?></div>
+                                    <div class="dato-middle"><?= $datosMapa[$i]['folio_p'] ?></div>
+                                    <div class="dato-bottom"><?= $datosMapa[$i]['ubicacion'] ?></div>
+                                <?php else: ?>
+                                    <div class="numeracion"><?= $i ?></div>
+                                <?php endif; ?>
+                            </td>
+                        <?php endfor; ?>
+                    </tr>
+                </table>
+                <table cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td class="ma1"></td>
+                        <td class="na1 muelle">NARIZ</td>
+                        <td class="ma2"></td>
+                        <td class="na2 vacio">VACÍO</td>
+                    </tr>
+                </table>
+                <table class="tabla-doble">
+                    <tr>
+                        <!-- Bloque IZQ -->
+                        <td class="bloque">
+                        <table>
+                            <tr>
+                            <th style="width: 25px">IZQ</th>
+                            <th style="width:60px">Folio</th>
+                            <th style="width:170px">Nombre Corto</th>
+                            </tr>
+                            <?php
+                              for ($fila = 1; $fila <= 30; $fila += 2) { // Pallets impares IZQ
+                                  // Buscar pallet que tenga esa ubicación
+                                  $folio = '';
+                                  $ubicacion = '';
+                                  foreach ($datosMapa as $pallet) {
+                                      if ($pallet['ubicacion'] == $fila) {
+                                          $folio = $pallet['folio_p'];
+                                          $ubicacion = $pallet['presentacion_p'];
+                                          break;
+                                      }
+                                  }
+                                  echo "<tr>
+                                          <td>{$fila}</td>
+                                          <td>{$folio}</td>
+                                          <td>{$ubicacion}</td>
+                                        </tr>";
+                              }
+                            ?>
+                        </table>
+                        </td>
+
+                        <!-- Bloque DER -->
+                        <td class="bloque">
+                        <table>
+                            <tr>
+                            <th style="width:25px">DER</th>
+                            <th style="width:60px">Folio</th>
+                            <th style="width:170px">Nombre Corto</th>
+                            </tr>
+                            <?php
+                              for ($fila = 2; $fila <= 30; $fila += 2) { // Pallets impares IZQ
+                                  // Buscar pallet que tenga esa ubicación
+                                  $folio = '';
+                                  $ubicacion = '';
+                                  foreach ($datosMapa as $pallet) {
+                                      if ($pallet['ubicacion'] == $fila) {
+                                          $folio = $pallet['folio_p'];
+                                          $ubicacion = $pallet['presentacion_p'];
+                                          break;
+                                      }
+                                  }
+                                  echo "<tr>
+                                          <td>{$fila}</td>
+                                          <td>{$folio}</td>
+                                          <td>{$ubicacion}</td>
+                                        </tr>";
+                              }
+                            ?>
+                        </table>
+                        </td>
+                    </tr>
+                </table>
+        </div>
+    </body>
 </html>

@@ -352,7 +352,7 @@
                 $Fecha = $Limpiar -> LimpiarFecha();
 
                 session_start();
-                $_SESSION['correcto'] = "El embarque se actualizó correctamente";
+                $_SESSION['correcto'] = "Embarque actualizado";
                 header("Location: EditarE.php?id=" . $idEmbarque);
                 exit();
             }

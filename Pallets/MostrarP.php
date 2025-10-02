@@ -8,13 +8,14 @@ if (!empty($_POST)) {
 
     $id = $_POST['id'];
 
-    $stmt = $Con->prepare("SELECT m.folio_m AS f, s.codigo_s AS s, cl.nombre_cliente AS nc, m.cajas_t AS c, m.kilos_t AS k, m.fecha_m AS fc, m.hora_m AS h, c.nombre_completo AS nr
-                    FROM mezclas m
-                    LEFT JOIN usuarios u ON m.id_usuario_m = u.id_usuario
-                    LEFT JOIN cargos c ON u.id_cargo = c.id_cargo
-                    LEFT JOIN clientes cl ON m.id_cliente_m = cl.id_cliente
-                    LEFT JOIN sedes s ON m.id_sede_m = s.id_sede
-                    WHERE m.id_mezcla=?");
+    $stmt = $Con->prepare("SELECT p.folio_p AS f, s.codigo_s AS s, pp.presentacion AS np, pp.cliente_id AS nc, p.cajas_p AS c, p.tipo_t AS t, p.fecha_p AS fc, p.hora_p AS h, c.nombre_completo AS nr
+                    FROM pallets p
+                    JOIN usuarios u ON p.id_usuario_p = u.id_usuario
+                    JOIN cargos c ON u.id_cargo = c.id_cargo
+                    JOIN tipos_tarimas t ON p.id_tarima_p = t.id_tarima
+                    JOIN presentaciones_pallet pp ON p.id_presen_p = id_presentacion_p
+                    JOIN sedes s ON p.id_sede_p = s.id_sede
+                    WHERE p.id_pallet=?");
     $stmt->bind_param("i",$id);
     $stmt->execute();
     $Registro = $stmt->get_result();

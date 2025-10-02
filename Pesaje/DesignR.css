@@ -1,6 +1,6 @@
 * {
-    margin: 0;
-    padding: 0;
+    margin  : 0;
+    padding : 0;
     box-sizing: border-box;
 }
 
@@ -595,6 +595,13 @@ footer {
     color: var(--verde-principal);
 }
 
+.campos-cajas {
+    max-width: 95%;
+    margin: auto auto;
+    display: flex;
+    flex-wrap: wrap;
+}
+
 /* FORMULARIO */
 /*DISEÑO: REGISTRO*/
 .Registro {
@@ -622,7 +629,6 @@ footer {
     margin-bottom: 20px;
     text-align: center;
     font-family: sans-serif;
-    font-weight: bold;
 }
 
 /*DISEÑO: INPUT*/
@@ -820,6 +826,18 @@ footer {
     background-color: var(--verde-principal);
   }
 
+/* @media screen and (max-width: 1500px) and (orientation: landscape) {
+    .logo img {
+        margin-top: 21px;
+        padding: 1px;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background-image: linear-gradient(5deg, #f5dbbc 0, #f4d3b4 12.5%, #f4cbac 25%, #f3c3a5 37.5%, #f2b99d 50%, #f1af97 62.5%, #f0a692 75%, #ef9d8f 87.5%, #ed958e 100%);
+        object-fit: cover;
+    }
+} */
+
 /* BUSCADOR POR COLUMNA */
 tfoot input {
     width: 100%;
@@ -892,143 +910,6 @@ tfoot select {
 :hover.pdf {
     background-color: #fdfdfd8a;
     border: 1px solid #fdfdfd8a;
-}
-
-/*FORM AGREGAR LOTE*/
-.ARCH {
-    margin-bottom: 5px;
-    padding-top: 1%;
-}
-
-.AR {
-    /*background-image: radial-gradient(circle at -16.45% 74.18%, #aaacd8 0, #b2aad6 3.33%, #b9a8d2 6.67%, #c0a7cf 10%, #c7a5ca 13.33%, #cca3c5 16.67%, #d1a2c0 20%, #d5a1ba 23.33%, #d8a0b4 26.67%, #daa0ae 30%, #dca0a8 33.33%, #dca0a3 36.67%, #dca19d 40%, #dba298 43.33%, #d9a393 46.67%, #d6a58f 50%, #d3a78b 53.33%, #cfa988 56.67%, #caaa86 60%, #c5ac85 63.33%, #bfae84 66.67%, #b9b085 70%, #b3b286 73.33%, #adb488 76.67%, #a6b58b 80%, #a0b78e 83.33%, #99b893 86.67%, #92b997 90%, #8cba9c 93.33%, #86bba2 96.67%, #80bca8 100%);*/
-    background-color: var(--verde-principal);
-    display: block;
-    width: 90%;
-    margin-left: 5%;
-    margin-right: 5%;
-    border: 2px solid #fff;
-    color: var(--fondo-form);
-    font-weight: bold;
-    text-align: center;
-    padding: 8px 10px;
-    position: relative;
-    box-sizing: border-box;
-    border-radius: 5px;
-    transition: .3s;
-    font-size: 16px;
-    overflow: hidden;
-}
-
-.AR > a {
-    text-decoration: none;
-    cursor: pointer;
-    float: right;
-    width: 25px;
-    height: 25px;
-    overflow: hidden;
-}
-
-.Open {
-    display: inline;
-}
-
-.Close {
-    display: none;
-}
-
-/* JUNTAR CAMPOS */
-.fila-dos-campos {
-    max-width: 95%;
-    margin: auto auto;
-    padding-top: 2%;
-    display: flex;
-    flex-wrap: wrap;
-    box-sizing: border-box;
-}
-
-.campo {
-    box-sizing: border-box;
-}
-
-.campo-grande {
-    flex: 1 1 50%;
-    min-width: 0;
-}
-
-/* NUEVO: Contenedor interno de los dos campos */
-.contenedor-doble-campo {
-    display: flex;
-    width: 95%;
-}
-
-/* Subcampos dentro del contenedor */
-.contenedor-doble-campo .campo {
-    flex: 1;
-    min-width: 0;
-    margin-top: 1%;
-}
-
-/* Para que los inputs llenen el campo correctamente */
-.campo input {
-    width: 95%;
-    box-sizing: border-box;
-}
-
-.campos-cajas {
-    max-width: 95%;
-    margin: auto auto;
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.Center2 {
-  display: flex;
-  gap: 20px; /* espacio entre botones */
-  align-items: center; /* para que estén verticalmente centrados */
-  justify-content: center; /* si quieres que se centren horizontalmente en su contenedor */
-  margin-top: 2%;
-}
-
-.BotonAgregar {
-  background-color: var(--verde-principal); /* verde */
-  border: none;
-  border-radius: 8px;
-  width: 80px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  color: white;
-  text-decoration: none; /* para el <a>, quitar subrayado */
-}
-
-.BotonAgregar i {
-  pointer-events: none; /* para evitar que el icono interfiera en clicks */
-}
-
-.Registro .BotonAgregar:hover{
-    box-shadow: inset 500px 0 0 0 var(--color-texto);
-    border: 2px solid var(--color-texto);
-    color: #fdfdfd;
-}
-
-/* CAMPOS GRISES */
-.FAD > .FAL.Gris {
-    border: 2px solid #797979;
-}
-
-.FAD > .FAL .FAS.Top.Gris {
-    color: #797979 !important;
-}
-
-.FAD > .FAL .FAS.Gris {
-    color: #797979 !important;
-}
-
-.FAD > .FAL .FAI.Gris {
-    color: #797979 !important;
 }
 
 /* ==========================
@@ -1226,10 +1107,6 @@ footer {
     clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%) !important;  /* Mantener la forma inclinada */
     -webkit-clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%) !important;
     border-radius: 4px;          /* Opcional: bordes redondeados para mejor estética */
-  }
-
-  .dataTables_wrapper .dataTables_scroll {
-    overflow-x: auto;
   }
 }
 

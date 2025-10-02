@@ -1,3 +1,3 @@
 <?php
-    echo "inicio mezcla";
+    echo "inicio pallet";
 ?>

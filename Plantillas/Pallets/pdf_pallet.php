@@ -29,7 +29,7 @@ $html = ob_get_clean();
 $dompdf->loadHtml($html);
 
 // Configurar tamaño y orientación
-$dompdf->setPaper('A4', 'portrait');
+$dompdf->setPaper('letter', 'portrait');
 
 // Renderizar PDF
 $dompdf->render();

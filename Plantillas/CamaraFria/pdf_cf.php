@@ -21,11 +21,12 @@ $tipo = $_GET['Tipo'] ?? '';
 $tarima = $_GET['Tarima'] ?? '';
 $fecha = $_GET['Fecha'] ?? '';
 $fechaE = $_GET['FechaE'] ?? '';
+$embarque_id = $_GET['embarque'] ?? '';
 
-if ($id == 'fill') {
-    include("mapa_cf_fill.php");
-}else{
+if ($id == 'empty') {
     include("mapa_cf_empty.php");
+}else{
+    include("mapa_cf_fill.php");
 }
 
 $html = ob_get_clean();
@@ -34,7 +35,7 @@ $html = ob_get_clean();
 $dompdf->loadHtml($html);
 
 // Configurar tamaño y orientación
-$dompdf->setPaper('A4', 'portrait');
+$dompdf->setPaper('letter', 'portrait');
 
 // Renderizar PDF
 $dompdf->render();

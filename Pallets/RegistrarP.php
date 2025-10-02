@@ -21,7 +21,7 @@
     $Sede = isset($_POST['Sede']) ? $_POST['Sede'] : '';
     $Presentaciones = isset($_POST['Presentaciones']) ? $_POST['Presentaciones'] : '';
     $Linea = $_POST['Lineas'] ?? $_GET['Lineas'] ?? 0;
-    $Tipo = isset($_POST['Tipo']) ? $_POST['Tipo'] : '';
+    $Embarque = isset($_POST['Embarques']) ? $_POST['Embarques'] : '';
     $Tarima = isset($_POST['Tarimas']) ? $_POST['Tarimas'] : '';
     $Fecha = isset($_POST['Fecha']) ? $_POST['Fecha'] : '';
     $FechaE = isset($_POST['FechaE']) ? $_POST['FechaE'] : '';
@@ -30,7 +30,7 @@
     $Folio="";
     $CajasP=0;
 
-    for ($i=1; $i <= 10; $i++) {
+    for ($i=1; $i <= 7; $i++) {
         ${"Error".$i}="";
     }
 
@@ -110,7 +110,7 @@
         public $Sede;
         public $Presentaciones;
         public $Linea;
-        public $Tipo;
+        public $Embarque;
         public $Tarima;
         public $Fecha;
         public $FechaE;
@@ -126,13 +126,9 @@
         public function LimpiarPresentaciones(){
             return $this -> Presentaciones="Seleccione la presentación:";
         }
-        
-        public function LimpiarLinea(){
-            return $this -> Linea="Seleccione la línea:";
-        }
 
-        public function LimpiarTipo(){
-            return $this -> Tipo="Seleccione el tipo:";
+        public function LimpiarEmbarque(){
+            return $this -> Embarque="Seleccione el embarque:";
         }
 
         public function LimpiarTarima(){
@@ -151,8 +147,7 @@
     if (isset($_POST['Insertar'])) {
         $Sede=$_POST['Sede'];
         $Presentaciones=$_POST['Presentaciones'];
-        $Linea=$_POST['Lineas'];
-        $Tipo=$_POST['Tipo'];
+        $Embarque=$_POST['Embarques'];
         $Tarima=$_POST['Tarimas'];
         $Fecha=$_POST['Fecha'];
         $FechaE=$_POST['FechaE'];
@@ -182,22 +177,15 @@
             $Correcto += 1;
         }
 
-        if ($Linea == "0") {
-            $Error3 = "Tienes que seleccionar una línea";
-            $NumE += 1;
-        }else{
-            $Correcto += 1;
-        }
-
-        if ($Tipo == "0") {
-            $Error4 = "Tienes que seleccionar un tipo";
+        if ($Embarque == "0") {
+            $Error3 = "Tienes que seleccionar un embarque";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
         
         if ($Tarima == "0") {
-            $Error5 = "Tienes que seleccionar una tarima";
+            $Error4 = "Tienes que seleccionar una tarima";
             $NumE += 1;
         }else{
             $Correcto += 1;
@@ -212,11 +200,11 @@
                 $Correcto += 1;
                 break;
             case '2':
-                $Error6 = "La fecha ingresada es incorrecta";
+                $Error5 = "La fecha ingresada es incorrecta";
                 $NumE += 1;
                 break;
             case '3':
-                $Error6 = "El campo de fecha de empaque no puede ir vacío";
+                $Error5 = "El campo de fecha de empaque no puede ir vacío";
                 $NumE += 1;
                 break;    
         }
@@ -230,7 +218,7 @@
                 $Correcto += 1;
                 break;
             case '2':
-                $Error7 = "La fecha ingresada es incorrecta";
+                $Error6 = "La fecha ingresada es incorrecta";
                 $NumE += 1;
                 break;
             case '3':
@@ -238,7 +226,7 @@
                 $NumP += 1;
                 break;
             case '4':
-                $Error7 = "El campo de fecha de envió no puede ir vacío";
+                $Error6 = "El campo de fecha de envió no puede ir vacío";
                 $NumE += 1;
                 break;    
         }
@@ -255,9 +243,9 @@
             $Correcto += 1;
         }
         
-        if ($Correcto==8) {
+        if ($Correcto==7) {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $stmt = $Con->prepare("SELECT SUM(id_pallet) AS Suma FROM pallets WHERE id_Sede_p = ?");
+                $stmt = $Con->prepare("SELECT COUNT(id_pallet) AS Suma FROM pallets WHERE id_Sede_p = ?");
                 $stmt->bind_param("i", $SedeVal);
                 $stmt->execute();
                 $resultSuma = $stmt->get_result();
@@ -271,22 +259,22 @@
                 $resultSuma = $stmt->get_result();
                 $CajasP = $resultSuma->fetch_assoc()['CajasP'];
 
-                $stmtInsertMezcla = $Con->prepare("INSERT INTO pallets (folio_p, id_sede_p, fecha_c, fecha_p, hora_p, id_linea_p, tipo_t, fecha_e, cajas_p, id_tarima_p, id_presen_p, id_usuario_p, estado_p, activo_p) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1)");
-                $stmtInsertMezcla->bind_param("sisssissisii", $Folio, $SedeVal, $FechaVal, $FechaVal, $HoraP, $Linea, $Tipo, $FechaEVal, $CajasP, $Tarima, $Presentaciones, $ID);
+                $stmtInsertMezcla = $Con->prepare("INSERT INTO pallets (folio_p, id_sede_p, fecha_c, fecha_p, hora_p, id_embarque_p, fecha_e, cajas_p, id_tarima_p, id_presen_p, id_usuario_p, mapeo, ubicacion, estado_p, activo_p) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 1)");
+                $stmtInsertMezcla->bind_param("sisssssisii", $Folio, $SedeVal, $FechaVal, $FechaVal, $HoraP, $Embarque, $FechaEVal, $CajasP, $Tarima, $Presentaciones, $ID);
                 $stmtInsertMezcla->execute();
                 $idPallet= $stmtInsertMezcla->insert_id;
 
                 // VOLVER A OBTENER LAS MEZCLAS
-                $stmtMezclas = $Con->prepare("SELECT id_mezcla_t, cajas_t FROM pallet_mezclas_temp WHERE usuario_id = ?");
+                $stmtMezclas = $Con->prepare("SELECT id_mezcla_t, cajas_t, id_linea_t FROM pallet_mezclas_temp WHERE usuario_id = ?");
                 $stmtMezclas->bind_param("i", $ID);
                 $stmtMezclas->execute();
                 $resultMezclas = $stmtMezclas->get_result();
 
-                $stmtInsert = $Con->prepare("INSERT INTO pallet_mezclas ( id_pallet_m, id_mezcla_m, cajas_m, fecha_m, hora_m) VALUES (?, ?, ?, ?, ?)");
+                $stmtInsert = $Con->prepare("INSERT INTO pallet_mezclas ( id_pallet_m, id_mezcla_m, cajas_m, id_linea_m, fecha_m, hora_m) VALUES (?, ?, ?, ?, ?, ?)");
                 $stmtUpdate = $Con->prepare("UPDATE mezclas SET estado_m = 1 WHERE id_mezcla = ?");
 
                 while ($row = $resultMezclas->fetch_assoc()) {
-                    $stmtInsert->bind_param("iiiss", $idPallet, $row['id_mezcla_t'], $row['cajas_t'], $FechaVal, $HoraP);
+                    $stmtInsert->bind_param("iiiiss", $idPallet, $row['id_mezcla_t'], $row['cajas_t'], $row['id_linea_t'], $FechaVal, $HoraP);
                     $stmtInsert->execute();
 
                     $stmtUpdate->bind_param("i", $row['id_mezcla_t']);
@@ -295,11 +283,10 @@
                 $stmtInsert->close();
                 $stmtUpdate->close();
 
-                $Limpiar = new Cleanner($Sede,$Presentaciones,$Linea,$Tipo,$Tarima,$Fecha,$FechaE);
+                $Limpiar = new Cleanner($Sede,$Presentaciones,$Embarque,$Tarima,$Fecha,$FechaE);
                 $Sede = $Limpiar -> LimpiarSede();
                 $Presentaciones = $Limpiar -> LimpiarPresentaciones();
-                $Linea = $Limpiar -> LimpiarLinea();
-                $Tipo = $Limpiar -> LimpiarTipo();
+                $Embarque = $Limpiar -> LimpiarEmbarque();
                 $Tarima = $Limpiar -> LimpiarTarima();
                 $Fecha = $Limpiar -> LimpiarFecha();
                 $FechaE = $Limpiar -> LimpiarFechaE();
@@ -308,7 +295,7 @@
                 $stmtDel->bind_param("i", $ID);
                 if ($stmtDel->execute()) {
                     $_SESSION['idPallet'] = $idPallet;
-                    $_SESSION['correcto'] = "Se hizo el registro correctamente";
+                    $_SESSION['correcto'] = "Pallet registrado";
                     header("Location: ".$_SERVER['PHP_SELF']);
                     exit();
                 } 
