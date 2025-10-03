@@ -6,63 +6,90 @@ include_once "../../../Login/validar_sesion.php";
 // $Pagina=basename(__FILE__);
 // Historial($Pagina,$Con);
 
+// Mapeo de columnas
+$columnsMap = [
+    'folio_m' => 'folio_m',
+    'codigo_s' => 'codigo_s',
+    'nombre_cliente' => 'nombre_cliente',
+    'cajas_t' => 'cajas_t',
+    'kilos_t' => 'kilos_t',
+    'fecha_m' => 'fecha_m',
+    'hora_m' => 'hora_m',
+    'nombre_completo' => 'nombre_completo',
+];
+
 // Procesa las columnas de búsqueda
 $searchColumns = $_POST['columns'];
 $whereClauses = [];
 
 $globalSearch = isset($_POST['search']['value']) ? $Con->real_escape_string($_POST['search']['value']) : '';
 
-// Mapeo de columnas
-$columnsMap = [
-    0 => 'folio_m',
-    1 => 'codigo_s',
-    2 => 'nombre_cliente',
-    3 => 'cajas_t',
-    4 => 'kilos_t',
-    5 => 'fecha_m',
-    6 => 'hora_m',
-    7 => 'nombre_completo',
-];
-
+// Búsqueda individual por columna
 foreach ($searchColumns as $index => $column) {
     if (!empty($column['search']['value'])) {
         $searchValue = $Con->real_escape_string($column['search']['value']);
-        
-        $columnName = isset($columnsMap[$index]) ? $columnsMap[$index] : '';
+        $rawColName = $column['data'] ?? '';
+
+        if (isset($columnMap[$rawColName])) {
+            $columnName = $columnMap[$rawColName];
+        } else {
+            // Si no está en el mapeo, usar nombre crudo escapado (por seguridad)
+            $columnName = $Con->real_escape_string($rawColName);
+        }
 
         if (!empty($columnName)) {
-            $whereClauses[] = "$columnName LIKE '%$searchValue%'";
+            if (preg_match('/^\^.*\$$/', $searchValue)) {
+                // ===== Caso SELECT: coincidencia exacta =====
+                $value = substr($searchValue, 1, -1); 
+                $value = str_replace("\\", "", $value);
+                $whereClauses[] = "$columnName = '$value'";
+            } else {
+                // ===== Caso INPUT: texto o fecha =====
+                if ($columnName === 'r.fecha_reg') {
+                    // Comparar fecha exacta
+                    $whereClauses[] = "DATE($columnName) = '$searchValue'";
+                } else {
+                    // Texto normal con LIKE
+                    $whereClauses[] = "$columnName LIKE '%$searchValue%'";
+                }
+            }
         }
     }
 }
 
+// Búsqueda global
 if (!empty($globalSearch)) {
     $globalSearchClauses = [];
-
-    // Añadir búsqueda para el resto de columnas
-    foreach ($columnsMap as $index => $column) {
-            $globalSearchClauses[] = "$column LIKE '%$globalSearch%'";
+    foreach ($searchColumns as $column) {
+        $rawColName = $column['data'] ?? '';
+        if (isset($columnMap[$rawColName])) {
+            $columnName = $columnMap[$rawColName];
+        } else {
+            $columnName = $Con->real_escape_string($rawColName);
+        }
+        if (!empty($columnName)) {
+            $globalSearchClauses[] = "$columnName LIKE '%$globalSearch%'";
+        }
     }
-
-    // Combina todas las cláusulas en una sola
-    $whereClauses[] = '(' . implode(' OR ', $globalSearchClauses) . ')';
+    if (!empty($globalSearchClauses)) {
+        $whereClauses[] = '(' . implode(' OR ', $globalSearchClauses) . ')';
+    }
 }
 
+// Construye el WHERE
 $whereSQL = '';
 if (!empty($whereClauses)) {
-    if ($TipoRol != "") {
-        $whereSQL = "AND " . implode(" AND ", $whereClauses);
-    } else {
-        $whereSQL = " AND " . implode(" AND ", $whereClauses);
-    }
+    $whereSQL = " AND " . implode(" AND ", $whereClauses);
 }
 
-// Procesa el ordenamiento
-$orderColumnIndex = isset($_POST['order'][0]['column']) ? $_POST['order'][0]['column'] : 0; // Índice de la columna por defecto
-$orderDir = isset($_POST['order'][0]['dir']) ? $_POST['order'][0]['dir'] : 'asc'; // Dirección por defecto
-$orderColumn = isset($columnsMap[$orderColumnIndex]) ? $columnsMap[$orderColumnIndex] : 'id_sede'; // Columna por defecto
+// Ordenamiento
+$orderColumnIndex = isset($_POST['order'][0]['column']) ? intval($_POST['order'][0]['column']) : 0;
+$orderDir = (isset($_POST['order'][0]['dir']) && in_array(strtolower($_POST['order'][0]['dir']), ['asc','desc'])) 
+            ? $_POST['order'][0]['dir'] : 'asc';
+$orderColumnRaw = $_POST['columns'][$orderColumnIndex]['data'] ?? 'm.id_registro_r';
+$orderColumn = $columnMap[$orderColumnRaw] ?? $Con->real_escape_string($orderColumnRaw);
 
-// Procesa la paginación
+// Paginación
 $start = isset($_POST['start']) ? intval($_POST['start']) : 0;
 $length = isset($_POST['length']) ? intval($_POST['length']) : 25;
 

@@ -10,13 +10,6 @@ $src = 'data:image/jpeg;base64,' . $imgData;
 $embarque_id = $_GET['embarque'] ?? '';
 $Fecha = date('d/m/Y');
 
-$stmt = $Con->prepare("SELECT c.nombre_completo FROM usuarios u JOIN cargos c ON u.id_cargo = c.id_cargo WHERE u.id_usuario = ?");
-$stmt->bind_param("i", $ID);
-$stmt->execute();
-$result = $stmt->get_result();
-$Usuario = $result->fetch_assoc()['nombre_completo'];
-$stmt->close();
-
 if ($embarque_id != 0) {
     $stmt = $Con->prepare("SELECT em.folio_em AS Folio, em.po_em AS PO, em.fecha_em AS Fecha, d.lugar_d AS Destino
                         FROM embarques_pallets em
@@ -226,7 +219,7 @@ $stmt->close();
                         <td class="title" style="width:40%">Destino: <?=$Destino?></td>
                     </tr>
                     <tr height="6">
-                        <td class="title" colspan="4">Elaboró: <?=$Usuario?></td>
+                        <td class="title" colspan="4">Elaboró: <?=$Titular?></td>
                     </tr>
                 </table>
                 <br>

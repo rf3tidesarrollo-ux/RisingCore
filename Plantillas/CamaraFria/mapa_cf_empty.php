@@ -100,16 +100,15 @@ $src = 'data:image/jpeg;base64,' . $imgData;
                     <tr height="6">
                         <td rowspan="3" style="width:90px; height:70px; padding:0; margin:0; overflow:hidden;"><img src="<?= $src ?>" width="90" height="70"/></td>
                         <td colspan="2" class="title" style="text-align:center">Mapa de Camára Fría y Check List de carga</td>
-                        <td colspan="2" class="title">Elaboró:</td>
+                        <td class="title">Fecha: </td>
                     </tr>
                     <tr height="6">
-                        <td class="title">Fecha:</td>
-                        <td class="title">Embarque:</td>
-                        <td class="title">PO#:</td>
-                        <td class="title">Destino:</td>
+                        <td class="title" style="width:30%">Embarque: </td>
+                        <td class="title" style="width:30%">PO#: </td>
+                        <td class="title" style="width:40%">Destino: </td>
                     </tr>
                     <tr height="6">
-                        <td class="title" colspan="4">Instrucciones: TACHE (X) LOS PALLETS QUE SE VAN CARGANDO</td>
+                        <td class="title" colspan="4">Elaboró: </td>
                     </tr>
                 </table>
                 <br>
@@ -232,16 +231,15 @@ $src = 'data:image/jpeg;base64,' . $imgData;
                     <tr height="6">
                         <td rowspan="3" style="width:90px; height:70px; padding:0; margin:0; overflow:hidden;"><img src="<?= $src ?>" width="90" height="70"/></td>
                         <td colspan="2" class="title" style="text-align:center">Mapa de Camára Fría y Check List de carga</td>
-                        <td colspan="2" class="title">Elaboró:</td>
-                    </tr>
-                    <tr height="6">
                         <td class="title">Fecha:</td>
-                        <td class="title">Embarque:</td>
-                        <td class="title">PO#:</td>
-                        <td class="title">Destino:</td>
                     </tr>
                     <tr height="6">
-                        <td class="title" colspan="4">Instrucciones: TACHE (X) LOS PALLETS QUE SE VAN CARGANDO</td>
+                        <td class="title" style="width:30%">Embarque: </td>
+                        <td class="title" style="width:30%">PO#: </td>
+                        <td class="title" style="width:40%">Destino: </td>
+                    </tr>
+                    <tr height="6">
+                        <td class="title" colspan="4">Elaboró: </td>
                     </tr>
                 </table>
                 <br>

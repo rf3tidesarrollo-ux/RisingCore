@@ -7,7 +7,7 @@ include_once "../../../Login/validar_sesion.php";
 // Mapeo columnas front => columnas con alias correctos en SQL
 $columnMap = [
     'no_serie_m'     => 'm.no_serie_m',
-    'tipo_merma'     => 'cm.tipo_merma',      // Cambia si está en otra tabla
+    'tipo_merma'     => 'cm.tipo_merma',
     'motivo'         => 'cm.motivo',
     'folio_carro'    => 'tc.folio_carro',
     'nombre_tarima'  => 'tt.nombre_tarima',

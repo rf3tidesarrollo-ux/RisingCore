@@ -1,48 +1,65 @@
 $(document).ready(function () {
+
+    // Función que actualiza los href de los PDFs
+    function actualizarHrefPDF() {
+        let embarque = $('#embarques').val();
+        if(!embarque || embarque == 0) embarque = 0;
+        $('#PDFCFF').attr('href', `../../Plantillas/CamaraFria/pdf_cf.php?id=fill&embarque=${encodeURIComponent(embarque)}`);
+    }
+
+    // Función que carga los embarques según la sede
     function cargarEmbarques(sede, embarqueSeleccionado = null) {
-        if (!sede || sede === '0') {
-        $('#embarques').empty().append('<option value="0">Seleccione el embarque:</option>');
-        return;
-        }
-
-        $.getJSON('../../Server_side/Pallet/get_embarques.php?sede=' + sede, function (data) {
         const selectEmbarques = $('#embarques');
-        selectEmbarques.empty().append('<option value="0">Seleccione el embarque:</option>');
+        selectEmbarques.empty().append('<option value="0">Seleccione un embarque:</option>');
 
-        if (data.status === 'ok') {
-            data.embarques.forEach(function (e) {
-            const selectedAttr = (e.id == embarqueSeleccionado) ? 'selected' : '';
-            selectEmbarques.append(`<option value="${e.id}" ${selectedAttr}>${e.embarque}</option>`);
-            });
-        } else {
-            selectEmbarques.append('<option value="0">No hay embarques disponibles</option>');
+        if (!sede || sede === '0') {
+            actualizarHrefPDF();
+            return;
         }
+
+        $.getJSON('get_embarques.php?sede=' + sede, function (data) {
+            if (data.status === 'ok') {
+                data.embarques.forEach(function (e) {
+                    const selectedAttr = (e.id == embarqueSeleccionado) ? 'selected' : '';
+                    selectEmbarques.append(`<option value="${e.id}" ${selectedAttr}>${e.embarque}</option>`);
+                });
+            } else {
+                selectEmbarques.append('<option value="0">No hay embarques disponibles</option>');
+            }
+
+            // Inicializar Select2 si lo estás usando
+            if (selectEmbarques.hasClass('select2-hidden-accessible')) {
+                selectEmbarques.select2('destroy');
+            }
+            selectEmbarques.select2({ placeholder: "Seleccione un embarque", width: '100%' });
+
+            // Actualizar href al terminar de cargar opciones
+            actualizarHrefPDF();
         });
     }
 
+    // Cuando cambia la sede
     $('#sede3').on('change', function () {
         const sede = $(this).val();
         cargarEmbarques(sede);
-
-        if (sede !== "0") {
-            $('#campo_embarque').show();
-        } else {
-            $('#campo_embarque').hide();
-        }
     });
 
-    // Inicializar si ya hay datos cargados
+    // Cuando el usuario selecciona un embarque
+    $('#embarques').on('change', function(){
+        actualizarHrefPDF();
+    });
+
+    // Inicializar al cargar la página
     const sedeInicial = $('#sede3').val();
     const embarqueInicial = $('#embarqueSeleccionado').val();
-
     if (sedeInicial && sedeInicial !== '0') {
         cargarEmbarques(sedeInicial, embarqueInicial);
-
-        $('campo_embarque').show();
     } else {
-        $('#campo_embarque').hide(); // Oculta datos si no hay selección inicial
+        actualizarHrefPDF();
     }
+
 });
+
 
 $(document).on('click', 'a.edit-row', function(e) {
     e.preventDefault();
@@ -149,3 +166,5 @@ $(document).on('click', 'a.edit-row', function(e) {
         }
     });
 });
+
+

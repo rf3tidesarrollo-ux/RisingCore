@@ -29,7 +29,7 @@ if ($IDP == 0) {
     $totalRecords = $totalResult->fetch_assoc()['total'];
 
     // Consulta de datos con orden y paginación
-    $dataQuery = "SELECT * FROM pallet_mezclas_temp p
+    $dataQuery = "SELECT *, p.cajas_t AS Cajas FROM pallet_mezclas_temp p
                     LEFT JOIN mezclas m ON p.id_mezcla_t = m.id_mezcla
                     LEFT JOIN clientes c ON m.id_cliente_m = c.id_cliente
                     LEFT JOIN empaque_lineas l ON p.id_linea_t = l.id_linea

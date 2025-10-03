@@ -5,8 +5,29 @@ $RutaSC = "../../../index.php";
 include_once "../../../Login/validar_sesion.php";
 // $Pagina=basename(__FILE__);
 // Historial($Pagina,$Con);
-$Tipo1="INDIVIDUAL";
-$Tipo2="RACIMO";
+
+// Mapeo de columnas
+$columnsMap = [
+    'no_serie_m' => 'no_serie_r',
+    'codigo' => 'codigo',
+    'codigo_s' => 'codigo_s',
+    'nombre_variedad' => 'nombre_variedad',
+    'nombre_p' => 'nombre_p',
+    'invernadero' => 'invernadero',
+    'folio_carro' => 'folio_carro',
+    'nombre_tarima' => 'nombre_tarima',
+    'cantidad_tarima' => 'cantidad_tarima',
+    'tipo_caja' => 'tipo_caja',
+    'cantidad_tarima' => 'cantidad_tarima',
+    'p_bruto' => 'p_bruto',
+    'p_taraje' => 'p_taraje',
+    'p_neto' => 'p_neto',
+    'kilos_dis' => 'kilos_dis',
+    'cajas_dis' => 'cajas_dis',
+    'semana_r' => 'semana_r',
+    'fecha_reg' => 'fecha_reg',
+    'hora_r' => 'hora_r',
+];
 
 // Procesa las columnas de búsqueda
 $searchColumns = $_POST['columns'];
@@ -14,80 +35,87 @@ $whereClauses = [];
 
 $globalSearch = isset($_POST['search']['value']) ? $Con->real_escape_string($_POST['search']['value']) : '';
 
-// Mapeo de columnas
-$columnsMap = [
-    0 => 'no_serie_r',
-    1 => 'codigo',
-    2 => 'codigo_s',
-    3 => 'nombre_variedad',
-    4 => 'nombre_p',
-    5 => 'invernadero',
-    6 => 'folio_carro',
-    7 => 'nombre_tarima',
-    8 => 'cantidad_tarima',
-    9 => 'tipo_caja',
-    10 => 'cantidad_caja',
-    11 => 'p_bruto',
-    12 => 'p_taraje',
-    13 => 'p_neto',
-    14 => 'fecha_reg',
-    15 => 'hora_r'
-];
-
+// Búsqueda individual por columna
 foreach ($searchColumns as $index => $column) {
     if (!empty($column['search']['value'])) {
         $searchValue = $Con->real_escape_string($column['search']['value']);
-        
-        $columnName = isset($columnsMap[$index]) ? $columnsMap[$index] : '';
+        $rawColName = $column['data'] ?? '';
+
+        if (isset($columnMap[$rawColName])) {
+            $columnName = $columnMap[$rawColName];
+        } else {
+            // Si no está en el mapeo, usar nombre crudo escapado (por seguridad)
+            $columnName = $Con->real_escape_string($rawColName);
+        }
 
         if (!empty($columnName)) {
-            $whereClauses[] = "$columnName LIKE '%$searchValue%'";
+            if (preg_match('/^\^.*\$$/', $searchValue)) {
+                // ===== Caso SELECT: coincidencia exacta =====
+                $value = substr($searchValue, 1, -1); 
+                $value = str_replace("\\", "", $value);
+                $whereClauses[] = "$columnName = '$value'";
+            } else {
+                // ===== Caso INPUT: texto o fecha =====
+                if ($columnName === 'r.fecha_reg') {
+                    // Comparar fecha exacta
+                    $whereClauses[] = "DATE($columnName) = '$searchValue'";
+                } else {
+                    // Texto normal con LIKE
+                    $whereClauses[] = "$columnName LIKE '%$searchValue%'";
+                }
+            }
         }
     }
 }
 
+// Búsqueda global
 if (!empty($globalSearch)) {
     $globalSearchClauses = [];
-
-    // Añadir búsqueda para el resto de columnas
-    foreach ($columnsMap as $index => $column) {
-            $globalSearchClauses[] = "$column LIKE '%$globalSearch%'";
+    foreach ($searchColumns as $column) {
+        $rawColName = $column['data'] ?? '';
+        if (isset($columnMap[$rawColName])) {
+            $columnName = $columnMap[$rawColName];
+        } else {
+            $columnName = $Con->real_escape_string($rawColName);
+        }
+        if (!empty($columnName)) {
+            $globalSearchClauses[] = "$columnName LIKE '%$globalSearch%'";
+        }
     }
-
-    // Combina todas las cláusulas en una sola
-    $whereClauses[] = '(' . implode(' OR ', $globalSearchClauses) . ')';
+    if (!empty($globalSearchClauses)) {
+        $whereClauses[] = '(' . implode(' OR ', $globalSearchClauses) . ')';
+    }
 }
 
+// Construye el WHERE
 $whereSQL = '';
 if (!empty($whereClauses)) {
-    if ($TipoRol != "") {
-        $whereSQL = "AND " . implode(" AND ", $whereClauses);
-    } else {
-        $whereSQL = " AND " . implode(" AND ", $whereClauses);
-    }
+    $whereSQL = " AND " . implode(" AND ", $whereClauses);
 }
 
-// Procesa el ordenamiento
-$orderColumnIndex = isset($_POST['order'][0]['column']) ? $_POST['order'][0]['column'] : 0; // Índice de la columna por defecto
-$orderDir = isset($_POST['order'][0]['dir']) ? $_POST['order'][0]['dir'] : 'asc'; // Dirección por defecto
-$orderColumn = isset($columnsMap[$orderColumnIndex]) ? $columnsMap[$orderColumnIndex] : 'id_registro_r'; // Columna por defecto
+// Ordenamiento
+$orderColumnIndex = isset($_POST['order'][0]['column']) ? intval($_POST['order'][0]['column']) : 0;
+$orderDir = (isset($_POST['order'][0]['dir']) && in_array(strtolower($_POST['order'][0]['dir']), ['asc','desc'])) 
+            ? $_POST['order'][0]['dir'] : 'asc';
+$orderColumnRaw = $_POST['columns'][$orderColumnIndex]['data'] ?? 'm.id_registro_r';
+$orderColumn = $columnMap[$orderColumnRaw] ?? $Con->real_escape_string($orderColumnRaw);
 
-// Procesa la paginación
+// Paginación
 $start = isset($_POST['start']) ? intval($_POST['start']) : 0;
 $length = isset($_POST['length']) ? intval($_POST['length']) : 25;
 
 if ($TipoRol == "ADMINISTRADOR") {
     $totalQuery = "SELECT COUNT(*) as total FROM registro_empaque
-                    JOIN tipo_variaciones ON registro_empaque.id_codigo_r = tipo_variaciones.id_variedad
-                    JOIN tipos_cajas ON registro_empaque.id_tipo_caja = tipos_cajas.id_caja
-                    JOIN tipos_tarimas ON registro_empaque.id_tipo_tarima = tipos_tarimas.id_tarima
-                    JOIN tipos_carros ON registro_empaque.id_tipo_carro = tipos_carros.id_carro
-                    JOIN variedades ON tipo_variaciones.id_nombre_v = variedades.id_nombre_v
-                    JOIN tipos_presentacion ON registro_empaque.id_presentacion_r = tipos_presentacion.id_presentacion
-                    JOIN ciclos ON tipo_variaciones.id_ciclo_v = ciclos.id_ciclo
-                    JOIN invernaderos ON tipo_variaciones.id_modulo_v = invernaderos.id_invernadero
-                    JOIN sedes ON invernaderos.id_sede_i = sedes.id_sede
-                    WHERE tipos_presentacion.nombre_p IN ('INDIVIDUAL', 'RACIMO') AND activo_r = 1 $whereSQL";
+                    LEFT JOIN tipo_variaciones ON registro_empaque.id_codigo_r = tipo_variaciones.id_variedad
+                    LEFT JOIN tipos_cajas ON registro_empaque.id_tipo_caja = tipos_cajas.id_caja
+                    LEFT JOIN tipos_tarimas ON registro_empaque.id_tipo_tarima = tipos_tarimas.id_tarima
+                    LEFT JOIN tipos_carros ON registro_empaque.id_tipo_carro = tipos_carros.id_carro
+                    LEFT JOIN variedades ON tipo_variaciones.id_nombre_v = variedades.id_nombre_v
+                    LEFT JOIN tipos_presentacion ON registro_empaque.id_presentacion_r = tipos_presentacion.id_presentacion
+                    LEFT JOIN ciclos ON tipo_variaciones.id_ciclo_v = ciclos.id_ciclo
+                    LEFT JOIN invernaderos ON tipo_variaciones.id_modulo_v = invernaderos.id_invernadero
+                    LEFT JOIN sedes ON invernaderos.id_sede_i = sedes.id_sede
+                    WHERE activo_r = 1 $whereSQL";
      $totalStmt = $Con->prepare($totalQuery);
     $totalStmt->execute();
     $totalResult = $totalStmt->get_result();
@@ -95,16 +123,16 @@ if ($TipoRol == "ADMINISTRADOR") {
 
     // Consulta de datos con orden y paginación
     $dataQuery = "SELECT * FROM registro_empaque
-                    JOIN tipo_variaciones ON registro_empaque.id_codigo_r = tipo_variaciones.id_variedad
-                    JOIN tipos_cajas ON registro_empaque.id_tipo_caja = tipos_cajas.id_caja
-                    JOIN tipos_tarimas ON registro_empaque.id_tipo_tarima = tipos_tarimas.id_tarima
-                    JOIN tipos_carros ON registro_empaque.id_tipo_carro = tipos_carros.id_carro
-                    JOIN variedades ON tipo_variaciones.id_nombre_v = variedades.id_nombre_v
-                    JOIN tipos_presentacion ON registro_empaque.id_presentacion_r = tipos_presentacion.id_presentacion
-                    JOIN ciclos ON tipo_variaciones.id_ciclo_v = ciclos.id_ciclo
-                    JOIN invernaderos ON tipo_variaciones.id_modulo_v = invernaderos.id_invernadero
-                    JOIN sedes ON invernaderos.id_sede_i = sedes.id_sede
-                    WHERE tipos_presentacion.nombre_p IN ('INDIVIDUAL', 'RACIMO') AND activo_r = 1 $whereSQL
+                    LEFT JOIN tipo_variaciones ON registro_empaque.id_codigo_r = tipo_variaciones.id_variedad
+                    LEFT JOIN tipos_cajas ON registro_empaque.id_tipo_caja = tipos_cajas.id_caja
+                    LEFT JOIN tipos_tarimas ON registro_empaque.id_tipo_tarima = tipos_tarimas.id_tarima
+                    LEFT JOIN tipos_carros ON registro_empaque.id_tipo_carro = tipos_carros.id_carro
+                    LEFT JOIN variedades ON tipo_variaciones.id_nombre_v = variedades.id_nombre_v
+                    LEFT JOIN tipos_presentacion ON registro_empaque.id_presentacion_r = tipos_presentacion.id_presentacion
+                    LEFT JOIN ciclos ON tipo_variaciones.id_ciclo_v = ciclos.id_ciclo
+                    LEFT JOIN invernaderos ON tipo_variaciones.id_modulo_v = invernaderos.id_invernadero
+                    LEFT JOIN sedes ON invernaderos.id_sede_i = sedes.id_sede
+                    WHERE activo_r = 1 $whereSQL
                     ORDER BY $orderColumn $orderDir
                     LIMIT ?, ?";
     $dataStmt = $Con->prepare($dataQuery);
@@ -114,16 +142,16 @@ if ($TipoRol == "ADMINISTRADOR") {
     
 } else {
     $totalQuery = "SELECT COUNT(*) as total FROM registro_empaque
-                    JOIN tipo_variaciones ON registro_empaque.id_codigo_r = tipo_variaciones.id_variedad
-                    JOIN tipos_cajas ON registro_empaque.id_tipo_caja = tipos_cajas.id_caja
-                    JOIN tipos_tarimas ON registro_empaque.id_tipo_tarima = tipos_tarimas.id_tarima
-                    JOIN tipos_carros ON registro_empaque.id_tipo_carro = tipos_carros.id_carro
-                    JOIN variedades ON tipo_variaciones.id_nombre_v = variedades.id_nombre_v
-                    JOIN tipos_presentacion ON registro_empaque.id_presentacion_r = tipos_presentacion.id_presentacion
-                    JOIN ciclos ON tipo_variaciones.id_ciclo_v = ciclos.id_ciclo
-                    JOIN invernaderos ON tipo_variaciones.id_modulo_v = invernaderos.id_invernadero
-                    JOIN sedes ON invernaderos.id_sede_i = sedes.id_sede
-                    WHERE tipos_presentacion.nombre_p IN ('INDIVIDUAL', 'RACIMO') AND invernaderos.id_Sede_i = ? AND activo_r = 1 $whereSQL";
+                    LEFT JOIN tipo_variaciones ON registro_empaque.id_codigo_r = tipo_variaciones.id_variedad
+                    LEFT JOIN tipos_cajas ON registro_empaque.id_tipo_caja = tipos_cajas.id_caja
+                    LEFT JOIN tipos_tarimas ON registro_empaque.id_tipo_tarima = tipos_tarimas.id_tarima
+                    LEFT JOIN tipos_carros ON registro_empaque.id_tipo_carro = tipos_carros.id_carro
+                    LEFT JOIN variedades ON tipo_variaciones.id_nombre_v = variedades.id_nombre_v
+                    LEFT JOIN tipos_presentacion ON registro_empaque.id_presentacion_r = tipos_presentacion.id_presentacion
+                    LEFT JOIN ciclos ON tipo_variaciones.id_ciclo_v = ciclos.id_ciclo
+                    LEFT JOIN invernaderos ON tipo_variaciones.id_modulo_v = invernaderos.id_invernadero
+                    LEFT JOIN sedes ON invernaderos.id_sede_i = sedes.id_sede
+                    WHERE invernaderos.id_Sede_i = ? AND activo_r = 1 $whereSQL";
     $totalStmt = $Con->prepare($totalQuery);
     $totalStmt->bind_param("i", $Sede);
     $totalStmt->execute();
@@ -131,16 +159,16 @@ if ($TipoRol == "ADMINISTRADOR") {
     $totalRecords = $totalResult->fetch_assoc()['total'];
 
     $dataQuery = "SELECT * FROM registro_empaque
-                    JOIN tipo_variaciones ON registro_empaque.id_codigo_r = tipo_variaciones.id_variedad
-                    JOIN tipos_cajas ON registro_empaque.id_tipo_caja = tipos_cajas.id_caja
-                    JOIN tipos_tarimas ON registro_empaque.id_tipo_tarima = tipos_tarimas.id_tarima
-                    JOIN tipos_carros ON registro_empaque.id_tipo_carro = tipos_carros.id_carro
-                    JOIN variedades ON tipo_variaciones.id_nombre_v = variedades.id_nombre_v
-                    JOIN tipos_presentacion ON registro_empaque.id_presentacion_r = tipos_presentacion.id_presentacion
-                    JOIN ciclos ON tipo_variaciones.id_ciclo_v = ciclos.id_ciclo
-                    JOIN invernaderos ON tipo_variaciones.id_modulo_v = invernaderos.id_invernadero
-                    JOIN sedes ON invernaderos.id_sede_i = sedes.id_sede
-                    WHERE tipos_presentacion.nombre_p IN ('INDIVIDUAL', 'RACIMO') AND invernaderos.id_Sede_i = ? AND activo_r = 1 $whereSQL
+                    LEFT JOIN tipo_variaciones ON registro_empaque.id_codigo_r = tipo_variaciones.id_variedad
+                    LEFT JOIN tipos_cajas ON registro_empaque.id_tipo_caja = tipos_cajas.id_caja
+                    LEFT JOIN tipos_tarimas ON registro_empaque.id_tipo_tarima = tipos_tarimas.id_tarima
+                    LEFT JOIN tipos_carros ON registro_empaque.id_tipo_carro = tipos_carros.id_carro
+                    LEFT JOIN variedades ON tipo_variaciones.id_nombre_v = variedades.id_nombre_v
+                    LEFT JOIN tipos_presentacion ON registro_empaque.id_presentacion_r = tipos_presentacion.id_presentacion
+                    LEFT JOIN ciclos ON tipo_variaciones.id_ciclo_v = ciclos.id_ciclo
+                    LEFT JOIN invernaderos ON tipo_variaciones.id_modulo_v = invernaderos.id_invernadero
+                    LEFT JOIN sedes ON invernaderos.id_sede_i = sedes.id_sede
+                    WHERE invernaderos.id_Sede_i = ? AND activo_r = 1 $whereSQL
     ORDER BY $orderColumn $orderDir
     LIMIT ?, ?";
     $dataStmt = $Con->prepare($dataQuery);
