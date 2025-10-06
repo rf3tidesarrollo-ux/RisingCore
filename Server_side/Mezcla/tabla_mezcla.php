@@ -125,8 +125,9 @@ if ($TipoRol == "ADMINISTRADOR") {
                     LEFT JOIN cargos ON usuarios.id_cargo = cargos.id_cargo
                     LEFT JOIN clientes ON mezclas.id_cliente_m = clientes.id_cliente
                     LEFT JOIN sedes ON mezclas.id_sede_m = sedes.id_sede
-                    WHERE mezclas.activo_m = 1 $whereSQL";
+                    WHERE mezclas.activo_m = 1 AND id_sede_m = ? $whereSQL";
     $totalStmt = $Con->prepare($totalQuery);
+    $totalStmt->bind_param("i", $Sede);
     $totalStmt->execute();
     $totalResult = $totalStmt->get_result();
     $totalRecords = $totalResult->fetch_assoc()['total'];
@@ -136,11 +137,11 @@ if ($TipoRol == "ADMINISTRADOR") {
                     LEFT JOIN cargos ON usuarios.id_cargo = cargos.id_cargo
                     LEFT JOIN clientes ON mezclas.id_cliente_m = clientes.id_cliente
                     LEFT JOIN sedes ON mezclas.id_sede_m = sedes.id_sede
-                    WHERE mezclas.activo_m = 1 $whereSQL
+                    WHERE mezclas.activo_m = 1 AND id_sede_m = ? $whereSQL
                     ORDER BY $orderColumn $orderDir
                     LIMIT ?, ?";
     $dataStmt = $Con->prepare($dataQuery);
-    $dataStmt->bind_param("ii", $start, $length);
+    $dataStmt->bind_param("iii", $Sede, $start, $length);
     $dataStmt->execute();
     $dataResult = $dataStmt->get_result();
     

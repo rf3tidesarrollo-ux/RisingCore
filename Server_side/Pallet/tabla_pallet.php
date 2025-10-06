@@ -129,7 +129,7 @@ if ($TipoRol == "ADMINISTRADOR") {
                     LEFT JOIN presentaciones_pallet pp ON p.id_presen_p = pp.id_presentacion_p
                     LEFT JOIN sedes s ON p.id_sede_p = s.id_sede
                     LEFT JOIN embarques_pallets em ON p.id_embarque_p = em.id_embarque
-                    WHERE p.activo_p = 1 AND s.codigo_s = ? $whereSQL";
+                    WHERE p.activo_p = 1 AND p.id_sede_p = ? $whereSQL";
     $totalStmt = $Con->prepare($totalQuery);
     if ($totalStmt === false) { error_log("Prepare totalQuery (sede) error: " . $Con->error); }
     $totalStmt->bind_param("s", $Sede);
@@ -144,7 +144,7 @@ if ($TipoRol == "ADMINISTRADOR") {
                     LEFT JOIN presentaciones_pallet pp ON p.id_presen_p = pp.id_presentacion_p
                     LEFT JOIN sedes s ON p.id_sede_p = s.id_sede
                     LEFT JOIN embarques_pallets em ON p.id_embarque_p = em.id_embarque
-                    WHERE p.activo_p = 1 AND s.codigo_s = ? $whereSQL
+                    WHERE p.activo_p = 1 AND p.id_sede_p = ? $whereSQL
                     ORDER BY $orderColumn $orderDir
                     LIMIT ?, ?";
     $dataStmt = $Con->prepare($dataQuery);

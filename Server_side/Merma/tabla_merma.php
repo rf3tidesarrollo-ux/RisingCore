@@ -146,9 +146,9 @@ if ($TipoRol == "ADMINISTRADOR") {
         LEFT JOIN tipos_presentacion tp ON tv.id_presentacion_v = tp.id_presentacion
         LEFT JOIN ciclos c ON tv.id_ciclo_v = c.id_ciclo
         LEFT JOIN invernaderos i ON tv.id_modulo_v = i.id_invernadero
-        LEFT JOIN sedes s ON i.id_sede_i = s.id_sede
+        LEFT JOIN sedes s ON m.id_sede_m = s.id_sede
         LEFT JOIN clasificacion_merma cm ON m.id_clasificacion = cm.id_merma
-        WHERE invernaderos.codigo_s = ? AND activo_m = 1 $whereSQL";
+        WHERE id_sede_m = ? AND activo_m = 1 $whereSQL";
 
     $totalStmt = $Con->prepare($totalQuery);
     $totalStmt->bind_param("s", $Sede);
@@ -165,9 +165,9 @@ if ($TipoRol == "ADMINISTRADOR") {
         LEFT JOIN tipos_presentacion tp ON tv.id_presentacion_v = tp.id_presentacion
         LEFT JOIN ciclos c ON tv.id_ciclo_v = c.id_ciclo
         LEFT JOIN invernaderos i ON tv.id_modulo_v = i.id_invernadero
-        LEFT JOIN sedes s ON i.id_sede_i = s.id_sede
+        LEFT JOIN sedes s ON m.id_sede_m = s.id_sede
         LEFT JOIN clasificacion_merma cm ON m.id_clasificacion = cm.id_merma
-        WHERE invernaderos.codigo_s = ? AND activo_m = 1 $whereSQL
+        WHERE id_sede_m = ? AND activo_m = 1 $whereSQL
         ORDER BY $orderColumn $orderDir
         LIMIT ?, ?";
 

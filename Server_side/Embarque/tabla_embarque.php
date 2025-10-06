@@ -124,7 +124,7 @@ if ($TipoRol == "ADMINISTRADOR") {
                     LEFT JOIN cargos c ON u.id_cargo = c.id_cargo
                     LEFT JOIN sedes s ON em.id_sede_em= s.id_sede
                     LEFT JOIN destinos_embarque d ON em.id_destino_em = d.id_destino
-                    WHERE em.activo_em = 1 AND s.codigo_s = ? $whereSQL";
+                    WHERE em.activo_em = 1 AND em.id_sede_em = ? $whereSQL";
     $totalStmt = $Con->prepare($totalQuery);
     if ($totalStmt === false) { error_log("Prepare totalQuery (sede) error: " . $Con->error); }
     $totalStmt->bind_param("s", $Sede);
@@ -132,12 +132,12 @@ if ($TipoRol == "ADMINISTRADOR") {
     $totalResult = $totalStmt->get_result();
     $totalRecords = $totalResult->fetch_assoc()['total'];
 
-    $dataQuery = "SELECT em.*, u.*, c.*, s.*, d.* FROM FROM embarques_pallets em
+    $dataQuery = "SELECT em.*, u.*, c.*, s.*, d.* FROM embarques_pallets em
                     LEFT JOIN usuarios u ON em.usuario_id = u.id_usuario
                     LEFT JOIN cargos c ON u.id_cargo = c.id_cargo
                     LEFT JOIN sedes s ON em.id_sede_em= s.id_sede
                     LEFT JOIN destinos_embarque d ON em.id_destino_em = d.id_destino
-                    WHERE em.activo_em = 1 AND s.codigo_s = ? $whereSQL
+                    WHERE em.activo_em = 1 AND em.id_sede_em = ? $whereSQL
                     ORDER BY $orderColumn $orderDir
                     LIMIT ?, ?";
     $dataStmt = $Con->prepare($dataQuery);
