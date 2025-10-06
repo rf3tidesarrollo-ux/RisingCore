@@ -468,7 +468,7 @@
                 $Sede = $Limpiar -> LimpiarSede();
 
                 session_start();
-                $_SESSION['correcto'] = "El pesaje se actualizo correctamente";
+                $_SESSION['correcto'] = "Pesaje actualizado";
                 header("Location: EditarR.php?id=" . $id);
                 exit();
             }

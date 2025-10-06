@@ -48,10 +48,10 @@
     }
 
     function PermisoModulo($ID, $NM, $Con) {
-    $stmt = $Con->prepare('SELECT 1 
-        FROM permisos_usuarios pu 
+    $stmt = $Con->prepare('SELECT 1
+        FROM permisos_usuarios pu
         JOIN modulos m ON pu.id_modulo_u = m.id_seccion
-        WHERE pu.id_usuario_u = ? 
+        WHERE pu.id_usuario_u = ?
         AND m.nombre_seccion LIKE ?');
     $stmt->bind_param('is', $ID, $NM);
     $stmt->execute();

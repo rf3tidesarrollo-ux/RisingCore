@@ -5,10 +5,10 @@ $RutaSC = "../../../index.php";
 include_once "../../../Login/validar_sesion.php";
 // $Pagina=basename(__FILE__);
 // Historial($Pagina,$Con);
-$Ver = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 1, $Con);
-$Crear = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 2, $Con);
-$Editar = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 3, $Con);
-$Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 4, $Con);
+$Ver = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 1, $Con);
+$Crear = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 2, $Con);
+$Editar = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 3, $Con);
+$Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 4, $Con);
 
 if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 ?>

@@ -5,10 +5,10 @@
     include_once "../../../Login/validar_sesion.php";
     // $Pagina=basename(__FILE__);
     // Historial($Pagina,$Con);
-    $Ver = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 1, $Con);
-    $Crear = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 2, $Con);
-    $Editar = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 3, $Con);
-    $Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 4, $Con);
+    $Ver = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 1, $Con);
+    $Crear = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 2, $Con);
+    $Editar = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 3, $Con);
+    $Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 4, $Con);
 
     $FechaP=date("Y-m-d");
     $HoraP=date("H:i:s");
@@ -330,7 +330,7 @@
                 $stmtDel->bind_param("i", $ID);
                 if ($stmtDel->execute()) {
                     $_SESSION['idPallet'] = $idPallet;
-                    $_SESSION['correcto'] = "El pallet se actualizo correctamente";
+                    $_SESSION['correcto'] = "Pallet actualizado";
                     header("Location: EditarP.php?id=" . $idPallet);
                     exit();
                 } 

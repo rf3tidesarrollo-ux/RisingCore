@@ -145,12 +145,7 @@
 
                 $stmtDel = $Con->prepare("DELETE FROM mezcla_lotes_temp WHERE usuario_id = ?");
                 $stmtDel->bind_param("i", $ID);
-                if ($stmtDel->execute()) {
-                    $_SESSION['idMezcla'] = $idMezcla;
-                    $_SESSION['correcto'] = "Se hizo el registro correctamente";
-                    header("Location: ".$_SERVER['PHP_SELF']);
-                    exit();
-                } 
+                $stmtDel->execute();
                 $stmtDel->close();
 
                 $Limpiar = new Cleanner($Sede,$Cliente,$Folio,$CajasT,$KilosT);
@@ -161,7 +156,8 @@
                 $KilosT = $Limpiar -> LimpiarKilosT();
 
                 session_start();
-                $_SESSION['correcto'] = "Se hizo el registro correctamente";
+                $_SESSION['idMezcla'] = $idMezcla;
+                $_SESSION['correcto'] = "Mezcla registrada";
                 header("Location: ".$_SERVER['PHP_SELF']);
                 exit();
             }

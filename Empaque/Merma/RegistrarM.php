@@ -544,7 +544,7 @@
                 $Tipo = $Limpiar -> LimpiarTipo();
                 
                 session_start();
-                $_SESSION['correcto'] = "Se hizo el registro correctamente";
+                $_SESSION['correcto'] = "Merma registrada";
                 header("Location: ".$_SERVER['PHP_SELF']);
                 exit();
             }

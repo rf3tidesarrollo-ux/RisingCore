@@ -5,10 +5,10 @@ $RutaSC = "../../../index.php";
 include_once "../../../Login/validar_sesion.php";
 // $Pagina=basename(__FILE__);
 // Historial($Pagina,$Con);
-$Ver = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 1, $Con);
-$Crear = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 2, $Con);
-$Editar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 3, $Con);
-$Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 4, $Con);
+$Ver = TienePermiso($_SESSION['ID'], "Empaque/Mezcla", 1, $Con);
+$Crear = TienePermiso($_SESSION['ID'], "Empaque/Mezcla", 2, $Con);
+$Editar = TienePermiso($_SESSION['ID'], "Empaque/Mezcla", 3, $Con);
+$Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Mezcla", 4, $Con);
 
 if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 ?>
@@ -157,7 +157,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                         }
                     }
                    },
-                   { data: 'nombre_completo' },
+                  { data: 'nombre_completo' },
                   { 
                     data: null,
                     "render": function (data, type, row) {
@@ -199,20 +199,76 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
         fixedColumns: true,
         autoWidth: true,
         initComplete: function () {
-            $('.dt-buttons').appendTo('#datatable-buttons');
-            this.api().columns().every(function () {
-                var column = this;
-                var title = $(column.footer()).text();
-                
+            const api = this.api();
+
+            // ===== Agregar inputs/selects en tfoot
+            api.columns().every(function () {
+                const column = this;
+                const title = $(column.footer()).text().trim();
+
                 if (title !== "Acciones") {
-                    $('<input type="text" placeholder="Buscar ' + title + '" />')
-                    .appendTo($(column.footer()).empty())
-                    .on('keyup change clear', function () {
-                        if (column.search() !== this.value) {
-                            column.search(this.value).draw();
-                        }
-                    });
+                    $(column.footer()).empty();
+
+                    const selectColumns = [1, 2, 7]; // columnas con select
+                    const dateColumns = [5]; // columna fecha
+
+                    if (selectColumns.includes(column.index())) {
+                        const select = $('<select><option value="">Todos</option></select>')
+                            .appendTo($(column.footer()))
+                            .on('change', function () {
+                                const val = $.fn.dataTable.util.escapeRegex($(this).val());
+                                column.search(val ? '^' + val + '$' : '', true, false).draw();
+                            });
+
+                        // 🔹 Llenar las opciones del select vía AJAX
+                        $.ajax({
+                            url: '../../Server_side/Mezcla/vuMezcla.php', // tu endpoint PHP
+                            type: 'POST',
+                            data: { columna: column.index() }, // le mandas qué columna quieres
+                            dataType: 'json',
+                            success: function (data) {
+                                data.forEach(function (item) {
+                                    select.append('<option value="' + item + '">' + item + '</option>');
+                                });
+                            }
+                        });
+
+                    } else if (dateColumns.includes(column.index())) {
+                        $('<input type="date" />')
+                            .appendTo($(column.footer()))
+                            .on('change', function () {
+                                column.search(this.value).draw();
+                            });
+
+                    } else {
+                        $('<input type="text" placeholder="Buscar ' + title + '" />')
+                            .appendTo($(column.footer()))
+                            .on('keyup change clear', function () {
+                                if (column.search() !== this.value) {
+                                    column.search(this.value).draw();
+                                }
+                            });
+                    }
                 }
+            });
+
+            // ===== Agregar botón de "Limpiar filtros" de forma segura
+            $('.dt-buttons').append(
+                '<button id="limpiarFiltros" class="btn btn-sm btn-outline-secondary ms-2" title="Quitar filtros">' +
+                '<i class="fa-solid fa-filter-circle-xmark fa-xl"></i> Limpiar</button>'
+            );
+
+            // Evento para limpiar filtros
+            $('#limpiarFiltros').on('click', function () {
+                api.search('').draw();
+                api.columns().every(function () {
+                    this.search('');
+                });
+                $('#basic-datatables tfoot input, #basic-datatables tfoot select').each(function () {
+                    $(this).val('').trigger('change');
+                });
+
+                api.draw();
             });
         },
         drawCallback: function() {
@@ -234,12 +290,18 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                 "previous": '<i class="fa-solid fa-caret-left fa-xl"></i>'
             },
         },
+        layout: {
+            top1Start: {
+                buttons: [
+                    {
+                        extend: 'colvis',
+                        text: ['Mostrar/Ocultar'],
+                    },
+                ]
+            }
+        },
     });
 });
-
-// document.getElementById("downloadExcel").addEventListener("click", function() {
-//     window.location.href = "../Server_side/generarExcel.php";
-// });
 
 </script>
 

@@ -5,12 +5,9 @@ $RutaSC = "../../index.php";
 include_once "../../Login/validar_sesion.php";
 // $Pagina=basename(__FILE__);
 // Historial($Pagina,$Con);
-$Ver = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 1, $Con);
-$Crear = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 2, $Con);
-$Editar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 3, $Con);
-$Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 4, $Con);
+$Acceso = PermisoModulo($_SESSION['ID'], "%Empaque%", $Con);
 
-if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
+if ($TipoRol=="ADMINISTRADOR" || $Acceso==true) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -40,7 +37,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <script src="../../js/script.js"></script>
     <script src="../../js/eliminar.js"></script>
     <link rel="stylesheet" href="Pesaje/DesignR.css">
-    <title>Empaque: Reporte</title>
+    <title>Empaque: Inicio</title>
 </head>
 
     <body>
@@ -51,8 +48,19 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
             include('../../Complementos/Header.php');
             ?>
         <main>
-            <div class="tabla">
-                <?php if ($TipoRol=="ADMINISTRADOR" || $Crear==true) { ?> <a title="Agregar" href="RegistrarA.php"><div id="wizard" class="btn-up"><i class="fa-solid fa-plus fa-2xl" style="color: #ffffff;"></i></div></a> <?php } ?>
+            <div style="display: flex; justify-content: center; align-items: center; height: 60vh; text-align: center;">
+                <div style="background: linear-gradient(135deg, #07bb67, #07bb67); 
+                            color: white; 
+                            padding: 40px 60px; 
+                            border-radius: 20px; 
+                            box-shadow: 0 8px 20px rgba(0,0,0,0.2); 
+                            font-family: 'Segoe UI', sans-serif;">
+                    <h1 style="font-size: 2.5rem; margin-bottom: 15px;">¡BIENVENID@ <span style="color: #000000ff;"><?=$Titular?></span>!</h1>
+                    <h2 style="font-size: 1.5rem; font-weight: 400;">A <b>EMPAQUE</b></h2>
+                    <p style="margin-top: 20px; font-size: 1rem; opacity: 0.9;">
+                    Nos alegra tenerte de vuelta.
+                    </p>
+                </div>
             </div>
         </main>
 

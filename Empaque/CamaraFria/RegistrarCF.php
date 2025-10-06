@@ -5,10 +5,10 @@ $RutaSC = "../../../index.php";
 include_once "../../../Login/validar_sesion.php";
 // $Pagina=basename(__FILE__);
 // Historial($Pagina,$Con);
-$Ver = TienePermiso($_SESSION['ID'], "Empaque/Embarque", 1, $Con);
-$Crear = TienePermiso($_SESSION['ID'], "Empaque/Embarque", 2, $Con);
-$Editar = TienePermiso($_SESSION['ID'], "Empaque/Embarque", 3, $Con);
-$Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Embarque", 4, $Con);
+$Ver = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 1, $Con);
+$Crear = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 2, $Con);
+$Editar = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 3, $Con);
+$Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 4, $Con);
 
 if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 ?>
@@ -36,7 +36,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <script src="../../../js/select.js"></script>
     <link rel="stylesheet" href="DesignCF.css">
-    <title>Empaque: Reporte</title>
+    <title>Camára Fría: Registro</title>
 </head>
 
 <body onload="validar()">
@@ -72,40 +72,31 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
             <section class="Registro">
                 <h4>Registro de embarque</h4>
                 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST" name="octavo" id="">
-                  <div class="campos-cajas">
-                    <div class="FAD" style="flex: 1;">
-                          <label class="FAL">
-                          <span class="FAS">Sede</span>
-                              <select class="FAI prueba" id="sede3" name="Sede">
-                                  <option <?php if (($Sede) != null): ?> value="<?php echo $Sede; ?>"<?php endif; ?>>
-                                      <?php if ($Sede != null) { ?>
-                                          <?php 
-                                          $stmt = $Con->prepare("SELECT codigo_s FROM sedes WHERE codigo_s=?");
-                                          $stmt->bind_param("i",$Sede);
-                                          $stmt->execute();
-                                          $Registro = $stmt->get_result();
-                                          $Reg = $Registro->fetch_assoc();
-                                          $stmt->close();
-                                          if(isset($Reg['codigo_s'])){echo $Reg['codigo_s'];}else{?> Seleccione la sede: <?php } ?>
-                                      <?php } else {?>
-                                          Seleccione la sede:
-                                      <?php } ?>
-                                  </option>
-                                  <?php
-                                  $stmt = $Con->prepare("SELECT codigo_s FROM sedes ORDER BY codigo_s");
-                                  $stmt->execute();
-                                  $Registro = $stmt->get_result();
-                          
-                                  while ($Reg = $Registro->fetch_assoc()){
-                                      echo '<option value="'.$Reg['codigo_s'].'">'.$Reg['codigo_s'].'</option>';
-                                  }
-                                  $stmt->close();
-                                  ?>
-                              </select>
-                          </label>      
-                      </div>
+                    <div class="campos-cajas">
+                        <div class="FAD" style="flex: 1;">
+                            <label class="FAL">
+                                <span class="FAS">Sede</span>
+                                <select class="FAI prueba" id="sede3" name="Sede">
+                                    <option value="0">Seleccione la sede:</option>
+                                    <?php
+                                    $stmt = $Con->prepare("SELECT codigo_s FROM sedes ORDER BY codigo_s");
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
 
-                      <div class="FAD" id="campo_embarques" style="flex: 1;">
+                                    while ($row = $result->fetch_assoc()) {
+                                        $codigo = $row['codigo_s'];
+                                        // Si coincide con la variable $Sede, lo marca como seleccionado
+                                        $selected = ($codigo == $Sede) ? ' selected' : '';
+                                        echo "<option value='$codigo'$selected>$codigo</option>";
+                                    }
+
+                                    $stmt->close();
+                                    ?>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div class="FAD" id="campo_embarques" style="flex: 1;">
                             <label class="FAL">
                                 <span class="FAS">Embarques</span>
                                 <select class="FAI prueba" name="Embarques" id="embarques">
@@ -114,7 +105,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                             </label>
                         </div>
                         <input type="hidden" id="embarqueSeleccionado" value="<?= htmlspecialchars($Embarque) ?>">
-                  </div>
+                    </div>
 
                     <div class="FAD">
                         <label class="FAL">
@@ -136,7 +127,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 
                     <div class=Center2>
                         <!-- <input class="Boton" id="AB" type="Submit" value="Registrar" name="Insertar"> -->
-                        <a id="PDFCFF" title="Mapa CF Llena" class="Boton" href="../../Plantillas/CamaraFria/pdf_cf.php?id=fill&embarque=<?= $Embarque ?>" target="_blank"><i class="fa-solid fa-file-lines fa-2xl" style="color: #ffffffff;"></i></a>
+                        <a id="PDFCFF" title="Mapa CF Llena" class="Boton" href="" target="_blank"><i class="fa-solid fa-file-lines fa-2xl" style="color: #ffffffff;"></i></a>
                         <a id="PDFCFV" title="Mapa CF Vacía" class="Boton" href="../../Plantillas/CamaraFria/pdf_cf.php?id=empty" target="_blank"><i class="fa-solid fa-file fa-2xl" style="color: #ffffffff;"></i></a>
                     </div>
               </section>

@@ -70,9 +70,20 @@
                             <span class="FAS">Sede</span>
                             <select class="FAI prueba" id="sede2" name="Sede">
                                 <option value="0">Seleccione la sede:</option>
-                                <option value="RF1"<?php if ($Sede == "RF1") echo " selected"; ?>>RF1</option>
-                                <option value="RF2"<?php if ($Sede == "RF2") echo " selected"; ?>>RF2</option>
-                                <option value="RF3"<?php if ($Sede == "RF3") echo " selected"; ?>>RF3</option>
+                                <?php
+                                $stmt = $Con->prepare("SELECT codigo_s FROM sedes ORDER BY codigo_s");
+                                $stmt->execute();
+                                $result = $stmt->get_result();
+
+                                while ($row = $result->fetch_assoc()) {
+                                    $codigo = $row['codigo_s'];
+                                    // Si coincide con la variable $Sede, lo marca como seleccionado
+                                    $selected = ($codigo == $Sede) ? ' selected' : '';
+                                    echo "<option value='$codigo'$selected>$codigo</option>";
+                                }
+
+                                $stmt->close();
+                                ?>
                             </select>
                         </label>
                     </div>

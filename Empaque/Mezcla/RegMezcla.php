@@ -69,9 +69,20 @@
                             <span class="FAS">Sede</span>
                             <select class="FAI prueba" id="sede2" name="Sede">
                                 <option value="0">Seleccione la sede:</option>
-                                <option value="RF1"<?php if ($Sede == "RF1") echo " selected"; ?>>RF1</option>
-                                <option value="RF2"<?php if ($Sede == "RF2") echo " selected"; ?>>RF2</option>
-                                <option value="RF3"<?php if ($Sede == "RF3") echo " selected"; ?>>RF3</option>
+                                <?php
+                                $stmt = $Con->prepare("SELECT codigo_s FROM sedes ORDER BY codigo_s");
+                                $stmt->execute();
+                                $result = $stmt->get_result();
+
+                                while ($row = $result->fetch_assoc()) {
+                                    $codigo = $row['codigo_s'];
+                                    // Si coincide con la variable $Sede, lo marca como seleccionado
+                                    $selected = ($codigo == $Sede) ? ' selected' : '';
+                                    echo "<option value='$codigo'$selected>$codigo</option>";
+                                }
+
+                                $stmt->close();
+                                ?>
                             </select>
                         </label>
                     </div>
@@ -206,7 +217,7 @@
                         $id = $_SESSION['idMezcla'];
                         unset($_SESSION['idMezcla']); // Limpia después de usar
                     ?>
-                        <a id="linkPdf" title="Mostrar" class="Boton" href="../../Plantillas/Mezclas/pdf_mezcla.php?id=<?= $id ?>" target="_blank"><i class="fa-solid fa-file-circle-check fa-2xl" style="color: #ffffffff;"></i></a>
+                        <a id="PDF" title="Mostrar" class="Boton" href="../../Plantillas/Mezclas/pdf_mezcla.php?id=<?= $id ?>" target="_blank"><i class="fa-solid fa-file-circle-check fa-2xl" style="color: #ffffffff;"></i></a>
                     <?php } else { ?>
                         <a id="linkPdf" title="Mostrar" class="Boton" href="" target="_blank"><i class="fa-solid fa-file-circle-exclamation fa-2xl" style="color: #ffffffff;"></i></a>
                     <?php } ?>

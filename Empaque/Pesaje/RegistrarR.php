@@ -478,7 +478,7 @@
                 $Presentacion = $Limpiar -> LimpiarPresentacion();
 
                 session_start();
-                $_SESSION['correcto'] = "Se hizo el registro correctamente";
+                $_SESSION['correcto'] = "Pesaje registrado";
                 header("Location: ".$_SERVER['PHP_SELF']);
                 exit();
             }

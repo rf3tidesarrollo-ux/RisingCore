@@ -6,26 +6,18 @@
         include_once '../Conexion/BD.php';
 
         $User = $_SESSION['ID'];
-        $Estado = 0;
-        
-        $stmt = $Con->prepare("DELETE FROM mezcla_lotes_temp WHERE usuario_id = ?");
-        $stmt->bind_param("i", $User);
-        $stmt->execute();
+
+        $stmt = $Con->prepare("UPDATE usuarios SET estado = 0 WHERE id_usuario = ?");
+        $stmt->bind_param("i",$User);
+        if ($stmt->execute()) {
+            $UserSession = new UserSession();
+            $UserSession->closeSession();
+            
+            header("location: ../index.php");
+        } else{
+            alert("Error al cerrar sesión. Por favor, inténtalo de nuevo.");
+        }
         $stmt->close();
 
-        $stmt = $Con->prepare("DELETE FROM pallet_mezclas_temp WHERE usuario_id = ?");
-        $stmt->bind_param("i", $User);
-        $stmt->execute();
-        $stmt->close();
-
-        $stmt = $Con->prepare("UPDATE usuarios SET estado = ? WHERE username = ?");
-        $stmt->bind_param("ii",$Estado,$User);
-        $stmt->execute();
-        $stmt->close();
-
-        $UserSession = new UserSession();
-        $UserSession->closeSession();
-        
-        header("location: ../index.php");
     ob_end_flush();
 ?>

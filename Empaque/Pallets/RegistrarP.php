@@ -5,10 +5,10 @@
     include_once "../../../Login/validar_sesion.php";
     // $Pagina=basename(__FILE__);
     // Historial($Pagina,$Con);
-    $Ver = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 1, $Con);
-    $Crear = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 2, $Con);
-    $Editar = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 3, $Con);
-    $Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pallet", 4, $Con);
+    $Ver = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 1, $Con);
+    $Crear = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 2, $Con);
+    $Editar = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 3, $Con);
+    $Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 4, $Con);
 
     $HoraP=date("H:i:s");
 
@@ -259,7 +259,7 @@
                 $resultSuma = $stmt->get_result();
                 $CajasP = $resultSuma->fetch_assoc()['CajasP'];
 
-                $stmtInsertMezcla = $Con->prepare("INSERT INTO pallets (folio_p, id_sede_p, fecha_c, fecha_p, hora_p, id_embarque_p, fecha_e, cajas_p, id_tarima_p, id_presen_p, id_usuario_p, estado_p, activo_p) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1)");
+                $stmtInsertMezcla = $Con->prepare("INSERT INTO pallets (folio_p, id_sede_p, fecha_c, fecha_p, hora_p, id_embarque_p, fecha_e, cajas_p, id_tarima_p, id_presen_p, id_usuario_p, mapeo, ubicacion, estado_p, activo_p) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 1)");
                 $stmtInsertMezcla->bind_param("sisssssisii", $Folio, $SedeVal, $FechaVal, $FechaVal, $HoraP, $Embarque, $FechaEVal, $CajasP, $Tarima, $Presentaciones, $ID);
                 $stmtInsertMezcla->execute();
                 $idPallet= $stmtInsertMezcla->insert_id;
@@ -295,7 +295,7 @@
                 $stmtDel->bind_param("i", $ID);
                 if ($stmtDel->execute()) {
                     $_SESSION['idPallet'] = $idPallet;
-                    $_SESSION['correcto'] = "Se hizo el registro correctamente";
+                    $_SESSION['correcto'] = "Pallet registrado";
                     header("Location: ".$_SERVER['PHP_SELF']);
                     exit();
                 } 

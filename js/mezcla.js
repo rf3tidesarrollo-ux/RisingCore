@@ -210,3 +210,31 @@ $(document).ready(function() {
   });
 
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const linkPdf = document.getElementById("linkPdf");
+
+    linkPdf.addEventListener("click", function (e) {
+        e.preventDefault(); // Evita el href vacío
+
+        // Obtén los valores de los campos
+        const sede = document.getElementById("sede2").value;
+        const cliente = document.getElementById("clientes").value;
+
+        // Validación simple
+        if (sede === "0" || cliente === "0") {
+            swal("Tiene que seleccionar una sede y cliente", {
+            icon: "warning",
+        });
+        return;
+        }
+
+        const url = linkPdf.getAttribute("href");
+        if (url && url.trim() !== "") {
+            window.open(url, "_blank"); // o simplemente: window.location.href = url;
+        } else {
+            swal("Nose ha generado el link", { icon: "error" });
+        }
+
+    });
+});

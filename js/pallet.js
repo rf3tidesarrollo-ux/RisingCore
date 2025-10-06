@@ -318,7 +318,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const sede = document.getElementById("sede3").value;
         const folio = document.getElementById("folio").value;
         const presentacion = document.getElementById("presentaciones").value;
-        const tipo = document.getElementById("Tipo").value;
         const tarima = document.getElementById("tarimas").value;
         const fecha = document.getElementById("Fecha").value;
         const fechaE = document.getElementById("FechaE").value;
@@ -336,7 +335,6 @@ document.addEventListener("DOMContentLoaded", function () {
             Folio: folio,
             Sede: sede,
             Presentaciones: presentacion,
-            Tipo: tipo,
             Tarima: tarima,
             Fecha: fecha,
             FechaE: fechaE

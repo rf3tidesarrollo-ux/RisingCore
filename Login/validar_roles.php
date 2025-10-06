@@ -36,7 +36,7 @@ $Estado = 1;
     $stmt = $Con->prepare("SELECT pu.id_modulo_u as IDM, m.nombre_seccion as Temp
         FROM permisos_usuarios pu
         LEFT JOIN modulos m ON pu.id_modulo_u = m.id_seccion
-        WHERE pu.id_usuario_u = ? ORDER BY pu.id_permiso_u LIMIT 1");
+        WHERE pu.id_usuario_u = ? ORDER BY pu.id_permiso_u DESC LIMIT 1");
     $stmt->bind_param("s",$ID);
     $stmt->execute();
     $Registro = $stmt->get_result();
@@ -52,6 +52,9 @@ $Estado = 1;
     }
 
     $Modulo = $_SESSION['Modulo'];
+    $partes = explode("/", $Modulo);
+    $Supervisor = $partes[0];
+
 
     if (!array_key_exists('rol', $_SESSION)) {
         switch ($_SESSION['Rol']) {
@@ -59,7 +62,7 @@ $Estado = 1;
                 header("Location: ". ($_POST["retorno"] ?? "Modulos/Configuración/Inicio.php"));
                 break;
             case 'SUPERVISOR':
-                header("Location: ". ($_POST["retorno"] ?? "Modulos/$Modulo/Inicio.php"));
+                header("Location: ". ($_POST["retorno"] ?? "Modulos/$Supervisor/Inicio.php"));
                 break;
             case 'USUARIO':
                 header("Location: ". ($_POST["retorno"] ?? "Modulos/$Modulo/Inicio.php"));

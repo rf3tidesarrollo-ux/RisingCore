@@ -265,7 +265,7 @@ function mostrarRegistroP(id){
         "PRESENTACIÓN: " + pNombre + "\n" +
         "CLIENTE: " + cNombre + "\n" +
         "CAJAS: " + cajas + "\n" +
-        "TIPO: " + tipo + "\n" +
+        "EMBARQUE: " + tipo + "\n" +
         "FECHA: " + fecha + "\n" +
         "HORA: " + hora + "\n" +
         "REGISTRÓ: " + nReg);

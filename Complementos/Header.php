@@ -107,11 +107,9 @@ function path_abs($rutaRelativa) {
     return "/RisingCore/Modulos/" . $modulo . "/" . $rutaRelativa;
 }
 
-$base = "../";
-
 // === RUTAS DE INICIO POR MÓDULO ===
 $modulosInicio = [
-    "Produccion"   => ["path" => "Produccion/Inicio.php", "icon" => "fa-solid fa-seedling"],
+    "Producción"   => ["path" => "Produccion/Inicio.php", "icon" => "fa-solid fa-seedling"],
     "Empaque"      => ["path" => "Empaque/Inicio.php", "icon" => "fa-solid fa-box-open"],
     "Exportacion"  => ["path" => "Exportacion/Inicio.php", "icon" => "fa-solid fa-truck-fast"],
     "Calidad"      => ["path" => "Calidad/Inicio.php", "icon" => "fa-solid fa-certificate"],
@@ -201,7 +199,7 @@ $modulosInicio = [
                             <?php if ($TipoRol == "ADMINISTRADOR" || PermisoModulo($_SESSION['ID'], $nombreFiltrado, $Con)): ?>
                                 <?php
                                     // Si estamos en el mismo módulo, usa ruta relativa a Inicio.php
-                                    $rutaModulo = ($modulo === $nombre) ? $base . "Inicio.php" : $base . "../" . $data['path'];
+                                    $rutaModulo = ($modulo === $nombre) ? $basePath . "Inicio.php" : $basePath . "../" . $data['path'];
                                 ?>
                                 <li><a href="<?= $rutaModulo ?>"><i class="<?= $data['icon'] ?>"></i> <?= $nombre ?></a></li>
                             <?php endif; ?>
@@ -209,7 +207,11 @@ $modulosInicio = [
                     </ul>
                 </li>
 
-                <li><a href="../../../Login/Cerrar.php"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</a></li>
+                <?php
+                    // Ruta para cerrar sesión
+                    $rutaCerrar = $Logo . "Login/Cerrar.php";
+                ?>
+                <li><a href="<?= $rutaCerrar;?>"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</a></li>
             </ul>
         </div>
     </nav>

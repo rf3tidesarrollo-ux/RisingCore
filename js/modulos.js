@@ -172,13 +172,13 @@ $(document).ready(function () {
         if (sede !== "0" && variedad !== "0") {
             cargarLotes(sede, variedad);
         } else {
-            $('#lotes').html('<option value="0">Seleccione el lote</option>');
+            $('#lotes').html('<option value="0">Seleccione el lote:</option>');
         }
     });
 
     // Evento cuando cambia la sede, limpia los lotes
     $('#sede2').on('change', function () {
-        $('#lotes').html('<option value="0">Seleccione el lote</option>');
+        $('#lotes').html('<option value="0">Seleccione el lote:</option>');
     });
 
     // Función para cargar los lotes con sede y variedad

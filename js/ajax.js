@@ -1,6 +1,6 @@
 $(document).ready(function () {
     $.ajax({
-        url: 'obtener_permisos.php',
+        url: '../../Server_side/Usuarios/obtener_permisos.php',
         method: 'GET',
         dataType: 'json',
         success: function (data) {
