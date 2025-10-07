@@ -53,6 +53,22 @@ $modulosConfig = [
             "Estimaciones" => "fa-solid fa-mortar-pestle",
         ]
     ],
+    "RRHH" => [
+        "routes" => [
+            "RegistrarNI" => "Ingreso/RegistrarNI.php",
+            "CatalogoNI"  => "Ingreso/CatalogoNI.php",
+            "RegistrarDP" => "Personal/RegistrarDP.php",
+            "CatalogoDP"  => "Personal/CatalogoDP.php",
+            "CatalogoLA" => "Asistencia/CatalogoLA.php",
+            "CatalogoLI"  => "Inicidencias/CatalogoLI.php",
+        ],
+        "iconos" => [
+            "Ingreso" => "fa-solid fa-fingerprint",
+            "Personal" => "fa-solid fa-users-between-lines",
+            "Asistencia" => "fa-solid fa-clipboard-list",
+            "Incidencia" => "fa-solid fa-person-circle-exclamation",
+        ]
+    ],
     // Agrega más módulos si quieres...
 ];
 
@@ -74,6 +90,10 @@ $claveMap = [
     'C'   => 'Codigos',
     'Cl'  => 'Cultivo',
     'U'   => 'Usuarios',
+    'NI'   => 'Ingreso',
+    'DP'  => 'Personal',
+    'LA'   => 'Asistencia',
+    'LI'   => 'Incidencia',
 ];
 
 $claveLabel = [
@@ -85,7 +105,11 @@ $claveLabel = [
     'CamaraFria' => 'Cámara Fría',
     'Codigos'    => 'Códigos',
     'Cultivo'    => 'Cultivo',
-    'Usuarios'   => 'Usuarios'
+    'Usuarios'   => 'Usuarios',
+    'Ingreso'    => 'Nuevo Ingreso',
+    'Personal'    => 'Personal',
+    'Asistencia'   => 'Lista de asistencias',
+    'Incidencia'   => 'Lista de incidencias'
 ];
 
 $submodulos = [
@@ -98,7 +122,10 @@ $submodulos = [
     'Codigos'      => "$modulo/Codigos",
     'Cultivo'      => "$modulo/Cultivo",
     'Estimaciones' => "$modulo/Estimaciones",
-    'Usuarios'     => "$modulo/Usuarios"
+    'Usuarios'     => "$modulo/Usuarios",
+    'NuevoIngreso'      => "$modulo/NuevoIngreso",
+    'Personal' => "$modulo/Personal",
+    'Asistencia'     => "$modulo/Asistencia"
 ];
 
 // Función para generar ruta absoluta desde la raíz del sitio
@@ -113,6 +140,7 @@ $modulosInicio = [
     "Empaque"      => ["path" => "Empaque/Inicio.php", "icon" => "fa-solid fa-box-open"],
     "Exportacion"  => ["path" => "Exportacion/Inicio.php", "icon" => "fa-solid fa-truck-fast"],
     "Calidad"      => ["path" => "Calidad/Inicio.php", "icon" => "fa-solid fa-certificate"],
+    "Recursos Humanos"     => ["path" => "RRHH/Inicio.php", "icon" => "fa-solid fa-users-rectangle"],
     "Sistemas"     => ["path" => "Sistemas/Inicio.php", "icon" => "fa-solid fa-laptop-code"],
     "Configuración" => ["path" => "Configuración/Inicio.php", "icon" => "fa-solid fa-gear"]
 ];
