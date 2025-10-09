@@ -6,13 +6,13 @@ if(isset($_GET['id']) && !empty($_GET['id'])) {
     $id = $_GET['id'];
     $id = $Con->real_escape_string($id);
     
-    $stmt = $Con->prepare("UPDATE embarques_pallets SET activo_em = 0 WHERE id_embarque = ?");
+    $stmt = $Con->prepare("UPDATE rh_personal SET status_pl = 0 WHERE id_personal = ?");
     $stmt->bind_param("i", $id);
    
     if ($stmt->execute()) {
         // $Pagina="EliminarArticulo";
         // Historial($Pagina,$Con);
-        header("Location: CatalogoE.php");
+        header("Location: CatalogoNI.php");
         exit();
     } else {
         echo '<script>swal("Error!", "¡Ha ocurrido un error!", "error");</script>';;
@@ -20,7 +20,7 @@ if(isset($_GET['id']) && !empty($_GET['id'])) {
     $stmt->close();
     $Con->close();
 } else {
-    header("Location: CatalogoE.php");
+    header("Location: CatalogoNI.php");
     exit();
 }
 ?>  

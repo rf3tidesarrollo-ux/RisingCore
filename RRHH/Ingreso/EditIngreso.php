@@ -15,15 +15,15 @@
     <link rel="stylesheet" href="../../../css/eggy.css" />
     <link rel="stylesheet" href="../../../css/progressbar.css" />
     <link rel="stylesheet" href="../../../css/theme.css" />
-    <link rel="stylesheet" href="DesignE.css">
-    <title>Empaque: Embarque</title>
+    <link rel="stylesheet" href="DesignNI.css">
+    <title>RRHH: Nuevo Ingreso</title>
 </head>
 
     <body onload="validar()">
         <?php
         $basePath = "../";
         $Logo = "../../../";
-        $modulo = 'Empaque';
+        $modulo = 'RRHH';
         include('../../../Complementos/Header.php');
         ?>
 
@@ -31,12 +31,12 @@
             <div style="background: #f9f9f9; padding: 12px 25px; border-bottom: 1px solid #ccc; font-size: 16px;">
                 <nav style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
                     <a href="/RisingCore/Modulos/Empaque/index.php" style="color: #6c757d; text-decoration: none;">
-                        📦 Empaque
+                        👥 Recursos Humanos
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
                     <a href="/RisingCore/Modulos/Empaque/Merma/index.php" style="color: #6c757d; text-decoration: none;">
-                        🚚 Embarque
+                        🙎🏻 Nuevo Ingreso
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
@@ -45,104 +45,135 @@
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <strong style="color: #333;">✏️ Registros de embarque</strong>
+                    <strong style="color: #333;">✏️ Registros de nuevos ingresos</strong>
                 </nav>
             </div>
             
-            <a title="Reporte" href="CatalogoE.php"><div class="back"><i class="fa-solid fa-left-long fa-xl"></i></div></a>
+            <a title="Reporte" href="CatalogoNI.php"><div class="back"><i class="fa-solid fa-left-long fa-xl"></i></div></a>
 
             <section class="Registro">
-                <h4>Actualizar embarque</h4>
+                <h4>Registro de nuevo de ingreso</h4>
                 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST" name="octavo" id="">
                     <input class="Controles" id="0" type="hidden" name="id" value="<?php echo $ID; ?>">
-                        <div class="campos-cajas">
-                            <div class="FAD" style="flex: 1;">
-                                <label class="FAL">
-                                    <span class="FAS">Sede</span>
-                                    <select class="FAI prueba" id="sede3" name="Sede">
-                                        <option value="0">Seleccione la sede:</option>
-                                        <?php
-                                        $stmt = $Con->prepare("SELECT codigo_s FROM sedes ORDER BY codigo_s");
-                                        $stmt->execute();
-                                        $result = $stmt->get_result();
-
-                                        while ($row = $result->fetch_assoc()) {
-                                            $codigo = $row['codigo_s'];
-                                            // Si coincide con la variable $Sede, lo marca como seleccionado
-                                            $selected = ($codigo == $Sede) ? ' selected' : '';
-                                            echo "<option value='$codigo'$selected>$codigo</option>";
-                                        }
-
-                                        $stmt->close();
-                                        ?>
-                                    </select>
-                                </label>
-                            </div>
-
-                            <div class="FAD" style="flex: 1;">
-                                <label class="FAL Gris">
-                                    <span class="FAS Top Gris">Folio</span>
-                                    <input class="FAI Gris" type="text" name="Folio" id="folio" value="<?php echo $FolioE; ?>" readonly>
-                                </label>
-                            </div>
-                        </div>
-
                         <div class="FAD">
-                            <label class="FAL">
-                                <span class="FAS">PO (Purchase Order)</span>
-                                <input class="FAI" autocomplete="off" id="PO" type="Text" name="PO" value="<?php echo $PO; ?>" size="25" maxLength="25">
-                            </label>
-                        </div>
+                        <label class="FAL">
+                            <span class="FAS">Sede</span>
+                            <select class="FAI prueba" id="sede3" name="Sede">
+                                <option value="0">Seleccione la sede:</option>
+                                <?php
+                                $stmt = $Con->prepare("SELECT codigo_s FROM sedes ORDER BY codigo_s");
+                                $stmt->execute();
+                                $result = $stmt->get_result();
 
-                        <div class="FAD" id="campo_destino">
-                            <label class="FAL">
-                                <span class="FAS">Destino</span>
-                                <select class="FAI prueba" name="Destino" id="destino">
-                                    <option value="0">Seleccione primero una sede:</option>
-                                </select>
-                            </label>
-                        </div>
-                        <input type="hidden" id="destinoSeleccionado" value="<?= htmlspecialchars($Destino) ?>">               
+                                while ($row = $result->fetch_assoc()) {
+                                    $codigo = $row['codigo_s'];
+                                    $selected = ($codigo == $Sede) ? ' selected' : '';
+                                    echo "<option value='$codigo'$selected>$codigo</option>";
+                                }
 
-                        <div class="campos-cajas">
-                            <div class="FAD" style="flex: 1;">
-                                <label class="FAL">
-                                    <span class="FAS">Cajas solicitadas</span>
-                                    <input class="FAI" autocomplete="off" id="CajasT" type="Number" name="CajasT" value="<?php echo $CajasT; ?>" size="15" maxLength="4">
-                                </label>
-                            </div>
+                                $stmt->close();
+                                ?>
+                            </select>
+                        </label>
+                    </div>
 
-                            <div class="FAD" style="flex: 1;">
-                                <label class="FAL">
-                                    <span class="FAS">Kilos solicitados</span>
-                                    <input class="FAI" autocomplete="off" id="KilosT" type="Number" step="0.01" name="KilosT" value="<?php echo $KilosT; ?>" size="15" maxLength="11">
-                                </label>
-                            </div>
-                        </div>
+                    <div class="FAD">
+                        <label class="FAL">
+                            <span class="FAS">Nombre</span>
+                            <input class="FAI" autocomplete="off" id="Nombre" type="Text" name="Nombre" value="<?php echo $Nombre; ?>" size="25" maxLength="50" onkeyup="mayus(this);">
+                        </label>
+                    </div>
 
-                        <div class="FAD">
-                            <label class="FAL">
-                                <span class="FAS">Tipo de descargo</span>
-                                <input class="FAI" autocomplete="off" id="Tipo" type="Text" name="Tipo" value="<?php echo $Tipo; ?>" size="25" maxLength="25">
-                            </label>
-                        </div>
-                        
-                        <div class="FAD">
-                            <label class="FAL">
-                                <span class="FAS">Fecha de envió</span>
-                                <?php $Fecha=date("Y-m-d");?>
-                                <input class="FAI" id="9" type="date" name="Fecha" value="<?php echo $Fecha; ?>">
-                            </label>
-                        </div>
+                    <div class="FAD">
+                        <label class="FAL">
+                            <span class="FAS">Apellido paterno</span>
+                            <input class="FAI" autocomplete="off" id="AP" type="Text" name="AP" value="<?php echo $AP; ?>" size="25" maxLength="50" onkeyup="mayus(this);">
+                        </label>
+                    </div>
+
+                    <div class="FAD">
+                        <label class="FAL">
+                            <span class="FAS">Apellido materno</span>
+                            <input class="FAI" autocomplete="off" id="AM" type="Text" name="AM" value="<?php echo $AM; ?>" size="25" maxLength="50" onkeyup="mayus(this);">
+                        </label>
+                    </div>
+
+                    <div class="FAD">
+                        <label class="FAL">
+                            <span class="FAS">Género</span>
+                            <select class="FAI prueba" id="Genero" name="Genero">
+                                <option value="0">Seleccione el género:</option>
+                                <?php
+                                $stmt = $Con->prepare("SELECT id_genero, genero FROM rh_generos ORDER BY id_genero");
+                                $stmt->execute();
+                                $result = $stmt->get_result();
+
+                                while ($Row = $result->fetch_assoc()) {
+                                    $selected = ($Genero == $Row['id_genero']) ? 'selected' : '';
+                                    echo '<option value="'.$Row['id_genero'].'" '.$selected.'>'.$Row['genero'].'</option>';
+                                }
+                                $stmt->close();
+                                ?>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="FAD">
+                        <label class="FAL">
+                            <span class="FAS">Departamento</span>
+                            <select class="FAI prueba" id="Departamento" name="Departamento">
+                                <option value="0">Seleccione el departamento:</option>
+                                <?php
+                                $stmt = $Con->prepare("SELECT id_departamento, departamento FROM rh_departamentos ORDER BY id_departamento");
+                                $stmt->execute();
+                                $result = $stmt->get_result();
+
+                                while ($Row = $result->fetch_assoc()) {
+                                    $selected = ($Departamento == $Row['id_departamento']) ? 'selected' : '';
+                                    echo '<option value="'.$Row['id_departamento'].'" '.$selected.'>'.$Row['departamento'].'</option>';
+                                }
+                                $stmt->close();
+                                ?>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="FAD">
+                        <label class="FAL">
+                            <span class="FAS">Tipo de empleado</span>
+                            <select class="FAI prueba" id="Tipo" name="Tipo">
+                                <option value="0">Seleccione el tipo de empleado:</option>
+                                <?php
+                                $stmt = $Con->prepare("SELECT id_tipo_rh, tipo_rh FROM rh_tipos_empleados ORDER BY id_tipo_rh");
+                                $stmt->execute();
+                                $result = $stmt->get_result();
+
+                                while ($Row = $result->fetch_assoc()) {
+                                    $selected = ($Tipo == $Row['id_tipo_rh']) ? 'selected' : '';
+                                    echo '<option value="'.$Row['id_tipo_rh'].'" '.$selected.'>'.$Row['tipo_rh'].'</option>';
+                                }
+                                $stmt->close();
+                                ?>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="FAD">
+                        <label class="FAL">
+                            <span class="FAS">Fecha de ingreso</span>
+                            <?php $Fecha=date("Y-m-d");?>
+                            <input class="FAI" id="Fecha" type="date" name="Fecha" value="<?php echo $Fecha; ?>">
+                        </label>
+                    </div>
 
                     <div class=Center>
                         <input class="Boton" id="AB" type="Submit" value="Actualizar" name="Modificar">
                     </div>
                 </section>
 
-            <?php if ($Correcto < 7) {
+            <?php if ($Correcto < 8) {
                     if ($NumE>0) { 
-                        for ($i=1; $i <= 7; $i++) {
+                        for ($i=1; $i <= 8; $i++) {
                             $Error=${"Error".$i};
                             if (!empty($Error)) { ?>
                                 <script type="module">
@@ -187,7 +218,6 @@
             <?php }?>
             
             <script src="../../../js/modulos.js"></script>
-            <script src="../../../js/embarque.js"></script>
         </main>
     </body>
 

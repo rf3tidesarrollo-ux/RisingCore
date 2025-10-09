@@ -69,7 +69,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <strong style="color: #333;">📊 Reportes de embarques</strong>
+                    <strong style="color: #333;">👆🏻 Pendientes de huella</strong>
                 </nav>
             </div>
 
@@ -174,8 +174,8 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 
                         if (Ver || Editar || Eliminar) {
                             return `
-                                ${Ver ? `<a title="Mostrar" href="#${row.id_personal}" onclick="mostrarRegistroEm(${row.id_personal})"><i class="fa-solid fa-eye fa-xl" style="color: #16ac19;"></i></a>` : ''}
-                                ${Editar ? `<a title="Editar" class="Edit" href="EditarE.php?id=${row.id_personal}"><i class="fa-solid fa-pen-to-square fa-xl" style="color: #0a5ceb;"></i></a>` : ''}
+                                ${Ver ? `<a title="Mostrar" href="#${row.id_personal}" onclick="mostrarRegistroNI(${row.id_personal})"><i class="fa-solid fa-eye fa-xl" style="color: #16ac19;"></i></a>` : ''}
+                                ${Editar ? `<a title="Editar" class="Edit" href="EditarNI.php?id=${row.id_personal}"><i class="fa-solid fa-pen-to-square fa-xl" style="color: #0a5ceb;"></i></a>` : ''}
                                 ${Eliminar ? `<a title="Eliminar" class="Delete" href="#${row.id_personal}" onclick="eliminarRegistro(${row.id_personal})"><i class="fa-solid fa-trash fa-xl" style="color: #ca1212;"></i></a>` : ''}
                             `;
                         } else {
@@ -264,6 +264,11 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                 '<i class="fa-solid fa-filter-circle-xmark fa-xl"></i> Limpiar</button>'
             );
 
+            $('.dt-buttons').append(
+                '<button id="actualizar" class="btn btn-sm btn-outline-secondary ms-2" title="Actualizar registros">' +
+                '<i class="fa-solid fa-arrows-rotate fa-xl"></i> Actualizar</button>'
+            );
+
             // Evento para limpiar filtros
             $('#limpiarFiltros').on('click', function () {
                 api.search('').draw();
@@ -275,6 +280,28 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                 });
 
                 api.draw();
+            });
+
+            $('#actualizar').on('click', function () {
+                // Opcional: mostrar un mensaje mientras se procesa
+                swal("Actualizando...", "Por favor espera mientras se actualizan los registros.", "info");
+
+                $.ajax({
+                    url: '../../Server_side/Personal/actualizarRH.php', // ruta a tu script PHP
+                    type: 'POST',
+                    dataType: 'json', // si tu PHP devuelve JSON
+                    success: function(response) {
+                        if (response.success) {
+                            swal("¡Listo!", "Registros actualizados correctamente.", "success");
+                            api.ajax.reload(); // recarga la tabla después de actualizar
+                        } else {
+                            swal("Error", response.message || "Ocurrió un error al actualizar.", "error");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        swal("Error", "No se pudo conectar con el servidor.", "error");
+                    }
+                });
             });
         },
 

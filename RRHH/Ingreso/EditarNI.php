@@ -5,10 +5,12 @@
     include_once "../../../Login/validar_sesion.php";
     // $Pagina=basename(__FILE__);
     // Historial($Pagina,$Con);
-    $Ver = TienePermiso($_SESSION['ID'], "Empaque/Embarque", 1, $Con);
-    $Crear = TienePermiso($_SESSION['ID'], "Empaque/Embarque", 2, $Con);
-    $Editar = TienePermiso($_SESSION['ID'], "Empaque/Embarque", 3, $Con);
-    $Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Embarque", 4, $Con);
+    $Ver = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 1, $Con);
+    $Crear = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 2, $Con);
+    $Editar = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 3, $Con);
+    $Eliminar = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 4, $Con);
+
+    $FechaR=date("Y-m-d");
 
    if ($TipoRol=="ADMINISTRADOR" || $Crear==true) {
     $NumE=0;
@@ -17,15 +19,16 @@
     $Finalizado="";
     $Correcto=0;
     $Sede = isset($_POST['Sede']) ? $_POST['Sede'] : '';
-    $PO = isset($_POST['PO']) ? $_POST['PO'] : '';
-    $Destino = isset($_POST['Destino']) ? $_POST['Destino'] : '';
-    $CajasT = isset($_POST['CajasT']) ? $_POST['CajasT'] : '';
-    $KilosT = isset($_POST['KilosT']) ? $_POST['KilosT'] : '';
+    $Nombre = isset($_POST['Nombre']) ? $_POST['Nombre'] : '';
+    $AM = isset($_POST['AM']) ? $_POST['AM'] : '';
+    $AP = isset($_POST['AP']) ? $_POST['AP'] : '';
+    $Genero = isset($_POST['Genero']) ? $_POST['Genero'] : '';
+    $Departamento = isset($_POST['Departamento']) ? $_POST['Departamento'] : '';
     $Tipo = isset($_POST['Tipo']) ? $_POST['Tipo'] : '';
     $Fecha = isset($_POST['Fecha']) ? $_POST['Fecha'] : '';
-    $FolioE = "";
+    $Badge = "";
 
-    for ($i=1; $i <= 7; $i++) {
+    for ($i=1; $i <= 8; $i++) {
         ${"Error".$i}="";
     }
 
@@ -33,24 +36,24 @@
         ${"Precaucion".$i}="";
     }
 
-    class Val_PO {
-        public $PO;
+    class Val_Nombre {
+        public $Nombre;
     
-        function __Construct($PO){
-            $this -> PO = $PO;
+        function __Construct($N){
+            $this -> Nombre = $N;
         }
     
-        public function getPO(){
-            return $this -> PO;
+        public function getNombre(){
+            return $this -> Nombre;
         }
     
-        public function setPO($PO){
-            $this -> PO = $PO;
+        public function setNombre($Nombre){
+            $this -> Nombre = $Nombre;
             
-            if (!empty($PO)) {
-                $PO=filter_var($PO, FILTER_SANITIZE_SPECIAL_CHARS);
+            if (!empty($Nombre)) {
+                $Nombre=filter_var($Nombre, FILTER_SANITIZE_SPECIAL_CHARS);
                 
-                if (!preg_match('/^[0-9.\/s]*$/', $PO)){
+                if (!preg_match('/^[A-ZÁÉÍÓÚÑ.\s]*$/', $Nombre)){
                     $Valor = 1;
                     return $Valor;
                 }else{
@@ -64,69 +67,63 @@
         }
     }
 
-    class Val_KilosT {
-        public $KilosT;
+    class Val_ApellidoP {
+        public $ApellidoP;
     
-        function __Construct($K){
-            $this -> KilosT = $K;
+        function __Construct($AP){
+            $this -> ApellidoP = $AP;
         }
     
-        public function getKilosT(){
-            return $this -> KilosT;
+        public function getApellidoP(){
+            return $this -> ApellidoP;
         }
     
-        public function setKilosT($KilosT){
-            $this -> KilosT = $KilosT;
+        public function setApellidoP($ApellidoP){
+            $this -> ApellidoP = $ApellidoP;
             
-            if (!empty($KilosT)) {
-                if (is_numeric($KilosT)){
-                    if ($KilosT > 0 && $KilosT <= 999999999) {
-                        $Valor = 1;
-                        return $Valor;
-                    }else{
-                        $Valor = 2;
-                        return $Valor; 
-                    }
+            if (!empty($ApellidoP)) {
+                $ApellidoP=filter_var($ApellidoP, FILTER_SANITIZE_SPECIAL_CHARS);
+                
+                if (!preg_match('/^[A-ZÁÉÍÓÚÜÑ.\s]*$/', $ApellidoP)){
+                    $Valor = 1;
+                    return $Valor;
                 }else{
-                    $Valor = 3;
+                    $Valor = 2;
                     return $Valor;
                 }
             }else{
-                    $Valor = 4;
+                    $Valor = 3;
                     return $Valor;
             }
         }
     }
 
-    class Val_CajasT {
-        public $CajasT;
+    class Val_ApellidoM {
+        public $ApellidoM;
     
-        function __Construct($C){
-            $this -> CajasT = $C;
+        function __Construct($AM){
+            $this -> ApellidoM = $AM;
         }
     
-        public function getCajasT(){
-            return $this -> CajasT;
+        public function getApellidoM(){
+            return $this -> ApellidoM;
         }
     
-        public function setCajasT($CajasT){
-            $this -> CajasT = $CajasT;
+        public function setApellidoM($ApellidoM){
+            $this -> ApellidoM = $ApellidoM;
             
-            if (!empty($CajasT)) {
-                if (is_numeric($CajasT)){
-                    if ($CajasT > 0 && $CajasT <= 999) {
-                        $Valor = 1;
-                        return $Valor;
-                    }else{
-                        $Valor = 2;
-                        return $Valor; 
-                    }
+            if (!empty($ApellidoM)) {
+                $ApellidoM=filter_var($ApellidoM, FILTER_SANITIZE_SPECIAL_CHARS);
+                
+                if (!preg_match('/^[A-ZÁÉÍÓÚÜÑ.\s]*$/', $ApellidoM)){
+                    $Valor = 1;
+                    return $Valor;
                 }else{
-                    $Valor = 3;
+                    $Valor = 2;
                     return $Valor;
                 }
             }else{
-                    $Valor = 4;
+                    $Valor = 3;
                     return $Valor;
             }
         }
@@ -146,7 +143,7 @@
         function setFecha($Fecha){
             if (!empty($Fecha)) {
                 $Valores = explode('-', $Fecha);
-                $FechaMin="2025/01/01";
+                $FechaMin="2020/01/01";
 
                 if (strtotime($Fecha) > strtotime($FechaMin)) {
                     if(count($Valores) == 3){
@@ -170,10 +167,11 @@
     class Cleanner{
         public $Limpiar;
         public $Sede;
-        public $PO;
-        public $Destino;
-        public $KilosT;
-        public $CajasT;
+        public $Nombre;
+        public $ApellidoP;
+        public $ApellidoM;
+        public $Genero;
+        public $Departamento;
         public $Tipo;
         public $Fecha;
 
@@ -185,24 +183,28 @@
             return $this -> Sede="Seleccione la sede:";
         }
 
-        public function LimpiarPO(){
-            return $this -> PO="Seleccione el código:";
+        public function LimpiarNombre(){
+            return $this -> Nombre="";
         }
 
-        public function LimpiarDestino(){
-            return $this -> Destino="Seleccione el carro:";
+        public function LimpiarApellidoP(){
+            return $this -> ApellidoP="";
         }
 
-        public function LimpiarCajasT(){
-            return $this -> CajasT="";
+        public function LimpiarApellidoM(){
+            return $this -> ApellidoM="";
         }
-        
-        public function LimpiarKilosT(){
-            return $this -> KilosT="";
+
+        public function LimpiarGenero(){
+            return $this -> Genero="Seleccione el género:";
+        }
+
+        public function LimpiarDepartamento(){
+            return $this -> Departamento="Seleccione el departamento:";
         }
 
         public function LimpiarTipo(){
-            return $this -> Tipo="";
+            return $this -> Tipo="Seleccione el tipo de empleado:";
         }
 
         public function LimpiarFecha(){
@@ -211,12 +213,13 @@
     }
 
     if (isset($_POST['Modificar'])) {
-        $idEmbarque=$_POST['id'];
+        $idPersonal=$_POST['id'];
         $Sede=$_POST['Sede'];
-        $PO=$_POST['PO'];
-        $Destino=$_POST['Destino'];
-        $CajasT=$_POST['CajasT'];
-        $KilosT=$_POST['KilosT'];
+        $Nombre=$_POST['Nombre'];
+        $AP=$_POST['AP'];
+        $AM=$_POST['AM'];
+        $Genero=$_POST['Genero'];
+        $Departamento=$_POST['Departamento'];
         $Tipo=$_POST['Tipo'];
         $Fecha=$_POST['Fecha'];
         
@@ -238,73 +241,79 @@
             $Correcto += 1;
         }
 
-        $ValidarPO = new Val_PO($PO);
-        $Retorno = $ValidarPO -> setPO($PO);
-        $POVal = $ValidarPO -> getPO();
+        $ValidarNombre = new Val_Nombre($Nombre);
+        $Retorno = $ValidarNombre -> setNombre($Nombre);
+        $NombreVal = $ValidarNombre -> getNombre();
         
         switch ($Retorno) {
             case '1':
-                $Precaucion1 = "El PO solo lleva números";
+                $Precaucion1 = "El nombre solo lleva mayúsculas y letras";
                 $NumP += 1;
                 break;
             case '2':
                 $Correcto += 1;
                 break;
             case '3':
-                $Error2 = "El campo de PO no puede ir vacío";
+                $Error2 = "El campo de nombre no puede ir vacío";
+                $NumE += 1;
+                break;    
+        }
+        
+        $ValidarApellidoP = new Val_ApellidoP($AP);
+        $Retorno = $ValidarApellidoP -> setApellidoP($AP);
+        $ApellidoPVal = $ValidarApellidoP -> getApellidoP();
+        
+        switch ($Retorno) {
+            case '1':
+                $Precaucion2 = "El apellido paterno solo lleva mayúsculas y letras";
+                $NumP += 1;
+                break;
+            case '2':
+                $Correcto += 1;
+                break;
+            case '3':
+                $Error3 = "El apellido paterno no puede ir vacío";
                 $NumE += 1;
                 break;    
         }
 
-        if ($Destino == "0") {
-            $Error3 = "Tienes que seleccionar un destino";
+        $ValidarApellidoM = new Val_ApellidoM($AM);
+        $Retorno = $ValidarApellidoM -> setApellidoM($AM);
+        $ApellidoMVal = $ValidarApellidoM -> getApellidoM();
+        
+        switch ($Retorno) {
+            case '1':
+                $Precaucion3 = "El apellido materno solo lleva mayúsculas y letras";
+                $NumP += 1;
+                break;
+            case '2':
+                $Correcto += 1;
+                break;
+            case '3':
+                $Error4 = "El apellido materno no puede ir vacío";
+                $NumE += 1;
+                break;    
+        }
+
+        if ($Genero == "0") {
+            $Error5 = "Tienes que seleccionar un género";
+            $NumE += 1;
+        }else{
+            $Correcto += 1;
+        }
+       
+        if ($Departamento == "0") {
+            $Error6 = "Tienes que seleccionar un departamento";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
 
-        $ValidarCajasT = new Val_CajasT($CajasT);
-        $Retorno = $ValidarCajasT -> setCajasT($CajasT);
-        $CajasTVal = $ValidarCajasT -> getCajasT();
-
-        switch ($Retorno) {
-            case '1':
-                $Correcto += 1;
-                break;
-            case '2':
-                $Precaucion2 = "Las cajas deben ser mayor a 0";
-                $NumP += 1;
-                break;
-            case '3':
-                $Precaucion2 = "Tienes que ingresar solo números en el campo de cajas";
-                $NumP += 1;
-                break;
-            case '4':
-                $Error4 = "El campo de cajas no puede ir vacío";
-                $NumE += 1;
-                break;   
-        }
-
-        $ValidarKilosT = new Val_KilosT($KilosT);
-        $Retorno = $ValidarKilosT -> setKilosT($KilosT);
-        $KilosTVal = $ValidarKilosT -> getKilosT();
-
-        switch ($Retorno) {
-            case '1':
-                $Correcto += 1;
-                break;
-            case '2':
-                $Precaucion3 = "Los kilos deben ser mayor a 0";
-                $NumP += 1;
-                break;
-            case '3':
-                $Precaucion3 = "Tienes que ingresar solo números en el campo de kilos brutos";
-                $NumP += 1;
-                break;
-            case '4':
-                $Error5 = "El campo de kilos no puede ir vacío";
-                $NumE += 1;
-                break;  
+        if ($Tipo == "0") {
+            $Error7 = "Tienes que seleccionar un tipo de empleado";
+            $NumE += 1;
+        }else{
+            $Correcto += 1;
         }
 
         $ValidarFecha = new Val_Fecha($Fecha);
@@ -316,44 +325,35 @@
                 $Correcto += 1;
                 break;
             case '2':
-                $Error6 = "La fecha ingresada es incorrecta";
+                $Error8 = "La fecha ingresada es incorrecta";
                 $NumE += 1;
                 break;
             case '3':
-                $Error6 = "El campo de fecha no puede ir vacío";
+                $Error8 = "El campo de fecha no puede ir vacío";
                 $NumE += 1;
                 break;    
         }
 
-        if ($Tipo == "") {
-            $Error2 = "El tipo de descargo no puede ir vacío";
-            $NumE += 1;
-        }else{
-            $Correcto += 1;
-        }
-
-        if ($Correcto==7) {
+        if ($Correcto==8) {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-                $fechaObj = new DateTime($FechaVal); 
-                $SemanaE = $fechaObj->format("Y-W");
-
-                $stmt = $Con->prepare("UPDATE embarques_pallets SET id_sede_em=?, po_em=?, cajas_em=?, kilos_em=?, id_destino_em=?, fecha_em=?, semana_em=?, usuario_id=? WHERE id_embarque=?");
-                $stmt->bind_param("isidissii", $SedeVal, $PO, $CajasTVal, $KilosTVal, $Destino, $FechaVal, $SemanaE, $ID, $idEmbarque);
+                $stmt = $Con->prepare("UPDATE rh_personal SET id_sede_pl=?, nombre=?, apellido_p=?, apellido_m=?, id_genero_pl=?, id_te_pl=?, id_depto_pl=?, fecha_ingreso=?, id_user_p=? WHERE id_personal=?");
+                $stmt->bind_param("isssiiisii", $SedeVal, $NombreVal, $ApellidoPVal, $ApellidoMVal, $Genero, $Tipo, $Departamento, $FechaVal, $ID, $idPersonal);
                 $stmt->execute();
                 $stmt->close();
                 
-                $Limpiar = new Cleanner($Sede,$PO,$CajasT,$KilosT,$Destino,$Fecha,$Tipo);
+                $Limpiar = new Cleanner($Sede,$Nombre,$ApellidoP,$ApellidoM,$Genero,$Tipo,$Departamento,$Fecha);
                 $Sede = $Limpiar -> LimpiarSede();
-                $PO = $Limpiar -> LimpiarPO();
-                $CajasT = $Limpiar -> LimpiarCajasT();
-                $KilosT = $Limpiar -> LimpiarKilosT();
+                $Nombre = $Limpiar -> LimpiarNombre();
+                $AP = $Limpiar -> LimpiarApellidoP();
+                $AM = $Limpiar -> LimpiarApellidoM();
+                $Genero = $Limpiar -> LimpiarGenero();
                 $Tipo = $Limpiar -> LimpiarTipo();
+                $Departamento = $Limpiar -> LimpiarDepartamento();
                 $Fecha = $Limpiar -> LimpiarFecha();
 
                 session_start();
-                $_SESSION['correcto'] = "Embarque actualizado";
-                header("Location: EditarE.php?id=" . $idEmbarque);
+                $_SESSION['correcto'] = "Personal actualizado";
+                header("Location: EditarNI.php?id=" . $idPersonal);
                 exit();
             }
         }
@@ -363,9 +363,9 @@
         if (!empty($_POST)) {
             $ID=$_POST['id'];
         }else{
-            header('Location: CatalogoE.php');
+            header('Location: CatalogoNI.php');
         }
-        $stmt = $Con->prepare("SELECT * FROM embarques_pallets em JOIN sedes s ON em.id_sede_em = s.id_sede WHERE id_embarque=?");
+        $stmt = $Con->prepare("SELECT * FROM rh_personal p JOIN sedes s ON p.id_sede_pl = s.id_sede WHERE id_personal=?");
         $stmt->bind_param("i",$ID);
         $stmt->execute();
         $Registro = $stmt->get_result();
@@ -373,21 +373,23 @@
 
         if ($NumCol>0) {
             while ($Reg = $Registro->fetch_assoc()){
-                    $ID=$Reg['id_embarque'];
+                    $ID=$Reg['id_personal'];
                     $Sede=$Reg['codigo_s'];
-                    $FolioE=$Reg['folio_em'];
-                    $PO=$Reg['po_em'];
-                    $CajasT=$Reg['cajas_em'];
-                    $KilosT = $Reg['kilos_em'];
-                    $Destino=$Reg['id_destino_em'];
+                    $Nombre=$Reg['nombre'];
+                    $AP=$Reg['apellido_p'];
+                    $AM=$Reg['apellido_m'];
+                    $Genero = $Reg['id_genero_pl'];
+                    $Tipo=$Reg['id_te_pl'];
+                    $Departamento=$Reg['id_depto_pl'];
+                    $Fecha=$Reg['fecha_ingreso'];
                 }
                 $stmt->close();
             }else{
-                header('Location: CatalogoE.php');
+                header('Location: CatalogoNI.php');
             }
     }else{
         $ID=$_GET['id'];
-        $stmt = $Con->prepare("SELECT * FROM embarques_pallets em JOIN sedes s ON em.id_sede_em = s.id_sede WHERE id_embarque=?");
+        $stmt = $Con->prepare("SELECT * FROM rh_personal p JOIN sedes s ON p.id_sede_pl = s.id_sede WHERE id_personal=?");
         $stmt->bind_param("i",$ID);
         $stmt->execute();
         $Registro = $stmt->get_result();
@@ -395,20 +397,22 @@
 
         if ($NumCol>0) {
             while ($Reg = $Registro->fetch_assoc()){
-                    $ID=$Reg['id_embarque'];
+                    $ID=$Reg['id_personal'];
                     $Sede=$Reg['codigo_s'];
-                    $FolioE=$Reg['folio_em'];
-                    $PO=$Reg['po_em'];
-                    $CajasT=$Reg['cajas_em'];
-                    $KilosT = $Reg['kilos_em'];
-                    $Destino=$Reg['id_destino_em'];
+                    $Nombre=$Reg['nombre'];
+                    $AP=$Reg['apellido_p'];
+                    $AM=$Reg['apellido_m'];
+                    $Genero = $Reg['id_genero_pl'];
+                    $Tipo=$Reg['id_te_pl'];
+                    $Departamento=$Reg['id_depto_pl'];
+                    $Fecha=$Reg['fecha_ingreso'];
                 }
                 $stmt->close();
             }else{
-                header('Location: CatalogoE.php');
+                header('Location: CatalogoNI.php');
             }
     }
 
-    include 'EditEmbarque.php';
-    } else { header("Location: CatalogoE.php"); }
+    include 'EditIngreso.php';
+    } else { header("Location: CatalogoNI.php"); }
 ?>

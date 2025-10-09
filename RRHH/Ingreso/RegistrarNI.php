@@ -143,7 +143,7 @@
         function setFecha($Fecha){
             if (!empty($Fecha)) {
                 $Valores = explode('-', $Fecha);
-                $FechaMin="2020/01/01";
+                $FechaMin="2025/01/01";
 
                 if (strtotime($Fecha) > strtotime($FechaMin)) {
                     if(count($Valores) == 3){
@@ -351,7 +351,7 @@
 
                 require_once '../../../Librerias/zkteco/zklib/ZKLib.php';
                 // obtenemos todos los checadores registrados en BD
-                $stmt = $Con->prepare("SELECT ip, puerto FROM rh_dpbiometrico WHERE id_dpbiometrico = 2 AND id_sede_dp = ?");
+                $stmt = $Con->prepare("SELECT ip, puerto FROM rh_dpbiometrico WHERE id_sede_dp = ?");
                 $stmt->bind_param('i', $SedeVal);
                 $stmt->execute();
                 $result = $stmt->get_result();
