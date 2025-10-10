@@ -155,6 +155,16 @@
                         </label>
                     </div>
 
+                    <div class="FAD" id="campo_horarios" style="display:none;">
+                        <label class="FAL">
+                            <span class="FAS">Tipo de horario</span>
+                            <select class="FAI prueba" name="Horarios" id="horarios">
+                                <option value="0">Seleccione una sede primero</option>
+                            </select>
+                        </label>
+                    </div>
+                    <input type="hidden" id="horarioSeleccionado" value="<?= htmlspecialchars($Horario) ?>">
+
                     <div class="FAD">
                         <label class="FAL">
                             <span class="FAS">Fecha de ingreso</span>
@@ -215,6 +225,7 @@
             <?php }?>
             
             <script src="../../../js/modulos.js"></script>
+            <script src="../../../js/ingresos.js"></script>
         </main>
     </body>
 

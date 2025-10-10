@@ -7,10 +7,10 @@ if ($columna !== null) {
     // Mapear índice de columna a nombre real de la columna en la DB
     $mapColumnas = [
         0 => 'codigo_s',
-        1 => 'badge',
-        2 => 'nombre_personal',
-        3 => 'genero',
-        4 => 'tipo_rh',
+        1 => 'empleado',
+        2 => 'nombre_completo',
+        3 => 'departamento',
+        4 => 'dia',
         5 => 'departamento',
         6 => 'fecha_ingreso',
         7 => 'fecha_registro',

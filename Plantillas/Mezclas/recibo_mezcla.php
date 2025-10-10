@@ -247,6 +247,11 @@ if ($TD=="mostrar") {
             </tr>
         </tbody>
     </table>
+    <!-- Recuadro de revisión -->
+    <div style="margin-top:10px; font-size:13px;">
+        <span style="font-weight:bold; vertical-align:middle;">Revisado por calidad</span>&nbsp;&nbsp;
+        <span style="display:inline-block; width:25px; height:25px; border:1px solid #868686ff; vertical-align:middle;"></span>
+    </div>
 </div>
     
 <?php } ?>

@@ -8,15 +8,15 @@ include_once "../../../Login/validar_sesion.php";
 
 // Mapeo de columnas (usar siempre $columnMap)
 $columnMap = [
-    'codigo_s'        => 's.codigo_s',
-    'badge'           => 'p.badge',
+    'codigo_s'        => 'codigo_s',
+    'badge'           => 'badge',
     'nombre_personal' => 'nombre_personal',
-    'genero'          => 'g.genero',
-    'tipo_rh'         => 'te.tipo_rh',
-    'departamento'    => 'd.departamento',
-    'fecha_ingreso'   => 'p.fecha_ingreso',
-    'fecha_registro'  => 'p.fecha_registro',
-    'nombre_completo' => 'c.nombre_completo',
+    'genero'          => 'genero',
+    'tipo_rh'         => 'tipo_rh',
+    'departamento'    => 'departamento',
+    'fecha_ingreso'   => 'fecha_ingreso',
+    'fecha_registro'  => 'fecha_registro',
+    'nombre_completo' => 'nombre_completo',
 ];
 
 // Recuperar columnas seguro
@@ -80,7 +80,7 @@ if (!empty($whereClauses)) {
 $orderColumnIndex = isset($_POST['order'][0]['column']) ? intval($_POST['order'][0]['column']) : 0;
 $orderDir = (isset($_POST['order'][0]['dir']) && in_array(strtolower($_POST['order'][0]['dir']), ['asc','desc'])) 
             ? $_POST['order'][0]['dir'] : 'asc';
-$orderColumnRaw = isset($_POST['columns'][$orderColumnIndex]['data']) ? $_POST['columns'][$orderColumnIndex]['data'] : 'folio_p';
+$orderColumnRaw = isset($_POST['columns'][$orderColumnIndex]['data']) ? $_POST['columns'][$orderColumnIndex]['data'] : 'fecha_registro';
 $orderColumn = isset($columnMap[$orderColumnRaw]) ? $columnMap[$orderColumnRaw] : 'p.fecha_registro';
 
 // Paginación
@@ -88,15 +88,7 @@ $start = isset($_POST['start']) ? intval($_POST['start']) : 0;
 $length = isset($_POST['length']) ? intval($_POST['length']) : 25;
 
 if ($TipoRol == "ADMINISTRADOR") {
-    $totalQuery = "SELECT COUNT(*) as total FROM rh_personal p
-                    LEFT JOIN usuarios u ON p.id_user_p = u.id_usuario
-                    LEFT JOIN cargos c ON u.id_cargo = c.id_cargo
-                    LEFT JOIN rh_generos g ON p.id_genero_pl = g.id_genero
-                    LEFT JOIN rh_tipos_empleados te ON p.id_te_pl = te.id_tipo_rh
-                    LEFT JOIN rh_departamentos d ON p.id_depto_pl = d.id_departamento
-                    LEFT JOIN rh_check k ON p.badge = k.badge
-                    LEFT JOIN sedes s ON p.id_sede_pl = s.id_sede
-                    WHERE p.status_pl = 1 AND k.badge IS NULL $whereSQL";
+    $totalQuery = "SELECT COUNT(*) as total FROM vw_pendientes WHERE 1=1 $whereSQL";
     $totalStmt = $Con->prepare($totalQuery);
     if ($totalStmt === false) { error_log("Prepare totalQuery error: " . $Con->error); }
     $totalStmt->execute();
@@ -104,17 +96,7 @@ if ($TipoRol == "ADMINISTRADOR") {
     $totalRecords = $totalResult->fetch_assoc()['total'];
 
     // Datos con paginación
-    $dataQuery = "SELECT p.*, s.codigo_s, c.nombre_completo, g.genero, te.tipo_rh, d.departamento, CONCAT(nombre, ' ', apellido_p, ' ', apellido_m) AS nombre_personal FROM rh_personal p
-                    LEFT JOIN usuarios u ON p.id_user_p = u.id_usuario
-                    LEFT JOIN cargos c ON u.id_cargo = c.id_cargo
-                    LEFT JOIN rh_generos g ON p.id_genero_pl = g.id_genero
-                    LEFT JOIN rh_tipos_empleados te ON p.id_te_pl = te.id_tipo_rh
-                    LEFT JOIN rh_departamentos d ON p.id_depto_pl = d.id_departamento
-                    LEFT JOIN rh_check k ON p.badge = k.badge
-                    LEFT JOIN sedes s ON p.id_sede_pl = s.id_sede
-                    WHERE p.status_pl = 1 AND k.badge IS NULL $whereSQL
-                    ORDER BY $orderColumn $orderDir
-                    LIMIT ?, ?";
+    $dataQuery = "SELECT * FROM vw_pendientes WHERE 1=1 $whereSQL ORDER BY $orderColumn $orderDir LIMIT ?, ?";
     $dataStmt = $Con->prepare($dataQuery);
     if ($dataStmt === false) { error_log("Prepare dataQuery error: " . $Con->error); }
     $dataStmt->bind_param("ii", $start, $length);
@@ -123,15 +105,7 @@ if ($TipoRol == "ADMINISTRADOR") {
 
 } else {
     // No admin -> filtrar por sede
-    $totalQuery = "SELECT COUNT(*) as total FROM rh_personal p
-                    LEFT JOIN usuarios u ON p.id_user_p = u.id_usuario
-                    LEFT JOIN cargos c ON u.id_cargo = c.id_cargo
-                    LEFT JOIN rh_generos g ON p.id_genero_pl = g.id_genero
-                    LEFT JOIN rh_tipos_empleados te ON p.id_te_pl = te.id_tipo_rh
-                    LEFT JOIN rh_departamentos d ON p.id_depto_pl = d.id_departamento
-                    LEFT JOIN rh_check k ON p.badge = k.badge
-                    LEFT JOIN sedes s ON p.id_sede_pl = s.id_sede
-                    WHERE p.status_pl = 1 AND k.badge IS NULL AND p.id_sede_p = ? $whereSQL";
+    $totalQuery = "SELECT COUNT(*) as total FROM vw_pendientes WHERE id_sede_pl = ? $whereSQL";
     $totalStmt = $Con->prepare($totalQuery);
     if ($totalStmt === false) { error_log("Prepare totalQuery (sede) error: " . $Con->error); }
     $totalStmt->bind_param("s", $Sede);
@@ -139,20 +113,10 @@ if ($TipoRol == "ADMINISTRADOR") {
     $totalResult = $totalStmt->get_result();
     $totalRecords = $totalResult->fetch_assoc()['total'];
 
-    $dataQuery = "SELECT p.*, s.codigo_s, c.nombre_completo, g.genero, te.tipo_rh, d.departamento, CONCAT(nombre, ' ', apellido_p, ' ', apellido_m) AS nombre_personal FROM rh_personal p
-                    LEFT JOIN usuarios u ON p.id_user_p = u.id_usuario
-                    LEFT JOIN cargos c ON u.id_cargo = c.id_cargo
-                    LEFT JOIN rh_generos g ON p.id_genero_pl = g.id_genero
-                    LEFT JOIN rh_tipos_empleados te ON p.id_te_pl = te.id_tipo_rh
-                    LEFT JOIN rh_departamentos d ON p.id_depto_pl = d.id_departamento
-                    LEFT JOIN rh_check k ON p.badge = k.badge
-                    LEFT JOIN sedes s ON p.id_sede_pl = s.id_sede
-                    WHERE p.status_pl = 1 AND k.badge IS NULL AND p.id_sede_p = ? $whereSQL
-                    ORDER BY $orderColumn $orderDir
-                    LIMIT ?, ?";
+    $dataQuery = "SELECT * FROM vw_pendientes WHERE id_sede_pl = ? $whereSQL ORDER BY $orderColumn $orderDir LIMIT ?, ?";
     $dataStmt = $Con->prepare($dataQuery);
     if ($dataStmt === false) { error_log("Prepare dataQuery (sede) error: " . $Con->error); }
-    $dataStmt->bind_param("sii", $Sede, $start, $length);
+    $dataStmt->bind_param("iii", $Sede, $start, $length);
     $dataStmt->execute();
     $dataResult = $dataStmt->get_result();
 }

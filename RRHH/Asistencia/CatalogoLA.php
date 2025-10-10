@@ -246,6 +246,25 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                 '<i class="fa-solid fa-arrows-rotate fa-xl"></i> Actualizar</button>'
             );
 
+            $('.dt-buttons').append(`
+                <button id="exportarPDF" class="btn btn-sm btn-outline-secondary ms-2">
+                    <i class="fa-solid fa-file-pdf"></i> PDF
+                </button>
+            `);
+
+            $('#exportarPDF').on('click', function() {
+                let filtros = {
+                    ano: $('#filtroAno').val(),
+                    semana: $('#filtroSemana').val(),
+                    departamento: $('#filtroDepto').val(),
+                    tipo: $('#filtroTipo').val()
+                };
+
+                // Abrir en nueva pestaña (o podrías hacer window.location.href)
+                let url = '../../Plantillas/RRHH/pdf_la.php?' + $.param(filtros);
+                window.open(url, '_blank');
+            });
+
             // 🔹 Llenar Año
             $.getJSON('../../Server_side/Personal/filtrosAsistencia.php?filtro=anos', function(data) {
                 data.forEach(row => {

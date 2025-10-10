@@ -101,7 +101,7 @@ if ($TD=="mostrar") {
     $totals = $datosMezcla->fetch_assoc();
     $sum->close();
 
-    $stmt = $Con->prepare("SELECT r.item_local AS Item, p.folio_p AS Folio, t.nombre_tarima AS Tarima, r.item_cliente AS Cliente, r.presentacion AS Pre, s.nombre_s AS Sede, p.tipo_t AS Tipo, p.fecha_p AS FechaP, p.fecha_e AS FechaE
+    $stmt = $Con->prepare("SELECT r.item_local AS Item, p.folio_p AS Folio, t.nombre_tarima AS Tarima, r.item_cliente AS Cliente, r.presentacion AS Pre, s.nombre_s AS Sede, p.fecha_p AS FechaP, p.fecha_e AS FechaE
                             FROM pallets p
                             JOIN tipos_tarimas t ON p.id_tarima_p = t.id_tarima
                             JOIN presentaciones_pallet r ON p.id_presen_p = r.id_presentacion_p
@@ -119,7 +119,6 @@ if ($TD=="mostrar") {
         $Presentacion = $row['Pre'];
         $Cliente = $row['Cliente'];
         $Item = $row['Item'];
-        $Tipo = $row['Tipo'];
         $Fecha = $row['FechaP'];
         $FehaE = $row['FechaE'];
     }
@@ -287,7 +286,12 @@ if ($TD=="mostrar") {
         </tbody>
     </table>
     <br>
-    <b>Estibado en tarima:</b> <?= $Tarima ?? '-' ?> &nbsp;&nbsp;&nbsp;&nbsp; <b>Expedido en </b> <?= $nSede ?? '-' ?> S.A.P.I de C.V.<br>
+    <b>Estibado en tarima:</b> <?= $Tarima ?? '-' ?> &nbsp;&nbsp;&nbsp;&nbsp; <b>Expedido en </b> <?= $nSede ?? '-' ?> S.A.P.I de C.V.&nbsp;
+    <!-- Recuadro de revisión -->
+    <div style="margin-top:10px; font-size:13px;">
+        <span style="font-weight:bold; vertical-align:middle;">Revisado por calidad</span>&nbsp;&nbsp;
+        <span style="display:inline-block; width:25px; height:25px; border:1px solid #868686ff; vertical-align:middle;"></span>
+    </div>
 </div>
     
 <?php } ?>

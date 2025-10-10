@@ -25,6 +25,7 @@
     $Genero = isset($_POST['Genero']) ? $_POST['Genero'] : '';
     $Departamento = isset($_POST['Departamento']) ? $_POST['Departamento'] : '';
     $Tipo = isset($_POST['Tipo']) ? $_POST['Tipo'] : '';
+    $Horario = isset($_POST['Horario']) ? $_POST['Horario'] : '';
     $Fecha = isset($_POST['Fecha']) ? $_POST['Fecha'] : '';
     $Badge = "";
 
