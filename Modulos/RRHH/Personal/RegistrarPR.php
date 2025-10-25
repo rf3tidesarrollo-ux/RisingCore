@@ -341,8 +341,8 @@
                 $Correcto += 1;
                 break;
             case '3':
-                $ApellidoMVal="";
-                $Correcto += 1;
+                $Error4 = "El apellido materno no puede ir vacío";
+                $NumE += 1;
                 break;    
         }
 
@@ -400,85 +400,84 @@
         }
 
         if ($Correcto===10) {
-            // require_once '../../../Librerias/zkteco/zklib/ZKLib.php';
-            // include_once '../../../Conexion/BD.php';
+require_once '../../../Librerias/zkteco/zklib/ZKLib.php';
+include_once '../../../Conexion/BD.php';
 
-            // date_default_timezone_set('America/Mexico_City');
-            // $logFile = __DIR__ . '/log.txt'; // Archivo de log
+date_default_timezone_set('America/Mexico_City');
+$logFile = __DIR__ . '/log.txt'; // Archivo de log
 
-            // function logMessage($msg) {
-            //     global $logFile;
-            //     $timestamp = date('[Y-m-d H:i:s]');
-            //     file_put_contents($logFile, "$timestamp $msg\n", FILE_APPEND);
-            // }
+function logMessage($msg) {
+    global $logFile;
+    $timestamp = date('[Y-m-d H:i:s]');
+    file_put_contents($logFile, "$timestamp $msg\n", FILE_APPEND);
+}
 
-            // // =============================
-            // // 1️⃣ Calcular nuevo badge
-            // // =============================
-            // $stmt = $Con->prepare("SELECT MAX(CAST(badge AS UNSIGNED)) AS Ultimo FROM rh_personal WHERE badge REGEXP '^[0-9]+$'");
-            // $stmt->execute();
-            // $result = $stmt->get_result();
-            // $row = $result->fetch_assoc();
-            // $stmt->close();
+// =============================
+// 1️⃣ Calcular nuevo badge
+// =============================
+$stmt = $Con->prepare("SELECT MAX(CAST(badge AS UNSIGNED)) AS Ultimo FROM rh_personal WHERE badge REGEXP '^[0-9]+$'");
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+$stmt->close();
 
-            // $Ultimo = $row['Ultimo'] ?? 0;
-            // $Badge = ($Ultimo == 0) ? '1001' : str_pad($Ultimo + 1, 4, "0", STR_PAD_LEFT);
+$Ultimo = $row['Ultimo'] ?? 0;
+$Badge = ($Ultimo == 0) ? '1001' : str_pad($Ultimo + 1, 4, "0", STR_PAD_LEFT);
 
-            // $user_id  = $Badge;
-            // $name     = $Badge; // badge como nombre
-            // $password = "";
-            // $role     = 0;
+$user_id  = $Badge;
+$name     = $Badge; // badge como nombre
+$password = "";
+$role     = 0;
 
-            // // =============================
-            // // 2️⃣ Obtener dispositivos de la sede
-            // // =============================
-            // $stmt = $Con->prepare("SELECT ip, puerto, dispositivo FROM rh_dpbiometrico WHERE id_sede_dp = ?");
-            // $stmt->bind_param('i', $SedeVal);
-            // $stmt->execute();
-            // $dispositivos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-            // $stmt->close();
+// =============================
+// 2️⃣ Obtener dispositivos de la sede
+// =============================
+$stmt = $Con->prepare("SELECT ip, puerto, dispositivo FROM rh_dpbiometrico WHERE id_sede_dp = ? AND id_dpbiometrico=2");
+$stmt->bind_param('i', $SedeVal);
+$stmt->execute();
+$dispositivos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
 
-            // // =============================
-            // // 3️⃣ Función ping rápido
-            // // =============================
-            // function puerto_abierto($host, $port, $timeout = 1) {
-            //     $conn = @fsockopen($host, $port, $errno, $errstr, $timeout);
-            //     if ($conn) { fclose($conn); return true; }
-            //     return false;
-            // }
+// =============================
+// 3️⃣ Función ping rápido
+// =============================
+function puerto_abierto($host, $port, $timeout = 1) {
+    $conn = @fsockopen($host, $port, $errno, $errstr, $timeout);
+    if ($conn) { fclose($conn); return true; }
+    return false;
+}
 
-            // // =============================
-            // // 4️⃣ Enviar usuario a cada dispositivo
-            // // =============================
-            // $total = 0;
-            // foreach ($dispositivos as $disp) {
-            //     if (!puerto_abierto($disp['ip'], $disp['puerto'])) {
-            //         logMessage("❌ Dispositivo {$disp['dispositivo']} ({$disp['ip']}:{$disp['puerto']}) no responde.");
-            //         continue;
-            //     }
+// =============================
+// 4️⃣ Enviar usuario a cada dispositivo
+// =============================
+$total = 0;
+foreach ($dispositivos as $disp) {
+    if (!puerto_abierto($disp['ip'], $disp['puerto'])) {
+        logMessage("❌ Dispositivo {$disp['dispositivo']} ({$disp['ip']}:{$disp['puerto']}) no responde.");
+        continue;
+    }
 
-            //     $zk = new ZKLib($disp['ip'], $disp['puerto']);
-            //     if (!$zk->connect()) {
-            //         logMessage("❌ No se pudo conectar a {$disp['dispositivo']} ({$disp['ip']}:{$disp['puerto']}).");
-            //         continue;
-            //     }
+    $zk = new ZKLib($disp['ip'], $disp['puerto']);
+    if (!$zk->connect()) {
+        logMessage("❌ No se pudo conectar a {$disp['dispositivo']} ({$disp['ip']}:{$disp['puerto']}).");
+        continue;
+    }
 
-            //     // Calcular nextUID individual por dispositivo
-            //     $users = $zk->getUser();
-            //     $nextUID = !empty($users) ? max(array_keys($users)) + 1 : 1;
+    // Calcular nextUID individual por dispositivo
+    $users = $zk->getUser();
+    $nextUID = !empty($users) ? max(array_keys($users)) + 1 : 1;
 
-            //     $zk->disableDevice();
-            //     $zk->setUser($Badge, $user_id, $name, $password, $role);
-            //     $Correcto += 1;
-            //     $zk->enableDevice();
-            //     $zk->disconnect();
+    $zk->disableDevice();
+    $zk->setUser($Badge, $user_id, $name, $password, $role);
+    $Correcto += 1;
+    $zk->enableDevice();
+    $zk->disconnect();
 
-            //     logMessage("✅ Usuario $user_id ($name) enviado a {$disp['dispositivo']} ({$disp['ip']}:{$disp['puerto']}) con UID $nextUID");
-            //     $total++;
-            // }
+    logMessage("✅ Usuario $user_id ($name) enviado a {$disp['dispositivo']} ({$disp['ip']}:{$disp['puerto']}) con UID $nextUID");
+    $total++;
+}
 
-            // logMessage("🚀 Proceso finalizado. Total de dispositivos actualizados: $total");
-            $Correcto += 1;
+logMessage("🚀 Proceso finalizado. Total de dispositivos actualizados: $total");
 
         }
         
@@ -489,7 +488,7 @@
                 $result = $stmt->get_result();
                 $row = $result->fetch_assoc();
 
-                $Ultimo = $row['Ultimo'] ?? 1000;
+                $Ultimo = $row['Ultimo'] ?? 0;
                 $Badge = str_pad($Ultimo + 1, 4, "0", STR_PAD_LEFT);
                 $stmt->close();
 

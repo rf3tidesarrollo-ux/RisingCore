@@ -5,10 +5,10 @@ $RutaSC = "../../../index.php";
 include_once "../../../Login/validar_sesion.php";
 // $Pagina=basename(__FILE__);
 // Historial($Pagina,$Con);
-$Ver = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 1, $Con);
-$Crear = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 2, $Con);
-$Editar = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 3, $Con);
-$Eliminar = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 4, $Con);
+$Ver = TienePermiso($_SESSION['ID'], "RRHH/Reingreso", 1, $Con);
+$Crear = TienePermiso($_SESSION['ID'], "RRHH/Reingreso", 2, $Con);
+$Editar = TienePermiso($_SESSION['ID'], "RRHH/Reingreso", 3, $Con);
+$Eliminar = TienePermiso($_SESSION['ID'], "RRHH/Reingreso", 4, $Con);
 
 if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 ?>
@@ -38,8 +38,8 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <script src="../../../js/script.js"></script>
     <script src="../../../js/eliminar.js"></script>
     <script src="../../../js/session.js"></script>
-    <link rel="stylesheet" href="DesignNI.css">
-    <title>Ingreso: Reporte</title>
+    <link rel="stylesheet" href="DesignRI.css">
+    <title>Reingreso: Reporte</title>
 </head>
 
 <body>
@@ -58,8 +58,8 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <a href="/RisingCore/Modulos/RRHH/Ingreso/Inicio.php" style="color: #6c757d; text-decoration: none;">
-                        🙎🏻 Nuevo Ingreso
+                    <a href="/RisingCore/Modulos/RRHH/Reingreso/Inicio.php" style="color: #6c757d; text-decoration: none;">
+                        🙎🏻 Reingresos
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
@@ -68,12 +68,12 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <strong style="color: #333;">👆🏻 Pendientes de huella</strong>
+                    <strong style="color: #333;">👷🏽 Reactivar personal</strong>
                 </nav>
             </div>
 
             <div class="tabla">
-            <?php if ($TipoRol=="ADMINISTRADOR" || $Crear==true) { ?> <a title="Agregar" href="RegistrarNI.php"><div id="wizard" class="btn-up"><i class="fa-solid fa-fingerprint fa-2xl" style="color: #ffffff;"></i></div></a> <?php } ?>
+            <?php if ($TipoRol=="ADMINISTRADOR" || $Crear==true) { ?> <a title="Agregar" href="RegistrarRI.php"><div id="wizard" class="btn-up"><i class="fa-solid fa-person-walking-arrow-loop-left fa-2xl" style="color: #ffffff;"></i></div></a> <?php } ?>
                     
             
             <table id="basic-datatables" class="display table table-striped table-hover responsive nowrap" style="width:95%">
@@ -125,10 +125,10 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     }
     
     $(document).ready(function() {
-    $('#basic-datatables').DataTable({
+    var table = $('#basic-datatables').DataTable({
         serverSide: true,
         ajax: {
-            url: '../../Server_side/Personal/tabla_pendientes.php',
+            url: '../../Server_side/Personal/tabla_reingresos.php',
             type: 'POST',
             dataFilter: function(data){
                 // Intentar parsear JSON
@@ -192,9 +192,9 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 
                         if (Ver || Editar || Eliminar) {
                             return `
-                                ${Ver ? `<a title="Mostrar" href="#${row.id_personal}" onclick="mostrarRegistroNI(${row.id_personal})"><i class="fa-solid fa-eye fa-xl" style="color: #16ac19;"></i></a>` : ''}
-                                ${Editar ? `<a title="Editar" class="Edit" href="EditarNI.php?id=${row.id_personal}"><i class="fa-solid fa-pen-to-square fa-xl" style="color: #0a5ceb;"></i></a>` : ''}
-                                ${Eliminar ? `<a title="Eliminar" class="Delete" href="#${row.id_personal}" onclick="eliminarRegistro(${row.id_personal})"><i class="fa-solid fa-trash fa-xl" style="color: #ca1212;"></i></a>` : ''}
+                                ${Ver ? `<a title="Mostrar" href="#${row.id_personal}" onclick="mostrarRegistroRI(${row.id_personal})"><i class="fa-solid fa-eye fa-xl" style="color: #16ac19;"></i></a>` : ''}
+                                ${Editar ? `<a title="Editar" class="Edit" href="EditarRI.php?id=${row.id_personal}"><i class="fa-solid fa-pen-to-square fa-xl" style="color: #0a5ceb;"></i></a>` : ''}
+                                ${Eliminar ? `<a title="Reactivar" class="Delete" href="#${row.id_personal}" onclick="actualizarRegistro(${row.id_personal})"><i class="fa-solid fa-person-walking-arrow-loop-left fa-xl" style="color: #ca1212;"></i></a>` : ''}
                             `;
                         } else {
                             return '';
@@ -284,11 +284,6 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                 '<i class="fa-solid fa-filter-circle-xmark fa-xl"></i> Limpiar</button>'
             );
 
-            $('.dt-buttons').append(
-                '<button id="actualizar" class="btn btn-sm btn-outline-secondary ms-2" title="Actualizar registros">' +
-                '<i class="fa-solid fa-arrows-rotate fa-xl"></i> Actualizar</button>'
-            );
-
             // Evento para limpiar filtros
             $('#limpiarFiltros').on('click', function () {
                 api.search('').draw();
@@ -300,28 +295,6 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                 });
 
                 api.draw();
-            });
-
-            $('#actualizar').on('click', function () {
-                // Opcional: mostrar un mensaje mientras se procesa
-                swal("Actualizando...", "Por favor espera mientras se actualizan los registros.", "info");
-
-                $.ajax({
-                    url: '../../Server_side/Personal/actualizarRH.php', // ruta a tu script PHP
-                    type: 'POST',
-                    dataType: 'json', // si tu PHP devuelve JSON
-                    success: function(response) {
-                        if (response.success) {
-                            swal("¡Listo!", "Registros actualizados correctamente.", "success");
-                            api.ajax.reload(); // recarga la tabla después de actualizar
-                        } else {
-                            swal("Error", response.message || "Ocurrió un error al actualizar.", "error");
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        swal("Error", "No se pudo conectar con el servidor.", "error");
-                    }
-                });
             });
         },
 
@@ -355,6 +328,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     }
 },
     });
+    table.state.clear();
 });
 
 </script>

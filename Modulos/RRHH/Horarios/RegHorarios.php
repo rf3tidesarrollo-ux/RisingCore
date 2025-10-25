@@ -13,8 +13,8 @@
     <link rel="stylesheet" href="../../../css/eggy.css" />
     <link rel="stylesheet" href="../../../css/progressbar.css" />
     <link rel="stylesheet" href="../../../css/theme.css" />
-    <link rel="stylesheet" href="DesignNI.css">
-    <title>RRHH: Nuevo Ingreso</title>
+    <link rel="stylesheet" href="DesignH.css">
+    <title>RRHH: Horarios</title>
 </head>
 
 <body onload="validar()">
@@ -34,7 +34,7 @@
                     <span style="color: #6c757d;">&raquo;</span>
 
                     <a href="/RisingCore/Modulos/RRHH/Ingreso/Inicio.php" style="color: #6c757d; text-decoration: none;">
-                        🙎🏻 Nuevo Ingreso
+                        🕐 Horarios
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
@@ -43,13 +43,13 @@
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <strong style="color: #333;">✏️ Registros de nuevos ingresos</strong>
+                    <strong style="color: #333;">✏️ Registros de horarios</strong>
                 </nav>
             </div>
-            <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true) { ?> <a title="Reporte" href="CatalogoNI.php"><div class="back"><i class="fa-solid fa-fingerprint fa-xl"></i></div></a><?php } ?>
+            <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true) { ?> <a title="Reporte" href="CatalogoH.php"><div class="back"><i class="fa-solid fa-business-time fa-xl"></i></div></a><?php } ?>
 
             <section class="Registro">
-                <h4>Registro de nuevo de ingreso</h4>
+                <h4>Registro de horarios</h4>
                 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST" name="octavo" id="">
                     <div class="FAD">
                         <label class="FAL">
@@ -80,110 +80,56 @@
 
                     <div class="FAD">
                         <label class="FAL">
-                            <span class="FAS">Nombre</span>
+                            <span class="FAS">Horario</span>
                             <input class="FAI" id="Nombre" type="Text" name="Nombre" <?php if (isset($_POST['Nombre']) != ''): ?> value="<?php echo $Nombre; ?>"<?php endif; ?> size="25" maxLength="50" onkeyup="mayus(this);">
                         </label>
                     </div>
 
                     <div class="FAD">
                         <label class="FAL">
-                            <span class="FAS">Apellido paterno</span>
-                            <input class="FAI" id="AP" type="Text" name="AP" <?php if (isset($_POST['AP']) != ''): ?> value="<?php echo $AP; ?>"<?php endif; ?> size="25" maxLength="50" onkeyup="mayus(this);">
+                            <?php $HoraE='06:30'; ?>
+                            <span class="FAS">Hora de entrada</span>
+                            <input class="FAI" id="HoraE" type="time" name="HoraE" value="<?php echo $HoraE; ?>">
                         </label>
                     </div>
 
                     <div class="FAD">
                         <label class="FAL">
-                            <span class="FAS">Apellido materno</span>
-                            <input class="FAI" id="AM" type="Text" name="AM" <?php if (isset($_POST['AM']) != ''): ?> value="<?php echo $AM; ?>"<?php endif; ?> size="25" maxLength="50" onkeyup="mayus(this);">
+                            <?php $HoraS='15:00'; ?>
+                            <span class="FAS">Hora de salida</span>
+                            <input class="FAI" id="HoraS" type="time" name="HoraS" value="<?php echo $HoraS; ?>">
                         </label>
                     </div>
 
                     <div class="FAD">
                         <label class="FAL">
-                            <span class="FAS">Género</span>
-                            <select class="FAI prueba" id="Genero" name="Genero">
-                                <option value="0">Seleccione el género:</option>
-                                <?php
-                                $stmt = $Con->prepare("SELECT id_genero, genero FROM rh_generos ORDER BY id_genero");
-                                $stmt->execute();
-                                $result = $stmt->get_result();
-
-                                while ($Row = $result->fetch_assoc()) {
-                                    $selected = ($Genero == $Row['id_genero']) ? 'selected' : '';
-                                    echo '<option value="'.$Row['id_genero'].'" '.$selected.'>'.$Row['genero'].'</option>';
-                                }
-                                $stmt->close();
-                                ?>
-                            </select>
+                            <?php $HoraSE='06:30'; ?>
+                            <span class="FAS">Hora de entrada sabádo</span>
+                            <input class="FAI" id="HoraSE" type="time" name="HoraSE" value="<?php echo $HoraSE; ?>">
                         </label>
                     </div>
 
                     <div class="FAD">
                         <label class="FAL">
-                            <span class="FAS">Departamento</span>
-                            <select class="FAI prueba" id="Departamento" name="Departamento">
-                                <option value="0">Seleccione el departamento:</option>
-                                <?php
-                                $stmt = $Con->prepare("SELECT id_departamento, departamento FROM rh_departamentos ORDER BY id_departamento");
-                                $stmt->execute();
-                                $result = $stmt->get_result();
-
-                                while ($Row = $result->fetch_assoc()) {
-                                    $selected = ($Departamento == $Row['id_departamento']) ? 'selected' : '';
-                                    echo '<option value="'.$Row['id_departamento'].'" '.$selected.'>'.$Row['departamento'].'</option>';
-                                }
-                                $stmt->close();
-                                ?>
-                            </select>
+                            <?php $HoraSS='12:00'; ?>
+                            <span class="FAS">Hora de salida sábado</span>
+                            <input class="FAI" id="HoraSS" type="time" name="HoraSS" value="<?php echo $HoraSS; ?>">
                         </label>
                     </div>
 
                     <div class="FAD">
                         <label class="FAL">
-                            <span class="FAS">Tipo de empleado</span>
-                            <select class="FAI prueba" id="Tipo" name="Tipo">
-                                <option value="0">Seleccione el tipo de empleado:</option>
-                                <?php
-                                $stmt = $Con->prepare("SELECT id_tipo_rh, tipo_rh FROM rh_tipos_empleados ORDER BY id_tipo_rh");
-                                $stmt->execute();
-                                $result = $stmt->get_result();
-
-                                while ($Row = $result->fetch_assoc()) {
-                                    $selected = ($Tipo == $Row['id_tipo_rh']) ? 'selected' : '';
-                                    echo '<option value="'.$Row['id_tipo_rh'].'" '.$selected.'>'.$Row['tipo_rh'].'</option>';
-                                }
-                                $stmt->close();
-                                ?>
-                            </select>
+                            <?php $HoraDE='06:30'; ?>
+                            <span class="FAS">Hora de entrada domingo</span>
+                            <input class="FAI" id="HoraDE" type="time" name="HoraDE" value="<?php echo $HoraDE; ?>">
                         </label>
                     </div>
 
                     <div class="FAD">
                         <label class="FAL">
-                            <span class="FAS">Tipo de pago</span>
-                            <select class="FAI prueba" id="TipoPago" name="TipoPago">
-                                <option value="0">Seleccione el tipo de pago:</option>
-                                <option value="SEMANAL" <?= ($TipoP == 'SEMANAL') ? 'selected' : '' ?>>SEMANAL</option>
-                                <option value="QUINCENAL" <?= ($TipoP == 'QUINCENAL') ? 'selected' : '' ?>>QUINCENAL</option>
-                            </select>
-                        </label>
-                    </div>
-
-                    <div class="FAD" id="campo_horarios" style="display:none;">
-                        <label class="FAL">
-                            <span class="FAS">Tipo de horario</span>
-                            <select class="FAI prueba" name="Horarios" id="horarios">
-                                <option value="0">Seleccione una sede primero</option>
-                            </select>
-                        </label>
-                    </div>
-                    <input type="hidden" id="horarioSeleccionado" value="<?= htmlspecialchars($Horario) ?>">
-
-                    <div class="FAD">
-                        <label class="FAL">
-                            <span class="FAS">Fecha de ingreso</span>
-                            <input class="FAI" id="Fecha" type="date" name="Fecha" value="<?php echo !empty($Fecha) ? $Fecha : date('Y-m-d'); ?>">
+                            <?php $HoraDS='12:00'; ?>
+                            <span class="FAS">Hora de salida domingo</span>
+                            <input class="FAI" id="HoraDS" type="time" name="HoraDS" value="<?php echo $HoraDS; ?>">
                         </label>
                     </div>
 
@@ -194,9 +140,9 @@
 
             <?php if ($Correcto < 11) {
                 $tipos = [
-                    'Error' => ['cantidad' => $NumE, 'max' => 10, 'title' => 'Error!', 'type' => 'error'],
-                    'Precaucion' => ['cantidad' => $NumP, 'max' => 3, 'title' => 'Precaución!', 'type' => 'warning'],
-                    'Informacion' => ['cantidad' => $NumI, 'max' => 5, 'title' => 'Info!', 'type' => 'info']
+                    'Error' => ['cantidad' => $NumE, 'max' => 8, 'title' => 'Error!', 'type' => 'error'],
+                    'Precaucion' => ['cantidad' => $NumP, 'max' => 4, 'title' => 'Precaución!', 'type' => 'warning'],
+                    'Informacion' => ['cantidad' => $NumI, 'max' => 1, 'title' => 'Info!', 'type' => 'info']
                 ];
 
                 foreach ($tipos as $prefijo => $datos) {
@@ -229,7 +175,6 @@
             <?php }?>
             
             <script src="../../../js/modulos.js"></script>
-            <script src="../../../js/ingresos.js"></script>
         </main>
     </body>
 

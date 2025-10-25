@@ -12,7 +12,7 @@
 
     $FechaR=date("Y-m-d");
 
-   if ($TipoRol=="ADMINISTRADOR" || $Crear==true) {
+   if ($TipoRol=="ADMINISTRADOR" || $Editar==true) {
     $NumE=0;
     $NumI=0;
     $NumP=0;
@@ -25,16 +25,21 @@
     $Genero = isset($_POST['Genero']) ? $_POST['Genero'] : '';
     $Departamento = isset($_POST['Departamento']) ? $_POST['Departamento'] : '';
     $Tipo = isset($_POST['Tipo']) ? $_POST['Tipo'] : '';
+    $TipoP = isset($_POST['TipoPago']) ? $_POST['TipoPago'] : '';
     $Horario = isset($_POST['Horarios']) ? $_POST['Horarios'] : '';
     $Fecha = isset($_POST['Fecha']) ? $_POST['Fecha'] : '';
     $Badge = "";
 
-    for ($i=1; $i <= 9; $i++) {
+    for ($i=1; $i <= 10; $i++) {
         ${"Error".$i}="";
     }
 
     for ($i=1; $i <= 3; $i++) { 
         ${"Precaucion".$i}="";
+    }
+
+    for ($i=1; $i <= 1; $i++) { 
+        ${"Informacion".$i}="";
     }
 
     class Val_Nombre {
@@ -174,6 +179,7 @@
         public $Genero;
         public $Departamento;
         public $Tipo;
+        public $TipoP;
         public $Horario;
         public $Fecha;
 
@@ -209,6 +215,10 @@
             return $this -> Tipo="Seleccione el tipo de empleado:";
         }
 
+        public function LimpiarPago(){
+            return $this -> Tipo="Seleccione el tipo de pago:";
+        }
+
         public function LimpiarHorario(){
             return $this -> Tipo="Seleccione el tipo de horario:";
         }
@@ -227,6 +237,7 @@
         $Genero=$_POST['Genero'];
         $Departamento=$_POST['Departamento'];
         $Tipo=$_POST['Tipo'];
+        $TipoP=$_POST['TipoPago'];
         $Horario=$_POST['Horarios'];
         $Fecha=$_POST['Fecha'];
         
@@ -297,9 +308,9 @@
                 $Correcto += 1;
                 break;
             case '3':
-                $Error4 = "El apellido materno no puede ir vacío";
-                $NumE += 1;
-                break;    
+                $ApellidoMVal="";
+                $Correcto += 1;
+                break;     
         }
 
         if ($Genero == "0") {
@@ -323,8 +334,15 @@
             $Correcto += 1;
         }
 
+        if ($TipoP == "0") {
+            $Error8 = "Tienes que seleccionar un tipo de pago";
+            $NumE += 1;
+        }else{
+            $Correcto += 1;
+        }
+
         if ($Horario == "0") {
-            $Error8 = "Tienes que seleccionar un tipo de horario";
+            $Error9 = "Tienes que seleccionar un tipo de horario";
             $NumE += 1;
         }else{
             $Correcto += 1;
@@ -339,29 +357,30 @@
                 $Correcto += 1;
                 break;
             case '2':
-                $Error9 = "La fecha ingresada es incorrecta";
+                $Error10 = "La fecha ingresada es incorrecta";
                 $NumE += 1;
                 break;
             case '3':
-                $Error9 = "El campo de fecha no puede ir vacío";
+                $Error10 = "El campo de fecha no puede ir vacío";
                 $NumE += 1;
                 break;    
         }
 
-        if ($Correcto==9) {
+        if ($Correcto==10) {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $stmt = $Con->prepare("UPDATE rh_personal SET id_sede_pl=?, nombre=?, apellido_p=?, apellido_m=?, id_genero_pl=?, id_te_pl=?, id_depto_pl=?, id_tipo_h=?, fecha_ingreso=?, id_user_p=? WHERE id_personal=?");
-                $stmt->bind_param("isssiiiisii", $SedeVal, $NombreVal, $ApellidoPVal, $ApellidoMVal, $Genero, $Tipo, $Departamento, $Horario, $FechaVal, $ID, $idPersonal);
+                $stmt = $Con->prepare("UPDATE rh_personal SET id_sede_pl=?, nombre=?, apellido_p=?, apellido_m=?, id_genero_pl=?, id_te_pl=?, id_depto_pl=?, tipo_pago=?, id_tipo_h=?, fecha_ingreso=?, id_user_p=? WHERE id_personal=?");
+                $stmt->bind_param("isssiiisisii", $SedeVal, $NombreVal, $ApellidoPVal, $ApellidoMVal, $Genero, $Tipo, $Departamento, $TipoP, $Horario, $FechaVal, $ID, $idPersonal);
                 $stmt->execute();
                 $stmt->close();
                 
-                $Limpiar = new Cleanner($Sede,$Nombre,$ApellidoP,$ApellidoM,$Genero,$Tipo,$Departamento,$Fecha);
+                $Limpiar = new Cleanner($Sede,$Nombre,$ApellidoP,$ApellidoM,$Genero,$Tipo,$TipoP,$Departamento,$Fecha);
                 $Sede = $Limpiar -> LimpiarSede();
                 $Nombre = $Limpiar -> LimpiarNombre();
                 $AP = $Limpiar -> LimpiarApellidoP();
                 $AM = $Limpiar -> LimpiarApellidoM();
                 $Genero = $Limpiar -> LimpiarGenero();
                 $Tipo = $Limpiar -> LimpiarTipo();
+                $TipoP = $Limpiar -> LimpiarPago();
                 $Departamento = $Limpiar -> LimpiarDepartamento();
                 $Horario = $Limpiar -> LimpiarHorario();
                 $Fecha = $Limpiar -> LimpiarFecha();
@@ -395,6 +414,7 @@
                     $AM=$Reg['apellido_m'];
                     $Genero = $Reg['id_genero_pl'];
                     $Tipo=$Reg['id_te_pl'];
+                    $TipoP=$Reg['tipo_pago'];
                     $Departamento=$Reg['id_depto_pl'];
                     $Horario=$Reg['id_tipo_h'];
                     $Fecha=$Reg['fecha_ingreso'];
@@ -420,6 +440,7 @@
                     $AM=$Reg['apellido_m'];
                     $Genero = $Reg['id_genero_pl'];
                     $Tipo=$Reg['id_te_pl'];
+                    $TipoP=$Reg['tipo_pago'];
                     $Departamento=$Reg['id_depto_pl'];
                     $Horario=$Reg['id_tipo_h'];
                     $Fecha=$Reg['fecha_ingreso'];

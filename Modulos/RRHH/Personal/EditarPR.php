@@ -12,7 +12,7 @@
 
     $FechaR=date("Y-m-d");
 
-   if ($TipoRol=="ADMINISTRADOR" || $Crear==true) {
+   if ($TipoRol=="ADMINISTRADOR" || $Editar==true) {
     $NumE=0;
     $NumI=0;
     $NumP=0;
@@ -38,7 +38,7 @@
         ${"Precaucion".$i}="";
     }
 
-    for ($i=1; $i <= 5; $i++) { 
+    for ($i=1; $i <= 1; $i++) { 
         ${"Informacion".$i}="";
     }
 
@@ -170,40 +170,6 @@
         }
     }
 
-    // class Val_Hora {
-    //     public $Hora;
-
-    //     function __construct($H){
-    //         $this->Hora = $H;
-    //     }
-
-    //     public function getHora(){
-    //         return $this->Hora;
-    //     }
-
-    //     function setHora($Hora){
-    //         if (!empty($Hora)) {
-    //             // Validar formato con regex HH:MM o HH:MM:SS
-    //             if (preg_match('/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/', $Hora)) {
-    //                 $HoraMin = "08:00"; // Hora mínima permitida
-    //                 // Convertimos ambas a timestamp
-    //                 $horaIngresada = strtotime($Hora);
-    //                 $horaMinima = strtotime($HoraMin);
-
-    //                 if ($horaIngresada >= $horaMinima) {
-    //                     return 1; // Hora válida
-    //                 } else {
-    //                     return 2; // Hora anterior a la mínima
-    //                 }
-    //             } else {
-    //                 return 2; // Formato incorrecto
-    //             }
-    //         } else {
-    //             return 3; // Hora vacía
-    //         }
-    //     }
-    // }
-
     class Cleanner{
         public $Limpiar;
         public $Sede;
@@ -250,7 +216,7 @@
         }
 
         public function LimpiarPago(){
-            return $this -> TipoP="Seleccione el tipo de pago:";
+            return $this -> Tipo="Seleccione el tipo de pago:";
         }
 
         public function LimpiarHorario(){
@@ -262,7 +228,8 @@
         }
     }
 
-    if (isset($_POST['Insertar'])) {
+    if (isset($_POST['Modificar'])) {
+        $idPersonal=$_POST['id'];
         $Sede=$_POST['Sede'];
         $Nombre=$_POST['Nombre'];
         $AP=$_POST['AP'];
@@ -341,8 +308,8 @@
                 $Correcto += 1;
                 break;
             case '3':
-                $ApellidoMVal="";
-                $Correcto += 1;
+                $Error4 = "El apellido materno no puede ir vacío";
+                $NumE += 1;
                 break;    
         }
 
@@ -399,124 +366,91 @@
                 break;    
         }
 
-        if ($Correcto===10) {
-            // require_once '../../../Librerias/zkteco/zklib/ZKLib.php';
-            // include_once '../../../Conexion/BD.php';
-
-            // date_default_timezone_set('America/Mexico_City');
-            // $logFile = __DIR__ . '/log.txt'; // Archivo de log
-
-            // function logMessage($msg) {
-            //     global $logFile;
-            //     $timestamp = date('[Y-m-d H:i:s]');
-            //     file_put_contents($logFile, "$timestamp $msg\n", FILE_APPEND);
-            // }
-
-            // // =============================
-            // // 1️⃣ Calcular nuevo badge
-            // // =============================
-            // $stmt = $Con->prepare("SELECT MAX(CAST(badge AS UNSIGNED)) AS Ultimo FROM rh_personal WHERE badge REGEXP '^[0-9]+$'");
-            // $stmt->execute();
-            // $result = $stmt->get_result();
-            // $row = $result->fetch_assoc();
-            // $stmt->close();
-
-            // $Ultimo = $row['Ultimo'] ?? 0;
-            // $Badge = ($Ultimo == 0) ? '1001' : str_pad($Ultimo + 1, 4, "0", STR_PAD_LEFT);
-
-            // $user_id  = $Badge;
-            // $name     = $Badge; // badge como nombre
-            // $password = "";
-            // $role     = 0;
-
-            // // =============================
-            // // 2️⃣ Obtener dispositivos de la sede
-            // // =============================
-            // $stmt = $Con->prepare("SELECT ip, puerto, dispositivo FROM rh_dpbiometrico WHERE id_sede_dp = ?");
-            // $stmt->bind_param('i', $SedeVal);
-            // $stmt->execute();
-            // $dispositivos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-            // $stmt->close();
-
-            // // =============================
-            // // 3️⃣ Función ping rápido
-            // // =============================
-            // function puerto_abierto($host, $port, $timeout = 1) {
-            //     $conn = @fsockopen($host, $port, $errno, $errstr, $timeout);
-            //     if ($conn) { fclose($conn); return true; }
-            //     return false;
-            // }
-
-            // // =============================
-            // // 4️⃣ Enviar usuario a cada dispositivo
-            // // =============================
-            // $total = 0;
-            // foreach ($dispositivos as $disp) {
-            //     if (!puerto_abierto($disp['ip'], $disp['puerto'])) {
-            //         logMessage("❌ Dispositivo {$disp['dispositivo']} ({$disp['ip']}:{$disp['puerto']}) no responde.");
-            //         continue;
-            //     }
-
-            //     $zk = new ZKLib($disp['ip'], $disp['puerto']);
-            //     if (!$zk->connect()) {
-            //         logMessage("❌ No se pudo conectar a {$disp['dispositivo']} ({$disp['ip']}:{$disp['puerto']}).");
-            //         continue;
-            //     }
-
-            //     // Calcular nextUID individual por dispositivo
-            //     $users = $zk->getUser();
-            //     $nextUID = !empty($users) ? max(array_keys($users)) + 1 : 1;
-
-            //     $zk->disableDevice();
-            //     $zk->setUser($Badge, $user_id, $name, $password, $role);
-            //     $Correcto += 1;
-            //     $zk->enableDevice();
-            //     $zk->disconnect();
-
-            //     logMessage("✅ Usuario $user_id ($name) enviado a {$disp['dispositivo']} ({$disp['ip']}:{$disp['puerto']}) con UID $nextUID");
-            //     $total++;
-            // }
-
-            // logMessage("🚀 Proceso finalizado. Total de dispositivos actualizados: $total");
-            $Correcto += 1;
-
-        }
-        
-        if ($Correcto>=11) {
+        if ($Correcto==10) {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $stmt = $Con->prepare("SELECT MAX(CAST(badge AS UNSIGNED)) AS Ultimo FROM rh_personal WHERE badge REGEXP '^[0-9]+$'");
-                $stmt->execute();
-                $result = $stmt->get_result();
-                $row = $result->fetch_assoc();
-
-                $Ultimo = $row['Ultimo'] ?? 1000;
-                $Badge = str_pad($Ultimo + 1, 4, "0", STR_PAD_LEFT);
-                $stmt->close();
-
-                $stmt = $Con->prepare("INSERT INTO rh_personal (id_sede_pl, badge, nombre, apellido_p, apellido_m, id_genero_pl, id_te_pl, id_depto_pl, tipo_pago, id_tipo_h, fecha_ingreso, fecha_registro, id_user_p, status_pl) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)");
-                $stmt->bind_param('issssiiisissi', $SedeVal, $Badge, $NombreVal, $ApellidoPVal, $ApellidoMVal, $Genero, $Tipo, $Departamento, $TipoP, $Horario, $FechaVal, $FechaR, $ID);
+                $stmt = $Con->prepare("UPDATE rh_personal SET id_sede_pl=?, nombre=?, apellido_p=?, apellido_m=?, id_genero_pl=?, id_te_pl=?, id_depto_pl=?, tipo_pago=?, id_tipo_h=?, fecha_ingreso=?, id_user_p=? WHERE id_personal=?");
+                $stmt->bind_param("isssiiisisii", $SedeVal, $NombreVal, $ApellidoPVal, $ApellidoMVal, $Genero, $Tipo, $Departamento, $TipoP, $Horario, $FechaVal, $ID, $idPersonal);
                 $stmt->execute();
                 $stmt->close();
                 
-                $Limpiar = new Cleanner($Sede,$Nombre,$AP,$AM,$Genero,$Departamento,$Tipo,$TipoP,$Fecha);
+                $Limpiar = new Cleanner($Sede,$Nombre,$ApellidoP,$ApellidoM,$Genero,$Tipo,$TipoP,$Departamento,$Fecha);
                 $Sede = $Limpiar -> LimpiarSede();
                 $Nombre = $Limpiar -> LimpiarNombre();
                 $AP = $Limpiar -> LimpiarApellidoP();
                 $AM = $Limpiar -> LimpiarApellidoM();
                 $Genero = $Limpiar -> LimpiarGenero();
-                $Departamento = $Limpiar -> LimpiarDepartamento();
                 $Tipo = $Limpiar -> LimpiarTipo();
                 $TipoP = $Limpiar -> LimpiarPago();
+                $Departamento = $Limpiar -> LimpiarDepartamento();
+                $Horario = $Limpiar -> LimpiarHorario();
                 $Fecha = $Limpiar -> LimpiarFecha();
-                
+
                 session_start();
-                $_SESSION['correcto'] = "Nuevo ingreso registrado";
-                header("Location: ".$_SERVER['PHP_SELF']);
+                $_SESSION['correcto'] = "Personal actualizado";
+                header("Location: EditarNI.php?id=" . $idPersonal);
                 exit();
             }
         }
     }
 
-    include 'RegIngreso.php';
+    if (empty($_GET['id'])) {
+        if (!empty($_POST)) {
+            $ID=$_POST['id'];
+        }else{
+            header('Location: CatalogoNI.php');
+        }
+        $stmt = $Con->prepare("SELECT * FROM rh_personal p JOIN sedes s ON p.id_sede_pl = s.id_sede WHERE id_personal=?");
+        $stmt->bind_param("i",$ID);
+        $stmt->execute();
+        $Registro = $stmt->get_result();
+        $NumCol=$Registro->num_rows;
+
+        if ($NumCol>0) {
+            while ($Reg = $Registro->fetch_assoc()){
+                    $ID=$Reg['id_personal'];
+                    $Sede=$Reg['codigo_s'];
+                    $Nombre=$Reg['nombre'];
+                    $AP=$Reg['apellido_p'];
+                    $AM=$Reg['apellido_m'];
+                    $Genero = $Reg['id_genero_pl'];
+                    $Tipo=$Reg['id_te_pl'];
+                    $TipoP=$Reg['tipo_pago'];
+                    $Departamento=$Reg['id_depto_pl'];
+                    $Horario=$Reg['id_tipo_h'];
+                    $Fecha=$Reg['fecha_ingreso'];
+                }
+                $stmt->close();
+            }else{
+                header('Location: CatalogoNI.php');
+            }
+    }else{
+        $ID=$_GET['id'];
+        $stmt = $Con->prepare("SELECT * FROM rh_personal p JOIN sedes s ON p.id_sede_pl = s.id_sede WHERE id_personal=?");
+        $stmt->bind_param("i",$ID);
+        $stmt->execute();
+        $Registro = $stmt->get_result();
+        $NumCol=$Registro->num_rows;
+
+        if ($NumCol>0) {
+            while ($Reg = $Registro->fetch_assoc()){
+                    $ID=$Reg['id_personal'];
+                    $Sede=$Reg['codigo_s'];
+                    $Nombre=$Reg['nombre'];
+                    $AP=$Reg['apellido_p'];
+                    $AM=$Reg['apellido_m'];
+                    $Genero = $Reg['id_genero_pl'];
+                    $Tipo=$Reg['id_te_pl'];
+                    $TipoP=$Reg['tipo_pago'];
+                    $Departamento=$Reg['id_depto_pl'];
+                    $Horario=$Reg['id_tipo_h'];
+                    $Fecha=$Reg['fecha_ingreso'];
+                }
+                $stmt->close();
+            }else{
+                header('Location: CatalogoNI.php');
+            }
+    }
+
+    include 'EditIngreso.php';
     } else { header("Location: CatalogoNI.php"); }
 ?>

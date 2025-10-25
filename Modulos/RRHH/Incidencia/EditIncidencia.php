@@ -4,6 +4,7 @@
     <?php $Ruta = "../../../"; include_once '../../../Complementos/Logo_movil.php'; ?>
     
     <script src="https://code.jquery.com/jquery-3.7.1.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://kit.fontawesome.com/367278d2a4.js" crossorigin="anonymous"></script>
@@ -13,11 +14,11 @@
     <link rel="stylesheet" href="../../../css/eggy.css" />
     <link rel="stylesheet" href="../../../css/progressbar.css" />
     <link rel="stylesheet" href="../../../css/theme.css" />
-    <link rel="stylesheet" href="DesignNI.css">
-    <title>RRHH: Nuevo Ingreso</title>
+    <link rel="stylesheet" href="DesignLI.css">
+    <title>RRHH: Incidencias</title>
 </head>
 
-<body onload="validar()">
+    <body onload="validar()">
         <?php
         $basePath = "../";
         $Logo = "../../../";
@@ -28,13 +29,13 @@
         <main>
             <div style="background: #f9f9f9; padding: 12px 25px; border-bottom: 1px solid #ccc; font-size: 16px;">
                 <nav style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
-                    <a href="/RisingCore/Modulos/RRHH/Inicio.php" style="color: #6c757d; text-decoration: none;">
+                    <a href="/RisingCore/Modulos/RRHH/Inciio.php" style="color: #6c757d; text-decoration: none;">
                         👥 Recursos Humanos
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <a href="/RisingCore/Modulos/RRHH/Ingreso/Inicio.php" style="color: #6c757d; text-decoration: none;">
-                        🙎🏻 Nuevo Ingreso
+                    <a href="/RisingCore/Modulos/RRHH/Merma/Inicio.php" style="color: #6c757d; text-decoration: none;">
+                        ❗ Incidencias
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
@@ -43,14 +44,16 @@
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <strong style="color: #333;">✏️ Registros de nuevos ingresos</strong>
+                    <strong style="color: #333;">✏️ Registros de incidencias</strong>
                 </nav>
             </div>
-            <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true) { ?> <a title="Reporte" href="CatalogoNI.php"><div class="back"><i class="fa-solid fa-fingerprint fa-xl"></i></div></a><?php } ?>
+            
+            <a title="Reporte" href="CatalogoCI.php"><div class="back"><i class="fa-solid fa-left-long fa-xl"></i></div></a>
 
             <section class="Registro">
-                <h4>Registro de nuevo de ingreso</h4>
+                <h4>Registro de incidencia</h4>
                 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST" name="octavo" id="">
+                    <input class="Controles" id="0" type="hidden" name="id" value="<?php echo $ID; ?>">
                     <div class="FAD">
                         <label class="FAL">
                             <span class="FAS">Sede</span>
@@ -78,52 +81,11 @@
                         </label>
                     </div>
 
-                    <div class="FAD">
-                        <label class="FAL">
-                            <span class="FAS">Nombre</span>
-                            <input class="FAI" id="Nombre" type="Text" name="Nombre" <?php if (isset($_POST['Nombre']) != ''): ?> value="<?php echo $Nombre; ?>"<?php endif; ?> size="25" maxLength="50" onkeyup="mayus(this);">
-                        </label>
-                    </div>
-
-                    <div class="FAD">
-                        <label class="FAL">
-                            <span class="FAS">Apellido paterno</span>
-                            <input class="FAI" id="AP" type="Text" name="AP" <?php if (isset($_POST['AP']) != ''): ?> value="<?php echo $AP; ?>"<?php endif; ?> size="25" maxLength="50" onkeyup="mayus(this);">
-                        </label>
-                    </div>
-
-                    <div class="FAD">
-                        <label class="FAL">
-                            <span class="FAS">Apellido materno</span>
-                            <input class="FAI" id="AM" type="Text" name="AM" <?php if (isset($_POST['AM']) != ''): ?> value="<?php echo $AM; ?>"<?php endif; ?> size="25" maxLength="50" onkeyup="mayus(this);">
-                        </label>
-                    </div>
-
-                    <div class="FAD">
-                        <label class="FAL">
-                            <span class="FAS">Género</span>
-                            <select class="FAI prueba" id="Genero" name="Genero">
-                                <option value="0">Seleccione el género:</option>
-                                <?php
-                                $stmt = $Con->prepare("SELECT id_genero, genero FROM rh_generos ORDER BY id_genero");
-                                $stmt->execute();
-                                $result = $stmt->get_result();
-
-                                while ($Row = $result->fetch_assoc()) {
-                                    $selected = ($Genero == $Row['id_genero']) ? 'selected' : '';
-                                    echo '<option value="'.$Row['id_genero'].'" '.$selected.'>'.$Row['genero'].'</option>';
-                                }
-                                $stmt->close();
-                                ?>
-                            </select>
-                        </label>
-                    </div>
-
-                    <div class="FAD">
+                    <div class="FAD" id="campo_departamento" style="display:none;">
                         <label class="FAL">
                             <span class="FAS">Departamento</span>
-                            <select class="FAI prueba" id="Departamento" name="Departamento">
-                                <option value="0">Seleccione el departamento:</option>
+                            <select class="FAI prueba" name="Departamento" id="departamentos">
+                                <option value="0">Seleccione el tipo de departamento:</option>
                                 <?php
                                 $stmt = $Con->prepare("SELECT id_departamento, departamento FROM rh_departamentos ORDER BY id_departamento");
                                 $stmt->execute();
@@ -139,19 +101,29 @@
                         </label>
                     </div>
 
+                    <div class="FAD" id="campo_nombres" style="display:none;">
+                        <label class="FAL">
+                            <span class="FAS">Nombre</span>
+                            <select class="FAI prueba2" name="Nombre" id="nombres">
+                                <option value="0">Seleccione una sede primero</option>
+                            </select>
+                        </label>
+                    </div>
+                    <input type="hidden" id="nombreSeleccionado" value="<?= htmlspecialchars($Nombre) ?>">
+
                     <div class="FAD">
                         <label class="FAL">
-                            <span class="FAS">Tipo de empleado</span>
-                            <select class="FAI prueba" id="Tipo" name="Tipo">
-                                <option value="0">Seleccione el tipo de empleado:</option>
+                            <span class="FAS">Tipo de permiso</span>
+                            <select class="FAI prueba" id="Permiso" name="Permiso">
+                                <option value="0">Seleccione el tipo de permiso:</option>
                                 <?php
-                                $stmt = $Con->prepare("SELECT id_tipo_rh, tipo_rh FROM rh_tipos_empleados ORDER BY id_tipo_rh");
+                                $stmt = $Con->prepare("SELECT id_permiso, tipo_permiso FROM rh_permisos WHERE id_permiso NOT IN (1) ORDER BY id_permiso");
                                 $stmt->execute();
                                 $result = $stmt->get_result();
 
                                 while ($Row = $result->fetch_assoc()) {
-                                    $selected = ($Tipo == $Row['id_tipo_rh']) ? 'selected' : '';
-                                    echo '<option value="'.$Row['id_tipo_rh'].'" '.$selected.'>'.$Row['tipo_rh'].'</option>';
+                                    $selected = ($Permiso == $Row['id_permiso']) ? 'selected' : '';
+                                    echo '<option value="'.$Row['id_permiso'].'" '.$selected.'>'.$Row['tipo_permiso'].'</option>';
                                 }
                                 $stmt->close();
                                 ?>
@@ -161,42 +133,22 @@
 
                     <div class="FAD">
                         <label class="FAL">
-                            <span class="FAS">Tipo de pago</span>
-                            <select class="FAI prueba" id="TipoPago" name="TipoPago">
-                                <option value="0">Seleccione el tipo de pago:</option>
-                                <option value="SEMANAL" <?= ($TipoP == 'SEMANAL') ? 'selected' : '' ?>>SEMANAL</option>
-                                <option value="QUINCENAL" <?= ($TipoP == 'QUINCENAL') ? 'selected' : '' ?>>QUINCENAL</option>
-                            </select>
+                            <span class="FAS">Fecha</span>
+                            <input class="FAI" id="FI" type="date" name="FI" value="<?php echo !empty($FI) ? $FI : date('Y-m-d'); ?>">
                         </label>
                     </div>
 
-                    <div class="FAD" id="campo_horarios" style="display:none;">
-                        <label class="FAL">
-                            <span class="FAS">Tipo de horario</span>
-                            <select class="FAI prueba" name="Horarios" id="horarios">
-                                <option value="0">Seleccione una sede primero</option>
-                            </select>
-                        </label>
-                    </div>
-                    <input type="hidden" id="horarioSeleccionado" value="<?= htmlspecialchars($Horario) ?>">
-
-                    <div class="FAD">
-                        <label class="FAL">
-                            <span class="FAS">Fecha de ingreso</span>
-                            <input class="FAI" id="Fecha" type="date" name="Fecha" value="<?php echo !empty($Fecha) ? $Fecha : date('Y-m-d'); ?>">
-                        </label>
-                    </div>
 
                     <div class=Center>
-                        <input class="Boton" id="AB" type="Submit" value="Registrar" name="Insertar">
+                        <input class="Boton" id="AB" type="Submit" value="Actualizar" name="Modificar">
                     </div>
                 </section>
 
-            <?php if ($Correcto < 11) {
+            <?php if ($Correcto < 4) {
                 $tipos = [
-                    'Error' => ['cantidad' => $NumE, 'max' => 10, 'title' => 'Error!', 'type' => 'error'],
-                    'Precaucion' => ['cantidad' => $NumP, 'max' => 3, 'title' => 'Precaución!', 'type' => 'warning'],
-                    'Informacion' => ['cantidad' => $NumI, 'max' => 5, 'title' => 'Info!', 'type' => 'info']
+                    'Error' => ['cantidad' => $NumE, 'max' => 4, 'title' => 'Error!', 'type' => 'error'],
+                    'Precaucion' => ['cantidad' => $NumP, 'max' => 1, 'title' => 'Precaución!', 'type' => 'warning'],
+                    'Informacion' => ['cantidad' => $NumI, 'max' => 1, 'title' => 'Info!', 'type' => 'info']
                 ];
 
                 foreach ($tipos as $prefijo => $datos) {
@@ -229,7 +181,7 @@
             <?php }?>
             
             <script src="../../../js/modulos.js"></script>
-            <script src="../../../js/ingresos.js"></script>
+            <script src="../../../js/incidencias.js"></script>
         </main>
     </body>
 

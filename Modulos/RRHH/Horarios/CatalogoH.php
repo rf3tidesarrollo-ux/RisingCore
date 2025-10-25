@@ -5,10 +5,10 @@ $RutaSC = "../../../index.php";
 include_once "../../../Login/validar_sesion.php";
 // $Pagina=basename(__FILE__);
 // Historial($Pagina,$Con);
-$Ver = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 1, $Con);
-$Crear = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 2, $Con);
-$Editar = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 3, $Con);
-$Eliminar = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 4, $Con);
+$Ver = TienePermiso($_SESSION['ID'], "RRHH/Horarios", 1, $Con);
+$Crear = TienePermiso($_SESSION['ID'], "RRHH/Horarios", 2, $Con);
+$Editar = TienePermiso($_SESSION['ID'], "RRHH/Horarios", 3, $Con);
+$Eliminar = TienePermiso($_SESSION['ID'], "RRHH/Horarios", 4, $Con);
 
 if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 ?>
@@ -16,7 +16,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 <html lang="en">
 <head>
     <?php $Ruta = "../../../"; include_once '../../../Complementos/Logo_movil.php'; ?>
-    
+
     <script src="https://code.jquery.com/jquery-3.7.1.js" type="text/javascript"></script>
     <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js" ></script>
     <link href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css" rel="stylesheet">
@@ -38,8 +38,8 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <script src="../../../js/script.js"></script>
     <script src="../../../js/eliminar.js"></script>
     <script src="../../../js/session.js"></script>
-    <link rel="stylesheet" href="DesignNI.css">
-    <title>Ingreso: Reporte</title>
+    <link rel="stylesheet" href="DesignH.css">
+    <title>RRHH: Horarios</title>
 </head>
 
 <body>
@@ -59,7 +59,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                     <span style="color: #6c757d;">&raquo;</span>
 
                     <a href="/RisingCore/Modulos/RRHH/Ingreso/Inicio.php" style="color: #6c757d; text-decoration: none;">
-                        🙎🏻 Nuevo Ingreso
+                        🕐 Horarios
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
@@ -68,28 +68,25 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <strong style="color: #333;">👆🏻 Pendientes de huella</strong>
+                    <strong style="color: #333;">📊 Reportes de horarios</strong>
                 </nav>
             </div>
 
             <div class="tabla">
-            <?php if ($TipoRol=="ADMINISTRADOR" || $Crear==true) { ?> <a title="Agregar" href="RegistrarNI.php"><div id="wizard" class="btn-up"><i class="fa-solid fa-fingerprint fa-2xl" style="color: #ffffff;"></i></div></a> <?php } ?>
+            <?php if ($TipoRol=="ADMINISTRADOR" || $Crear==true) { ?> <a title="Agregar" href="RegistrarH.php"><div id="wizard" class="btn-up"><i class="fa-solid fa-fingerprint fa-2xl" style="color: #ffffff;"></i></div></a> <?php } ?>
                     
             
             <table id="basic-datatables" class="display table table-striped table-hover responsive nowrap" style="width:95%">
                     <thead>
                         <tr>
                             <th>Sede</th>
-                            <th>Badge</th>
-                            <th>Nombre</th>
-                            <th>Género</th>
-                            <th>Tipo de empleado</th>
-                            <th>Departamento</th>
-                            <th>Tipo de pago</th>
-                            <th>Tipo de horario</th>
-                            <th>Fecha ingreso</th>
-                            <th>Fecha registro</th>
-                            <th>Registró</th>
+                            <th>Horario</th>
+                            <th>Hora entrada</th>
+                            <th>Hora salida</th>
+                            <th>Hora entrada del sábado</th>
+                            <th>Hora salida del sábado</th>
+                            <th>Hora entrada del domingo</th>
+                            <th>Hora salida del domingo</th>
                             <?php if ($TipoRol=="ADMINISTRADOR" || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
                         </tr>
                     </thead>
@@ -97,16 +94,13 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                     <tfoot>
                         <tr>
                             <th>Sede</th>
-                            <th>Badge</th>
-                            <th>Nombre</th>
-                            <th>Género</th>
-                            <th>Tipo de empleado</th>
-                            <th>Departamento</th>
-                            <th>Tipo de pago</th>
-                            <th>Tipo de horario</th>
-                            <th>Fecha ingreso</th>
-                            <th>Fecha registro</th>
-                            <th>Registró</th>
+                            <th>Horario</th>
+                            <th>Hora entrada</th>
+                            <th>Hora salida</th>
+                            <th>Hora entrada del sábado</th>
+                            <th>Hora salida del sábado</th>
+                            <th>Hora entrada del domingo</th>
+                            <th>Hora salida del domingo</th>
                             <?php if ($TipoRol=="ADMINISTRADOR" || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
                         </tr>
                     </tfoot>
@@ -128,7 +122,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     $('#basic-datatables').DataTable({
         serverSide: true,
         ajax: {
-            url: '../../Server_side/Personal/tabla_pendientes.php',
+            url: '../../Server_side/Horarios/tabla_horarios.php',
             type: 'POST',
             dataFilter: function(data){
                 // Intentar parsear JSON
@@ -146,36 +140,13 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
         },
         columns: [
                   { data: 'codigo_s' },
-                  { data: 'badge' },
-                  { data: 'nombre_personal'}, 
-                  { data: 'genero' },
-                  { data: 'tipo_rh', },
-                  { data: 'departamento', },
-                  { data: 'tipo_pago', },
-                  { data: 'tipo_h', },
-                  { data: 'fecha_ingreso',
-                    "render": function ( data, type, row ) {
-                        if(type === 'display'){
-                            // Asumiendo que viene como "yyyy-mm-dd"
-                            let partes = row.fecha_ingreso.split('-'); // [yyyy, mm, dd]
-                            return partes[2] + '/' + partes[1] + '/' + partes[0]; // dd/mm/yyyy
-                        }else{
-                            return data;
-                        }
-                    }
-                   },
-                   { data: 'fecha_registro',
-                    "render": function ( data, type, row ) {
-                        if(type === 'display'){
-                            // Asumiendo que viene como "yyyy-mm-dd"
-                            let partes = row.fecha_registro.split('-'); // [yyyy, mm, dd]
-                            return partes[2] + '/' + partes[1] + '/' + partes[0]; // dd/mm/yyyy
-                        }else{
-                            return data;
-                        }
-                    }
-                   },
-                  { data: 'nombre_completo' },
+                  { data: 'tipo_h' },
+                  { data: 'hora_entrada'}, 
+                  { data: 'hora_salida' },
+                  { data: 'hora_sabado_e', },
+                  { data: 'hora_sabado', },
+                  { data: 'hora_domingo_e', },
+                  { data: 'hora_domingo', },
                   { 
                     data: null,
                     "render": function (data, type, row) {
@@ -192,9 +163,9 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 
                         if (Ver || Editar || Eliminar) {
                             return `
-                                ${Ver ? `<a title="Mostrar" href="#${row.id_personal}" onclick="mostrarRegistroNI(${row.id_personal})"><i class="fa-solid fa-eye fa-xl" style="color: #16ac19;"></i></a>` : ''}
-                                ${Editar ? `<a title="Editar" class="Edit" href="EditarNI.php?id=${row.id_personal}"><i class="fa-solid fa-pen-to-square fa-xl" style="color: #0a5ceb;"></i></a>` : ''}
-                                ${Eliminar ? `<a title="Eliminar" class="Delete" href="#${row.id_personal}" onclick="eliminarRegistro(${row.id_personal})"><i class="fa-solid fa-trash fa-xl" style="color: #ca1212;"></i></a>` : ''}
+                                ${Ver ? `<a title="Mostrar" href="#${row.id_thorario}" onclick="mostrarRegistroH(${row.id_thorario})"><i class="fa-solid fa-eye fa-xl" style="color: #16ac19;"></i></a>` : ''}
+                                ${Editar ? `<a title="Editar" class="Edit" href="EditarH.php?id=${row.id_thorario}"><i class="fa-solid fa-pen-to-square fa-xl" style="color: #0a5ceb;"></i></a>` : ''}
+                                ${Eliminar ? `<a title="Eliminar" class="Delete" href="#${row.id_thorario}" onclick="eliminarRegistro(${row.id_thorario})"><i class="fa-solid fa-trash fa-xl" style="color: #ca1212;"></i></a>` : ''}
                             `;
                         } else {
                             return '';
@@ -208,17 +179,14 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
         responsive: true,
         columnDefs: [
         <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true || $Editar==true || $Eliminar==true) { ?>
-                            { responsivePriority: 1, targets: 11 },
+                            { responsivePriority: 1, targets: 8 },
         <?php  } ?>
-                            { responsivePriority: 3, targets: 10 },
-                            { responsivePriority: 3, targets: 9 },
-                            { responsivePriority: 2, targets: 8 },
-                            { responsivePriority: 2, targets: 7 },
+                            { responsivePriority: 1, targets: 7 },
                             { responsivePriority: 2, targets: 6 },
-                            { responsivePriority: 2, targets: 5 },
+                            { responsivePriority: 1, targets: 5 },
                             { responsivePriority: 2, targets: 4 },
-                            { responsivePriority: 3, targets: 3 },
-                            { responsivePriority: 2, targets: 2 },
+                            { responsivePriority: 1, targets: 3 },
+                            { responsivePriority: 1, targets: 2 },
                             { responsivePriority: 1, targets: 1 },
                             { responsivePriority: 2, targets: 0 }
                     ],
@@ -235,8 +203,8 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                 if (title !== "Acciones") {
                     $(column.footer()).empty();
 
-                    const selectColumns = [0, 3, 4, 5, 6, 7, 8]; // columnas con select
-                    const dateColumns = [7, 8]; // columna fecha
+                    const selectColumns = [0,1]; // columnas con select
+                    const dateColumns = [2, 3, 4, 5, 6, 7]; // columna fecha
 
                     if (selectColumns.includes(column.index())) {
                         const select = $('<select><option value="">Todos</option></select>')
@@ -248,7 +216,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 
                         // 🔹 Llenar las opciones del select vía AJAX
                         $.ajax({
-                            url: '../../Server_side/Personal/vuPendientes.php', // tu endpoint PHP
+                            url: '../../Server_side/Horarios/vuHorarios.php', // tu endpoint PHP
                             type: 'POST',
                             data: { columna: column.index() }, // le mandas qué columna quieres
                             dataType: 'json',
@@ -260,7 +228,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                         });
 
                     } else if (dateColumns.includes(column.index())) {
-                        $('<input type="date" />')
+                        $('<input type="time" />')
                             .appendTo($(column.footer()))
                             .on('change', function () {
                                 column.search(this.value).draw();
@@ -284,11 +252,6 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                 '<i class="fa-solid fa-filter-circle-xmark fa-xl"></i> Limpiar</button>'
             );
 
-            $('.dt-buttons').append(
-                '<button id="actualizar" class="btn btn-sm btn-outline-secondary ms-2" title="Actualizar registros">' +
-                '<i class="fa-solid fa-arrows-rotate fa-xl"></i> Actualizar</button>'
-            );
-
             // Evento para limpiar filtros
             $('#limpiarFiltros').on('click', function () {
                 api.search('').draw();
@@ -302,27 +265,6 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                 api.draw();
             });
 
-            $('#actualizar').on('click', function () {
-                // Opcional: mostrar un mensaje mientras se procesa
-                swal("Actualizando...", "Por favor espera mientras se actualizan los registros.", "info");
-
-                $.ajax({
-                    url: '../../Server_side/Personal/actualizarRH.php', // ruta a tu script PHP
-                    type: 'POST',
-                    dataType: 'json', // si tu PHP devuelve JSON
-                    success: function(response) {
-                        if (response.success) {
-                            swal("¡Listo!", "Registros actualizados correctamente.", "success");
-                            api.ajax.reload(); // recarga la tabla después de actualizar
-                        } else {
-                            swal("Error", response.message || "Ocurrió un error al actualizar.", "error");
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        swal("Error", "No se pudo conectar con el servidor.", "error");
-                    }
-                });
-            });
         },
 
         drawCallback: function() {

@@ -4,6 +4,7 @@
     <?php $Ruta = "../../../"; include_once '../../../Complementos/Logo_movil.php'; ?>
     
     <script src="https://code.jquery.com/jquery-3.7.1.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://kit.fontawesome.com/367278d2a4.js" crossorigin="anonymous"></script>
@@ -13,11 +14,11 @@
     <link rel="stylesheet" href="../../../css/eggy.css" />
     <link rel="stylesheet" href="../../../css/progressbar.css" />
     <link rel="stylesheet" href="../../../css/theme.css" />
-    <link rel="stylesheet" href="DesignNI.css">
-    <title>RRHH: Nuevo Ingreso</title>
+    <link rel="stylesheet" href="DesignRI.css">
+    <title>RRHH: Reingreso</title>
 </head>
 
-<body onload="validar()">
+    <body onload="validar()">
         <?php
         $basePath = "../";
         $Logo = "../../../";
@@ -28,29 +29,31 @@
         <main>
             <div style="background: #f9f9f9; padding: 12px 25px; border-bottom: 1px solid #ccc; font-size: 16px;">
                 <nav style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
-                    <a href="/RisingCore/Modulos/RRHH/Inicio.php" style="color: #6c757d; text-decoration: none;">
+                    <a href="/RisingCore/Modulos/RRHH/inicio.php" style="color: #6c757d; text-decoration: none;">
                         👥 Recursos Humanos
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <a href="/RisingCore/Modulos/RRHH/Ingreso/Inicio.php" style="color: #6c757d; text-decoration: none;">
-                        🙎🏻 Nuevo Ingreso
+                    <a href="/RisingCore/Modulos/RRHH/Reingreso/Inicio.php" style="color: #6c757d; text-decoration: none;">
+                        🙎🏻 Reingresos
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
                     <a href="#" style="color: #6c757d; text-decoration: none;">
-                        📋 Registros
+                        📋 Reportes
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <strong style="color: #333;">✏️ Registros de nuevos ingresos</strong>
+                    <strong style="color: #333;">👷🏽 Reactivar personal</strong>
                 </nav>
             </div>
-            <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true) { ?> <a title="Reporte" href="CatalogoNI.php"><div class="back"><i class="fa-solid fa-fingerprint fa-xl"></i></div></a><?php } ?>
+            
+            <a title="Reporte" href="CatalogoRI.php"><div class="back"><i class="fa-solid fa-left-long fa-xl"></i></div></a>
 
             <section class="Registro">
                 <h4>Registro de nuevo de ingreso</h4>
                 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST" name="octavo" id="">
+                    <input class="Controles" id="0" type="hidden" name="id" value="<?php echo $ID; ?>">
                     <div class="FAD">
                         <label class="FAL">
                             <span class="FAS">Sede</span>
@@ -81,21 +84,21 @@
                     <div class="FAD">
                         <label class="FAL">
                             <span class="FAS">Nombre</span>
-                            <input class="FAI" id="Nombre" type="Text" name="Nombre" <?php if (isset($_POST['Nombre']) != ''): ?> value="<?php echo $Nombre; ?>"<?php endif; ?> size="25" maxLength="50" onkeyup="mayus(this);">
+                            <input class="FAI" autocomplete="off" id="Nombre" type="Text" name="Nombre" value="<?php echo $Nombre; ?>" size="25" maxLength="50" onkeyup="mayus(this);">
                         </label>
                     </div>
 
                     <div class="FAD">
                         <label class="FAL">
                             <span class="FAS">Apellido paterno</span>
-                            <input class="FAI" id="AP" type="Text" name="AP" <?php if (isset($_POST['AP']) != ''): ?> value="<?php echo $AP; ?>"<?php endif; ?> size="25" maxLength="50" onkeyup="mayus(this);">
+                            <input class="FAI" autocomplete="off" id="AP" type="Text" name="AP" value="<?php echo $AP; ?>" size="25" maxLength="50" onkeyup="mayus(this);">
                         </label>
                     </div>
 
                     <div class="FAD">
                         <label class="FAL">
                             <span class="FAS">Apellido materno</span>
-                            <input class="FAI" id="AM" type="Text" name="AM" <?php if (isset($_POST['AM']) != ''): ?> value="<?php echo $AM; ?>"<?php endif; ?> size="25" maxLength="50" onkeyup="mayus(this);">
+                            <input class="FAI" autocomplete="off" id="AM" type="Text" name="AM" value="<?php echo $AM; ?>" size="25" maxLength="50" onkeyup="mayus(this);">
                         </label>
                     </div>
 
@@ -162,7 +165,7 @@
                     <div class="FAD">
                         <label class="FAL">
                             <span class="FAS">Tipo de pago</span>
-                            <select class="FAI prueba" id="TipoPago" name="TipoPago">
+                            <select class="FAI" id="TipoPago" name="TipoPago">
                                 <option value="0">Seleccione el tipo de pago:</option>
                                 <option value="SEMANAL" <?= ($TipoP == 'SEMANAL') ? 'selected' : '' ?>>SEMANAL</option>
                                 <option value="QUINCENAL" <?= ($TipoP == 'QUINCENAL') ? 'selected' : '' ?>>QUINCENAL</option>
@@ -183,20 +186,31 @@
                     <div class="FAD">
                         <label class="FAL">
                             <span class="FAS">Fecha de ingreso</span>
-                            <input class="FAI" id="Fecha" type="date" name="Fecha" value="<?php echo !empty($Fecha) ? $Fecha : date('Y-m-d'); ?>">
+                            <input class="FAI" id="Fecha" type="date" name="Fecha" value="<?php echo $Fecha; ?>">
+                        </label>
+                    </div>
+
+                    <div class="FAD">
+                        <label class="FAL">
+                            <span class="FAS">Estado</span>
+                            <select class="FAI" id="Estado" name="Estado">
+                                <option value="3">Seleccione el estado:</option>
+                                <option value="1" <?= ($Estado == '1') ? 'selected' : '' ?>>ALTA</option>
+                                <option value="0" <?= ($Estado == '0') ? 'selected' : '' ?>>BAJA</option>
+                            </select>
                         </label>
                     </div>
 
                     <div class=Center>
-                        <input class="Boton" id="AB" type="Submit" value="Registrar" name="Insertar">
+                        <input class="Boton" id="AB" type="Submit" value="Actualizar" name="Modificar">
                     </div>
                 </section>
 
             <?php if ($Correcto < 11) {
-                $tipos = [
+                    $tipos = [
                     'Error' => ['cantidad' => $NumE, 'max' => 10, 'title' => 'Error!', 'type' => 'error'],
                     'Precaucion' => ['cantidad' => $NumP, 'max' => 3, 'title' => 'Precaución!', 'type' => 'warning'],
-                    'Informacion' => ['cantidad' => $NumI, 'max' => 5, 'title' => 'Info!', 'type' => 'info']
+                    'Informacion' => ['cantidad' => $NumI, 'max' => 1, 'title' => 'Info!', 'type' => 'info']
                 ];
 
                 foreach ($tipos as $prefijo => $datos) {

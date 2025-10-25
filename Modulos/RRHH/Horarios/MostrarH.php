@@ -8,8 +8,8 @@ if (!empty($_POST)) {
 
     $id = $_POST['id'];
 
-    $stmt = $Con->prepare("SELECT codigo_s AS s, badge AS b, nombre_personal AS np, genero AS g, tipo_rh AS te, departamento AS d, tipo_pago AS tp, tipo_h AS th, fecha_ingreso AS fi, fecha_registro AS fr, nombre_completo AS nc 
-                    FROM vw_pendientes em WHERE id_personal=?");
+    $stmt = $Con->prepare("SELECT codigo_s AS s, tipo_h AS n, hora_entrada AS he, hora_salida AS hs, hora_sabado_e AS se, hora_sabado AS ss, hora_domingo_e AS de, hora_domingo AS ds 
+                    FROM rh_tipos_horarios h JOIN sedes s ON h.id_sede_h = s.id_sede WHERE id_thorario=?");
     $stmt->bind_param("i",$id);
     $stmt->execute();
     $Registro = $stmt->get_result();
@@ -26,7 +26,7 @@ if (!empty($_POST)) {
     exit;
     
 }else{ 
-    header("Location: CatalogoNI.php"); 
+    header("Location: CatalogoH.php"); 
 }
 
 ?>

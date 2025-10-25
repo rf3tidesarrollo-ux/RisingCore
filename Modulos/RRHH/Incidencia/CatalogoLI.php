@@ -5,10 +5,10 @@ $RutaSC = "../../../index.php";
 include_once "../../../Login/validar_sesion.php";
 // $Pagina=basename(__FILE__);
 // Historial($Pagina,$Con);
-$Ver = TienePermiso($_SESSION['ID'], "RRHH/Asistencia", 1, $Con);
-$Crear = TienePermiso($_SESSION['ID'], "RRHH/Asistencia", 2, $Con);
-$Editar = TienePermiso($_SESSION['ID'], "RRHH/Asistencia", 3, $Con);
-$Eliminar = TienePermiso($_SESSION['ID'], "RRHH/Asistencia", 4, $Con);
+$Ver = TienePermiso($_SESSION['ID'], "RRHH/Incidencia", 1, $Con);
+$Crear = TienePermiso($_SESSION['ID'], "RRHH/Incidencia", 2, $Con);
+$Editar = TienePermiso($_SESSION['ID'], "RRHH/Incidencia", 3, $Con);
+$Eliminar = TienePermiso($_SESSION['ID'], "RRHH/Incidencia", 4, $Con);
 
 if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 ?>
@@ -16,7 +16,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 <html lang="en">
 <head>
     <?php $Ruta = "../../../"; include_once '../../../Complementos/Logo_movil.php'; ?>
-
+    
     <script src="https://code.jquery.com/jquery-3.7.1.js" type="text/javascript"></script>
     <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js" ></script>
     <link href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css" rel="stylesheet">
@@ -38,8 +38,8 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <script src="../../../js/script.js"></script>
     <script src="../../../js/eliminar.js"></script>
     <script src="../../../js/session.js"></script>
-    <link rel="stylesheet" href="DesignA.css">
-    <title>Asistencias: Reporte</title>
+    <link rel="stylesheet" href="DesignLI.css">
+    <title>Ingreso: Reporte</title>
 </head>
 
 <body>
@@ -53,13 +53,13 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
         <main>
             <div style="background: #f9f9f9; padding: 12px 25px; border-bottom: 1px solid #ccc; font-size: 16px;">
                 <nav style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
-                    <a href="/RisingCore/Modulos/RRHH/Inicio.php" style="color: #6c757d; text-decoration: none;">
+                    <a href="/RisingCore/Modulos/RRHH/inicio.php" style="color: #6c757d; text-decoration: none;">
                         👥 Recursos Humanos
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <a href="/RisingCore/Modulos/RRHH/Asistencia/Inicio.php" style="color: #6c757d; text-decoration: none;">
-                        🙋🏻 Asistencias
+                    <a href="/RisingCore/Modulos/RRHH/Ingreso/Inicio.php" style="color: #6c757d; text-decoration: none;">
+                        ❗ Incidencias
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
@@ -68,12 +68,12 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <strong style="color: #333;">🗒️ Listas de asistencia</strong>
+                    <strong style="color: #333;">🗒️ Listas de incidencias</strong>
                 </nav>
             </div>
 
             <div class="tabla">
-            <?php if ($TipoRol=="ADMINISTRADOR" || $Crear==true) { ?> <a title="Agregar" href="RegistrarNI.php"><div id="wizard" class="btn-up"><i class="fa-solid fa-fingerprint fa-2xl" style="color: #ffffff;"></i></div></a> <?php } ?>
+            <?php if ($TipoRol=="ADMINISTRADOR" || $Crear==true) { ?> <a title="Agregar" href="RegistrarLI.php"><div id="wizard" class="btn-up"><i class="fa-solid fa-fingerprint fa-2xl" style="color: #ffffff;"></i></div></a> <?php } ?>
                     
             
             <table id="basic-datatables" class="display table table-striped table-hover responsive nowrap" style="width:95%">
@@ -126,7 +126,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     var table = $('#basic-datatables').DataTable({
         serverSide: true,
         ajax: {
-            url: '../../Server_side/Personal/tabla_asistencia.php',
+            url: '../../Server_side/Incidencia/tabla_incidencia.php',
             type: 'POST',
             data: function(d) {
                 d.ano = $('#filtroAno').val();
@@ -162,6 +162,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                   { data: 'lunes', orderable: false, searchable: false },
                   { data: 'martes', orderable: false, searchable: false },
                 ],
+        order: [],
         pageLength: 25,
         lengthMenu: [[10,25,50,100,500],[10,25,50,100,500]],
         stateSave: true,
@@ -263,30 +264,10 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
             );
 
             $('.dt-buttons').append(`
-                <button id="exportarPDF2" class="btn btn-sm btn-outline-secondary ms-2" title="PDF Listas">
-                    <i class="fa-solid fa-file-pdf"></i> PDF
-                </button>
-            `);
-
-            $('.dt-buttons').append(`
                 <button id="exportarPDF" class="btn btn-sm btn-outline-secondary ms-2" title="PDF Auditoría">
                     <i class="fa-solid fa-file-pdf"></i> PDF
                 </button>
             `);
-
-            $('#exportarPDF2').on('click', function() {
-                let filtros = {
-                    ano: $('#filtroAno').val(),
-                    semana: $('#filtroSemana').val(),
-                    departamento: $('#filtroDepto').val(),
-                    tipo: $('#filtroTipo').val(),
-                    pago: $('#filtroTipoPago').val()
-                };
-
-                // Abrir en nueva pestaña (o podrías hacer window.location.href)
-                let url = '../../Plantillas/RRHH/pdf_li.php?' + $.param(filtros);
-                window.open(url, '_blank');
-            });
 
             $('#exportarPDF').on('click', function() {
                 let filtros = {
@@ -298,7 +279,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                 };
 
                 // Abrir en nueva pestaña (o podrías hacer window.location.href)
-                let url = '../../Plantillas/RRHH/pdf_la.php?' + $.param(filtros);
+                let url = '../../Plantillas/RRHH/pdf_ci.php?' + $.param(filtros);
                 window.open(url, '_blank');
             });
 
@@ -392,13 +373,13 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
         layout: {
             top1Start: {
         buttons: [
-                    {
-                        extend: 'colvis',
-                        text: ['Mostrar/Ocultar'],
-                    },
-                ]
-            }
-        },
+            {
+                extend: 'colvis',
+                text: ['Mostrar/Ocultar'],
+            },
+        ]
+    }
+},
     });
 });
 
