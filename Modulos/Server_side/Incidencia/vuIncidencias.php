@@ -7,21 +7,20 @@ if ($columna !== null) {
     // Mapear índice de columna a nombre real de la columna en la DB
     $mapColumnas = [
         0 => 'codigo_s',
-        1 => 'badge',
-        2 => 'nombre_personal',
-        3 => 'genero',
-        4 => 'tipo_rh',
-        5 => 'departamento',
-        6 => 'tipo_pago',
-        7 => 'tipo_h',
-        8 => 'fecha_ingreso',
-        9 => 'fecha_registro',
-        10 => 'nombre_completo',
+        1 => 'nombre',
+        2 => 'departamento',
+        3 => 'tipo_permiso',
+        4 => 'registro_check',
     ];
 
     if (isset($mapColumnas[$columna])) {
         $columnaDB = $mapColumnas[$columna];
-        $sql = "SELECT DISTINCT $columnaDB FROM vw_pendientes ORDER BY $columnaDB ASC";
+        $sql = "SELECT DISTINCT $columnaDB FROM rh_check c
+                    LEFT JOIN rh_personal p ON c.badge = p.badge
+                    LEFT JOIN rh_permisos tp ON c.id_dptipo = tp.id_permiso
+                    LEFT JOIN rh_departamentos d ON p.id_depto_pl = d.id_departamento
+                    LEFT JOIN sedes s ON p.id_sede_pl = s.id_sede
+                    WHERE c.id_dptipo NOT IN (1) ORDER BY $columnaDB ASC";
 
         $result = $Con->query($sql);
 

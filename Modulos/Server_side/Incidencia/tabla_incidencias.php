@@ -10,16 +10,11 @@ if(isset($_SESSION['ID']) == false){
 
 // Mapeo de columnas (usar siempre $columnMap)
 $columnMap = [
-    'folio_p'        => 'p.folio_p',
-    'codigo_s'       => 's.codigo_s',
-    'presentacion'   => 'pp.presentacion',
-    'cliente_id'     => 'pp.cliente_id',
-    'cajas_p'        => 'p.cajas_p',
-    'folio_em'       => 'em.folio_em',
-    'fecha_p'        => 'p.fecha_p',
-    'hora_p'         => 'p.hora_p',
-    'fecha_e'        => 'p.fecha_e',
-    'nombre_completo'=> 'c.nombre_completo',
+    'codigo_s'         => 'codigo_s',
+    'nombre_personal'  => 'nombre_personal',
+    'departamento'     => 'departamento',
+    'tipo_permiso'     => 'tipo_permiso',
+    'fecha_permiso'    => 'fecha_permiso',
 ];
 
 // Recuperar columnas seguro
@@ -50,7 +45,7 @@ foreach ($searchColumns as $index => $column) {
         // input normal (texto o fecha)
         $escaped = $Con->real_escape_string($rawSearch);
         // Ajustar si la columna es fecha (usar DATE())
-        if ($columnName === 'p.fecha_p' || $columnName === 'p.fecha_e') {
+        if ($columnName === 'fecha_permiso' || $columnName === 'fecha_permiso') {
             $whereClauses[] = "DATE($columnName) = '$escaped'";
         } else {
             $whereClauses[] = "$columnName LIKE '%$escaped%'";
@@ -83,22 +78,15 @@ if (!empty($whereClauses)) {
 $orderColumnIndex = isset($_POST['order'][0]['column']) ? intval($_POST['order'][0]['column']) : 0;
 $orderDir = (isset($_POST['order'][0]['dir']) && in_array(strtolower($_POST['order'][0]['dir']), ['asc','desc'])) 
             ? $_POST['order'][0]['dir'] : 'asc';
-$orderColumnRaw = isset($_POST['columns'][$orderColumnIndex]['data']) ? $_POST['columns'][$orderColumnIndex]['data'] : 'folio_p';
-$orderColumn = isset($columnMap[$orderColumnRaw]) ? $columnMap[$orderColumnRaw] : 'p.folio_p';
+$orderColumnRaw = isset($_POST['columns'][$orderColumnIndex]['data']) ? $_POST['columns'][$orderColumnIndex]['data'] : 's.codigo_s';
+$orderColumn = isset($columnMap[$orderColumnRaw]) ? $columnMap[$orderColumnRaw] : 's.codigo_s';
 
 // Paginación
 $start = isset($_POST['start']) ? intval($_POST['start']) : 0;
 $length = isset($_POST['length']) ? intval($_POST['length']) : 25;
 
 if ($TipoRol == "ADMINISTRADOR") {
-    $totalQuery = "SELECT COUNT(*) as total FROM pallets p
-                    LEFT JOIN usuarios u ON p.id_usuario_p = u.id_usuario
-                    LEFT JOIN cargos c ON u.id_cargo = c.id_cargo
-                    LEFT JOIN tipos_tarimas t ON p.id_tarima_p = t.id_tarima
-                    LEFT JOIN presentaciones_pallet pp ON p.id_presen_p = pp.id_presentacion_p
-                    LEFT JOIN sedes s ON p.id_sede_p = s.id_sede
-                    LEFT JOIN embarques_pallets em ON p.id_embarque_p = em.id_embarque
-                    WHERE p.activo_p = 1 $whereSQL";
+    $totalQuery = "SELECT COUNT(*) as total FROM vw_permisos WHERE id_check IS NOT NULL $whereSQL";
     $totalStmt = $Con->prepare($totalQuery);
     if ($totalStmt === false) { error_log("Prepare totalQuery error: " . $Con->error); }
     $totalStmt->execute();
@@ -106,14 +94,7 @@ if ($TipoRol == "ADMINISTRADOR") {
     $totalRecords = $totalResult->fetch_assoc()['total'];
 
     // Datos con paginación
-    $dataQuery = "SELECT p.*, u.*, c.*, t.*, pp.*, s.*, em.* FROM pallets p
-                    LEFT JOIN usuarios u ON p.id_usuario_p = u.id_usuario
-                    LEFT JOIN cargos c ON u.id_cargo = c.id_cargo
-                    LEFT JOIN tipos_tarimas t ON p.id_tarima_p = t.id_tarima
-                    LEFT JOIN presentaciones_pallet pp ON p.id_presen_p = pp.id_presentacion_p
-                    LEFT JOIN sedes s ON p.id_sede_p = s.id_sede
-                    LEFT JOIN embarques_pallets em ON p.id_embarque_p = em.id_embarque
-                    WHERE p.activo_p = 1 $whereSQL
+    $dataQuery = "SELECT * FROM vw_permisos WHERE id_check IS NOT NULL $whereSQL
                     ORDER BY $orderColumn $orderDir
                     LIMIT ?, ?";
     $dataStmt = $Con->prepare($dataQuery);
@@ -124,14 +105,7 @@ if ($TipoRol == "ADMINISTRADOR") {
 
 } else {
     // No admin -> filtrar por sede
-    $totalQuery = "SELECT COUNT(*) as total FROM pallets p
-                    LEFT JOIN usuarios u ON p.id_usuario_p = u.id_usuario
-                    LEFT JOIN cargos c ON u.id_cargo = c.id_cargo
-                    LEFT JOIN tipos_tarimas t ON p.id_tarima_p = t.id_tarima
-                    LEFT JOIN presentaciones_pallet pp ON p.id_presen_p = pp.id_presentacion_p
-                    LEFT JOIN sedes s ON p.id_sede_p = s.id_sede
-                    LEFT JOIN embarques_pallets em ON p.id_embarque_p = em.id_embarque
-                    WHERE p.activo_p = 1 AND p.id_sede_p = ? $whereSQL";
+    $totalQuery = "SELECT COUNT(*) as total FROM vw_permisos WHERE id_sede_pl = ? $whereSQL";
     $totalStmt = $Con->prepare($totalQuery);
     if ($totalStmt === false) { error_log("Prepare totalQuery (sede) error: " . $Con->error); }
     $totalStmt->bind_param("s", $Sede);
@@ -139,14 +113,7 @@ if ($TipoRol == "ADMINISTRADOR") {
     $totalResult = $totalStmt->get_result();
     $totalRecords = $totalResult->fetch_assoc()['total'];
 
-    $dataQuery = "SELECT p.*, u.*, c.*, t.*, pp.*, s.*, em.* FROM pallets p
-                    LEFT JOIN usuarios u ON p.id_usuario_p = u.id_usuario
-                    LEFT JOIN cargos c ON u.id_cargo = c.id_cargo
-                    LEFT JOIN tipos_tarimas t ON p.id_tarima_p = t.id_tarima
-                    LEFT JOIN presentaciones_pallet pp ON p.id_presen_p = pp.id_presentacion_p
-                    LEFT JOIN sedes s ON p.id_sede_p = s.id_sede
-                    LEFT JOIN embarques_pallets em ON p.id_embarque_p = em.id_embarque
-                    WHERE p.activo_p = 1 AND p.id_sede_p = ? $whereSQL
+    $dataQuery = "SELECT * FROM vw_permisos WHERE id_sede_pl = ? $whereSQL
                     ORDER BY $orderColumn $orderDir
                     LIMIT ?, ?";
     $dataStmt = $Con->prepare($dataQuery);

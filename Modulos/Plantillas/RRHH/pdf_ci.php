@@ -17,7 +17,7 @@ $Fecha   = date("d/m/Y");
 $User    = $_SESSION['nombre_completo'] ?? '---';
 
 // ================================
-// 2. Filtros
+// 2. Filtros GET
 // ================================
 $anoFiltro     = $_GET['ano'] ?? '';
 $semanaFiltro  = $_GET['semana'] ?? '';
@@ -26,22 +26,23 @@ $tipoFiltro    = $_GET['tipo'] ?? '';
 $pago          = $_GET['pago'] ?? 'SEMANAL';
 
 // ================================
-// 3. Última semana si no hay filtro
+// 3. Cálculo de semana
 // ================================
 $hoy = new DateTime();
+
 if ($anoFiltro == '' || $semanaFiltro == '') {
-    $diaHoy = (int)$hoy->format('N'); // 1=lunes ... 7=domingo
+    $diaHoy = (int)$hoy->format('N');
     if ($diaHoy <= 2) $hoy->modify('-1 week');
     $anoFiltro = $hoy->format('o');
     $semanaFiltro = $hoy->format('W');
 }
 
-// ================================
-// 4. Calcular rango de semana según tipo de pago
-// ================================
 $dto = new DateTime();
 $dto->setISODate($anoFiltro, $semanaFiltro);
 
+// ================================
+// 4. Rango según tipo de pago
+// ================================
 if (strtoupper($pago) === 'QUINCENAL') {
     $inicioSemana = clone $dto;
     $inicioSemana->modify('monday this week');
@@ -56,44 +57,36 @@ if (strtoupper($pago) === 'QUINCENAL') {
     $ordenDias = ['miercoles','jueves','viernes','sabado','domingo','lunes','martes'];
 }
 
-// Generar $diasSemana dinámicamente según $ordenDias
-$diasNombres = [
-    'monday'    => 'Lunes',
-    'tuesday'   => 'Martes',
-    'wednesday' => 'Miércoles',
-    'thursday'  => 'Jueves',
-    'friday'    => 'Viernes',
-    'saturday'  => 'Sábado',
-    'sunday'    => 'Domingo'
-];
-
 $diasSemana = [];
 $fechaTemp = clone $inicioSemana;
 foreach ($ordenDias as $diaEsp) {
     $diasSemana[] = [
         'nombre' => ucfirst($diaEsp),
         'numero' => $fechaTemp->format('d'),
-        'fecha'  => $fechaTemp->format('Y-m-d')
+        'fecha'  => $fechaTemp->format('Y-m-d'),
+        'clave'  => $diaEsp
     ];
     $fechaTemp->modify('+1 day');
 }
 
-// ================================
-// 5. Consulta principal con filtros
-// ================================
+// Fechas SQL
 $inicioSQL = $diasSemana[0]['fecha'];
 $finSQL    = $diasSemana[6]['fecha'];
 
+// ================================
+// 5. Consulta principal
+// ================================
 $where = "WHERE dia BETWEEN '$inicioSQL' AND '$finSQL'";
 if ($deptoFiltro != '') $where .= " AND departamento = '".$Con->real_escape_string($deptoFiltro)."'";
-if ($tipoFiltro != '') $where .= " AND empleado LIKE '".$Con->real_escape_string($tipoFiltro)."%'";
+if ($tipoFiltro != '')  $where .= " AND empleado LIKE '".$Con->real_escape_string($tipoFiltro)."%'";
 if ($pago != '') $where .= " AND tipo_pago = '".$Con->real_escape_string($pago)."'";
-$sql = "SELECT * FROM vw_asistencia $where ORDER BY codigo_s ASC, empleado ASC";
+$sql = "SELECT * FROM vw_incidencia $where ORDER BY codigo_s ASC, empleado ASC";
 $result = $Con->query($sql);
 
 // ================================
-// 6. Calcular horas extra reales
+// 6. Mapear resultados a tabla pivot
 // ================================
+$pivot = [];
 $map = [
     'monday'    => 'lunes',
     'tuesday'   => 'martes',
@@ -104,71 +97,28 @@ $map = [
     'sunday'    => 'domingo'
 ];
 
-$empleadosSemana = [];
 while ($row = $result->fetch_assoc()) {
     $id = $row['empleado'] . '_' . $row['id_sede_pl'];
-    if (!isset($empleadosSemana[$id])) $empleadosSemana[$id] = [];
-
-    $fechaCheck = $row['dia'];
-    $diaNum = (int)date('N', strtotime($fechaCheck));
-    $horaSalidaCampo = 'hora_salida';
-    if ($diaNum === 6 && !empty($row['hora_sabado'])) $horaSalidaCampo = 'hora_sabado';
-    elseif ($diaNum === 7 && !empty($row['hora_domingo'])) $horaSalidaCampo = 'hora_domingo';
-
-    $horaSalidaProg = isset($row[$horaSalidaCampo]) && !empty($row[$horaSalidaCampo])
-        ? DateTime::createFromFormat('Y-m-d H:i', $fechaCheck . ' ' . substr($row[$horaSalidaCampo], 0, 5))
-        : null;
-
-    $horaSalidaReal = isset($row['salida']) && !empty($row['salida'])
-        ? DateTime::createFromFormat('Y-m-d H:i', $fechaCheck . ' ' . substr($row['salida'], 0, 5))
-        : null;
-
-    $horas_extra = 0.0;
-    if ($horaSalidaProg && $horaSalidaReal) {
-        $diffSegundos = $horaSalidaReal->getTimestamp() - $horaSalidaProg->getTimestamp();
-        if ($diffSegundos > 0) $horas_extra = $diffSegundos / 3600;
+    if (!isset($pivot[$id])) {
+        $pivot[$id] = [
+            'codigo_s'     => $row['codigo_s'],
+            'empleado'     => $row['empleado'],
+            'nombre'       => $row['nombre_completo'],
+            'departamento' => $row['departamento'],
+            'lunes' => '', 'martes' => '', 'miercoles' => '',
+            'jueves'=> '', 'viernes'=> '', 'sabado' => '', 'domingo' => ''
+        ];
     }
 
-    $empleadosSemana[$id][strtolower(date('l', strtotime($row['dia'])))] = [
-        'datos'       => $row,
-        'horas_extra' => $horas_extra
-    ];
-}
-
-// ================================
-// 7. Crear pivot manteniendo horas reales
-// ================================
-$pivot = [];
-foreach ($empleadosSemana as $id => $dias) {
-    $firstDia = array_key_first($dias);
-    $pivot[$id] = [
-        'codigo_s'     => $dias[$firstDia]['datos']['codigo_s'],
-        'empleado'     => $dias[$firstDia]['datos']['empleado'],
-        'nombre'       => $dias[$firstDia]['datos']['nombre_completo'],
-        'departamento' => $dias[$firstDia]['datos']['departamento'],
-        'lunes' => '', 'martes' => '', 'miercoles' => '',
-        'jueves'=> '', 'viernes'=> '', 'sabado' => '', 'domingo' => ''
-    ];
-
-    foreach ($map as $diaEng => $diaEsp) {
-        if (!isset($dias[$diaEng]) || !$dias[$diaEng]['datos']['entrada']) {
-            $pivot[$id][$diaEsp] = "";
-            continue;
-        }
-
-        $entrada = !empty($dias[$diaEng]['datos']['entrada']) ? date("H:i", strtotime($dias[$diaEng]['datos']['entrada'])) : '';
-        $salidaReal = '';
-        if (!empty($dias[$diaEng]['datos']['salida'])) {
-            $salidaReal = date("H:i", strtotime($dias[$diaEng]['datos']['salida']));
-        }
-        $heReal = isset($dias[$diaEng]['horas_extra']) ? (int) floor($dias[$diaEng]['horas_extra']) : 0;
-        $heTexto = $heReal > 0 ? "<br><small style='color:#d9534f;'>HE: {$heReal} hrs</small>" : "";
-        $pivot[$id][$diaEsp] = $entrada . ($salidaReal ? "<br>" . $salidaReal : '') . $heTexto;
+    $diaSemana = strtolower(date('l', strtotime($row['dia'])));
+    if (isset($map[$diaSemana])) {
+        $col = $map[$diaSemana];
+        $pivot[$id][$col] = $row['permisos_dia'] ?? '-';
     }
 }
 
 // ================================
-// 8. Construir HTML
+// 7. Construcción del HTML
 // ================================
 $html = '
 <style>
@@ -232,11 +182,11 @@ foreach ($pivot as $row) {
 $html .= '</tbody></table>';
 
 // ================================
-// 9. Generar PDF
+// 8. Generar PDF
 // ================================
 $dompdf = new Dompdf();
 $dompdf->loadHtml($html);
 $dompdf->setPaper('letter', 'portrait');
 $dompdf->render();
-$dompdf->stream("reporte_asistencia.pdf", ["Attachment" => false]);
+$dompdf->stream("reporte_incidencia.pdf", ["Attachment" => false]);
 ?>

@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <link rel="shortcut icon" href="../../../Images/MiniLogo.png">
+    <?php $Ruta = "../../../"; include_once '../../../Complementos/Logo_movil.php'; ?>
     <script src="https://code.jquery.com/jquery-3.7.1.js" type="text/javascript"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://kit.fontawesome.com/367278d2a4.js" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <script src="../../../js/select.js"></script>
+    <script src="../../../js/session.js"></script>
     <link rel="stylesheet" href="../../../css/eggy.css" />
     <link rel="stylesheet" href="../../../css/progressbar.css" />
     <link rel="stylesheet" href="../../../css/theme.css" />
@@ -158,44 +156,34 @@
                 </section>
             </div>
 
-            <?php if ($Correcto < 5) {
-                    if ($NumE>0) { 
-                        for ($i=1; $i <= 4; $i++) {
-                            $Error=${"Error".$i};
-                            if (!empty($Error)) { ?>
-                                <script type="module">
-                                    var error="<?php echo $Error;?>";
-                                    import { Eggy } from '../../../js/eggy.js';
-                                    await Eggy({title: 'Error!', message: error, type: 'error', position: 'top-right', duration: 20000});
-                                </script>
-                            <?php } ?>
-                        <?php } ?>
-                    <?php }
-                    if ($NumP>0) { 
-                        for ($i=1; $i <= 3; $i++) {
-                            $Precaucion=${"Precaucion".$i};
-                            if (!empty($Precaucion)) { ?>
-                                <script type="module">
-                                    var error="<?php echo $Precaucion;?>";
-                                    import { Eggy } from '../../../js/eggy.js';
-                                    await Eggy({title: 'Precaución!', message: error, type: 'warning', position: 'top-right', duration: 20000});
-                                </script>
-                            <?php } ?>
-                        <?php } ?>
-                    <?php }
-                    if ($NumI>0) { 
-                        for ($i=1; $i <= 1; $i++) {
-                            $Informacion=${"Informacion".$i};
-                            if (!empty($Informacion)) { ?>
-                                <script type="module">
-                                    var error="<?php echo $Informacion;?>";
-                                    import { Eggy } from '../../../js/eggy.js';
-                                    await Eggy({title: 'Error!', message: error, type: 'info', position: 'top-right', duration: 20000});
-                                </script>
-                            <?php } ?>
-                        <?php } ?>
-                    <?php }
-            } 
+            <?php if ($Correcto < 6) {
+                $tipos = [
+                    'Error' => ['cantidad' => $NumE, 'max' => 4, 'title' => 'Error!', 'type' => 'error'],
+                    'Precaucion' => ['cantidad' => $NumP, 'max' => 3, 'title' => 'Precaución!', 'type' => 'warning'],
+                    'Informacion' => ['cantidad' => $NumI, 'max' => 1, 'title' => 'Info!', 'type' => 'info']
+                ];
+
+                foreach ($tipos as $prefijo => $datos) {
+                    for ($i = 1; $i <= $datos['max']; $i++) {
+                        $var = ${$prefijo.$i};
+                        if (!empty($var)) { ?>
+                            <script type="module">
+                                import { Eggy } from '../../../js/eggy.js';
+                                async function showMessage(msg) {
+                                    await Eggy({
+                                        title: '<?php echo $datos['title']; ?>',
+                                        message: msg,
+                                        type: '<?php echo $datos['type']; ?>',
+                                        position: 'top-right',
+                                        duration: 20000
+                                    });
+                                }
+                                showMessage("<?php echo $var; ?>");
+                            </script>
+                        <?php }
+                    }
+                }
+            }
             
             if (isset($_SESSION['correcto'])) { $Finalizado = $_SESSION['correcto']; unset($_SESSION['correcto']); ?>
                 <script type="module">

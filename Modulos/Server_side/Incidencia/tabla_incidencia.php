@@ -111,35 +111,29 @@ $length = intval($_POST['length'] ?? 25);
 // ================================
 // 6. Totales
 // ================================
-if ($TipoRol == "ADMINISTRADOR" || $TipoRol == "SUPERVISOR") {
-    // Total registros sin filtros
-    $totalSQL = "SELECT COUNT(DISTINCT empleado) as total FROM vw_asistencia WHERE dia BETWEEN ? AND ?";
+if ($TipoRol=="ADMINISTRADOR" || $TipoRol=="SUPERVISOR") {
+    $totalSQL = "SELECT COUNT(DISTINCT empleado) as total FROM vw_incidencia WHERE dia BETWEEN ? AND ?";
     $stmt = $Con->prepare($totalSQL);
-    $stmt->bind_param('ss', $inicioSemanaStr, $finSemanaStr);
+    $stmt->bind_param('ss',$inicioSemanaStr,$finSemanaStr);
     $stmt->execute();
     $totalRecords = $stmt->get_result()->fetch_assoc()['total'] ?? 0;
     $stmt->close();
 
-    // Total registros con filtros
-    $totalFilteredSQL = "SELECT COUNT(DISTINCT empleado) as total FROM vw_asistencia WHERE dia BETWEEN ? AND ? $whereSQL";
+    $totalFilteredSQL = "SELECT COUNT(DISTINCT empleado) as total FROM vw_incidencia WHERE dia BETWEEN ? AND ? $whereSQL";
     $stmt = $Con->prepare($totalFilteredSQL);
-    $stmt->bind_param($types, ...$params);
+    $stmt->bind_param($types,...$params);
     $stmt->execute();
     $totalFiltered = $stmt->get_result()->fetch_assoc()['total'] ?? 0;
     $stmt->close();
-
-} else {
-    // Usuario de sede: total registros sin filtros
-    $totalSQL = "SELECT COUNT(DISTINCT empleado) as total FROM vw_asistencia WHERE id_sede_pl = ? AND dia BETWEEN ? AND ?";
+}else{
+    $totalSQL = "SELECT COUNT(DISTINCT empleado) as total FROM vw_incidencia WHERE id_sede_pl = ? AND dia BETWEEN ? AND ?";
     $stmt = $Con->prepare($totalSQL);
     $stmt->bind_param('iss', $Sede, $inicioSemanaStr, $finSemanaStr);
     $stmt->execute();
     $totalRecords = $stmt->get_result()->fetch_assoc()['total'] ?? 0;
     $stmt->close();
 
-    // Usuario de sede: total registros con filtros
-    $totalFilteredSQL = "SELECT COUNT(DISTINCT empleado) as total FROM vw_asistencia WHERE dia BETWEEN ? AND ? AND id_sede_pl = ? $whereSQL";
-
+    $totalFilteredSQL = "SELECT COUNT(DISTINCT empleado) as total FROM vw_incidencia WHERE dia BETWEEN ? AND ? AND id_sede_pl = ? $whereSQL";
     // 1️⃣ Preparar parámetros fijos en orden: inicio, fin, sede
     $paramsFiltered = [$inicioSemanaStr, $finSemanaStr, $Sede];
     $typesFiltered  = 'ssi';
@@ -160,15 +154,14 @@ if ($TipoRol == "ADMINISTRADOR" || $TipoRol == "SUPERVISOR") {
 }
 
 // ================================
-// 7. Query principal con paginación
+// 7. Query principal
 // ================================
 if ($TipoRol=="ADMINISTRADOR" || $TipoRol=="SUPERVISOR") {
-    $sql = "SELECT * FROM vw_asistencia WHERE dia BETWEEN ? AND ? $whereSQL ORDER BY $orderColumn $orderDir";
+    $sql = "SELECT * FROM vw_incidencia WHERE dia BETWEEN ? AND ? $whereSQL ORDER BY $orderColumn $orderDir";
     $stmt = $Con->prepare($sql);
     $stmt->bind_param($types, ...$params);
 } else {
-    // Usuario de sede
-    $sql = "SELECT * FROM vw_asistencia WHERE dia BETWEEN ? AND ? AND id_sede_pl = ? $whereSQL ORDER BY $orderColumn $orderDir";
+    $sql = "SELECT * FROM vw_incidencia WHERE dia BETWEEN ? AND ? AND id_sede_pl = ? $whereSQL ORDER BY $orderColumn $orderDir";
     $paramsExec = [$inicioSemanaStr, $finSemanaStr, $Sede];
     if (!empty($params)) {
         $paramsExec = array_merge($paramsExec, array_slice($params, 2));
@@ -178,7 +171,6 @@ if ($TipoRol=="ADMINISTRADOR" || $TipoRol=="SUPERVISOR") {
     $stmt = $Con->prepare($sql);
     $stmt->bind_param($typesExec, ...$paramsExec);
 }
-
     $stmt->execute();
     $result = $stmt->get_result();
     $checadas = $result->fetch_all(MYSQLI_ASSOC);
@@ -193,6 +185,7 @@ $map = ['monday'=>'lunes','tuesday'=>'martes','wednesday'=>'miercoles','thursday
 
 foreach($checadas as $row){
     $id = $row['empleado'] . '_' . $row['id_sede_pl'];
+    
     if(!isset($pivot[$id])){
         $pivot[$id] = [
             'codigo_s'=>$row['codigo_s'],
@@ -201,17 +194,18 @@ foreach($checadas as $row){
             'departamento'=>$row['departamento'],
             'tipo_pago'=>$row['tipo_pago']
         ];
-        foreach($ordenDias as $dia) $pivot[$id][$dia] = '';
+        // llenar días con '-'
+        foreach($ordenDias as $dia) $pivot[$id][$dia] = '-';
     }
+
     $diaSemana = strtolower(date('l', strtotime($row['dia'])));
-    if(isset($map[$diaSemana])){
-        $col = $map[$diaSemana];
-        $pivot[$id][$col] = trim("{$row['entrada']} - {$row['salida']}", ' -');
-    }
+    $col = $map[$diaSemana] ?? null;
+    if($col) $pivot[$id][$col] = $row['permisos_dia'];
 }
 
 $checadasPivot = array_values($pivot);
 $checadasPage = array_slice($checadasPivot, $start, $length);
+
 
 // ================================
 // 9. Respuesta JSON

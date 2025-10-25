@@ -27,6 +27,7 @@
     $Titular = isset($_POST['Titular']) ? $_POST['Titular'] : '';
     $Permisos = isset($_POST['permisos']) ? $_POST['permisos'] : '';
     $Estado=0;
+    $Informacion1="";
 
     for ($i=1; $i <= 4; $i++) {
         ${"Error".$i}="";
@@ -199,7 +200,23 @@
             $NumP += 1;
         }
 
-        if ($Correcto==5) {
+        if ($Correcto == 5) {
+            $stmt = $Con->prepare("SELECT username FROM usuarios WHERE username = ?");
+            $stmt->bind_param('s', $UserVal);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            // Check if username exists
+            if ($result->num_rows > 0) {
+                // Username exists → return JSON to trigger SweetAlert
+                $Informacion1 = "El nombre de usuario ya esta ocupado";
+                $NumI += 1;
+            } else {
+                $Correcto += 1;
+            }
+        }
+
+        if ($Correcto==6) {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt = $Con->prepare("INSERT INTO usuarios (username, password, clave, id_cargo, id_rol, estado) VALUES (?, ?, ?, ?, ?, ?)");
             $stmt->bind_param('sssiii', $UserVal, $Hash, $PassVal, $Titular, $Rol, $Estado);

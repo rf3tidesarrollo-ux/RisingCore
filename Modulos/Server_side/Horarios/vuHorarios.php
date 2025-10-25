@@ -7,21 +7,18 @@ if ($columna !== null) {
     // Mapear índice de columna a nombre real de la columna en la DB
     $mapColumnas = [
         0 => 'codigo_s',
-        1 => 'badge',
-        2 => 'nombre_personal',
-        3 => 'genero',
-        4 => 'tipo_rh',
-        5 => 'departamento',
-        6 => 'tipo_pago',
-        7 => 'tipo_h',
-        8 => 'fecha_ingreso',
-        9 => 'fecha_registro',
-        10 => 'nombre_completo',
+        1 => 'tipo_h',
+        2 => 'hora_entrada',
+        3 => 'hora_salida',
+        4 => 'hora_sabado_e',
+        5 => 'hora_sabado',
+        6 => 'hora_domingo_e',
+        7 => 'hora_domingo',
     ];
 
     if (isset($mapColumnas[$columna])) {
         $columnaDB = $mapColumnas[$columna];
-        $sql = "SELECT DISTINCT $columnaDB FROM vw_pendientes ORDER BY $columnaDB ASC";
+        $sql = "SELECT DISTINCT $columnaDB FROM rh_tipos_horarios h JOIN sedes s ON h.id_sede_h = id_sede ORDER BY $columnaDB ASC";
 
         $result = $Con->query($sql);
 

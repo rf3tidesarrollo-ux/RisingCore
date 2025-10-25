@@ -23,73 +23,68 @@ $anoFiltro     = $_GET['ano'] ?? '';
 $semanaFiltro  = $_GET['semana'] ?? '';
 $deptoFiltro   = $_GET['departamento'] ?? '';
 $tipoFiltro    = $_GET['tipo'] ?? '';
+$pago          = $_GET['pago'] ?? 'SEMANAL';
 
 // ================================
-// 3. Calcular semana de miércoles → martes
+// 3. Última semana si no hay filtro
 // ================================
 $hoy = new DateTime();
-
-// Si no hay filtro, usamos la lógica de miércoles → martes
 if ($anoFiltro == '' || $semanaFiltro == '') {
     $diaHoy = (int)$hoy->format('N'); // 1=lunes ... 7=domingo
-
-    // Lunes o martes todavía pertenecen a la semana anterior
-    if ($diaHoy <= 2) {
-        $hoy->modify('-1 week');
-    }
-
+    if ($diaHoy <= 2) $hoy->modify('-1 week');
     $anoFiltro = $hoy->format('o');
     $semanaFiltro = $hoy->format('W');
 }
 
-// Calculamos miércoles → martes
+// ================================
+// 4. Calcular rango de semana
+// ================================
 $dto = new DateTime();
 $dto->setISODate($anoFiltro, $semanaFiltro);
-$inicioSemana = clone $dto;
-$inicioSemana->modify('+2 days'); // miércoles
-$finSemana = clone $inicioSemana;
-$finSemana->modify('+6 days'); // martes siguiente
 
-// Array de días para mostrar
-$diasNombres = [
-    'monday'    => 'Lunes',
-    'tuesday'   => 'Martes',
-    'wednesday' => 'Miércoles',
-    'thursday'  => 'Jueves',
-    'friday'    => 'Viernes',
-    'saturday'  => 'Sábado',
-    'sunday'    => 'Domingo'
-];
+if (strtoupper($pago) === 'QUINCENAL') {
+    $inicioSemana = clone $dto;
+    $inicioSemana->modify('monday this week');
+    $finSemana = clone $inicioSemana;
+    $finSemana->modify('+6 days');
+    $ordenDiasPivot = ['lunes','martes','miercoles','jueves','viernes','sabado','domingo'];
+} else {
+    $inicioSemana = clone $dto;
+    $inicioSemana->modify('+2 days'); // miércoles
+    $finSemana = clone $inicioSemana;
+    $finSemana->modify('+6 days'); // martes siguiente
+    $ordenDiasPivot = ['miercoles','jueves','viernes','sabado','domingo','lunes','martes'];
+}
 
+// Generar $diasSemana dinámicamente
 $diasSemana = [];
-for ($i = 0; $i < 7; $i++) {
-    $fecha = (clone $inicioSemana)->modify("+$i day");
+$fechaTemp = clone $inicioSemana;
+foreach ($ordenDiasPivot as $diaEsp) {
     $diasSemana[] = [
-        'nombre' => $diasNombres[strtolower($fecha->format('l'))],
-        'numero' => $fecha->format('d'),
-        'fecha'  => $fecha->format('Y-m-d')
+        'nombre' => ucfirst($diaEsp),
+        'numero' => $fechaTemp->format('d'),
+        'fecha'  => $fechaTemp->format('Y-m-d'),
+        'clave'  => $diaEsp
     ];
+    $fechaTemp->modify('+1 day');
 }
 
 // ================================
-// 4. Consulta principal
+// 5. Consulta principal con filtros
 // ================================
-$inicioSQL = $inicioSemana->format('Y-m-d');
-$finSQL    = $finSemana->format('Y-m-d');
+$inicioSQL = $diasSemana[0]['fecha'];
+$finSQL    = $diasSemana[6]['fecha'];
 
 $where = "WHERE dia BETWEEN '$inicioSQL' AND '$finSQL'";
-if ($deptoFiltro != '') {
-    $where .= " AND departamento = '".$Con->real_escape_string($deptoFiltro)."'";
-}
-if ($tipoFiltro != '') {
-    $where .= " AND empleado LIKE '".$Con->real_escape_string($tipoFiltro)."%'"; 
-}
+if ($deptoFiltro != '') $where .= " AND departamento = '".$Con->real_escape_string($deptoFiltro)."'";
+if ($tipoFiltro != '') $where .= " AND empleado LIKE '".$Con->real_escape_string($tipoFiltro)."%'";
+if ($pago != '') $where .= " AND tipo_pago = '".$Con->real_escape_string($pago)."'";
 
-$sql = "SELECT * FROM vw_asistencia $where ORDER BY empleado ASC, dia ASC";
+$sql = "SELECT * FROM vw_asistencia $where ORDER BY codigo_s ASC, empleado ASC";
 $result = $Con->query($sql);
 
 // ================================
-// 5. Pivot y cálculo de horas extra
+// 6. Pivot y cálculo de horas extra
 // ================================
 $map = [
     'monday'    => 'lunes',
@@ -104,7 +99,7 @@ $map = [
 $empleadosSemana = [];
 $result->data_seek(0);
 while ($row = $result->fetch_assoc()) {
-    $id = $row['empleado'];
+    $id = $row['empleado'] . '_' . $row['id_sede_pl'];
     if (!isset($empleadosSemana[$id])) $empleadosSemana[$id] = [];
 
     $fechaCheck = $row['dia'];
@@ -134,7 +129,7 @@ while ($row = $result->fetch_assoc()) {
 }
 
 // ================================
-// 6. Redistribución HE (máx 3/día, 9/semana)
+// 7. Redistribución HE (máx 3/día, 9/semana)
 foreach ($empleadosSemana as $id => &$dias) {
     $diasHE = [];
     foreach ($map as $diaEng => $diaEsp) {
@@ -159,14 +154,14 @@ foreach ($empleadosSemana as $id => &$dias) {
 unset($dias);
 
 // ================================
-// 7. Crear estructura pivot
+// 8. Crear estructura pivot
 // ================================
 $pivot = [];
 foreach ($empleadosSemana as $id => $dias) {
     $firstDia = array_key_first($dias);
     $pivot[$id] = [
         'codigo_s'     => $dias[$firstDia]['datos']['codigo_s'],
-        'empleado'     => $id,
+        'empleado'     => $dias[$firstDia]['datos']['empleado'],
         'nombre'       => $dias[$firstDia]['datos']['nombre_completo'],
         'departamento' => $dias[$firstDia]['datos']['departamento'],
         'lunes' => '', 'martes' => '', 'miercoles' => '',
@@ -209,7 +204,7 @@ foreach ($empleadosSemana as $id => $dias) {
 }
 
 // ================================
-// 8. Crear HTML
+// 9. Crear HTML
 // ================================
 $html = '
 <style>
@@ -227,6 +222,7 @@ tbody tr:nth-child(even) { background-color: #f2f2f2; }
 .title { font-weight: bold; }
 </style>
 
+<div class="header">
 <table class="header-general">
 <tr>
     <td rowspan="3" style="width:90px; height:70px;"><img src="'.$src.'" width="90" height="70"/></td>
@@ -242,10 +238,16 @@ tbody tr:nth-child(even) { background-color: #f2f2f2; }
     <td class="title" colspan="3">Rising Farms S.A.P.I de C.V</td>
 </tr>
 </table>
-<br>
+</div>
+
+<style>
+.header { position: fixed; top: 0; left: 0; right: 0; }
+body { margin-top: 100px; } /* altura de la cabecera */
+</style>
 
 <table>
 <thead>
+<br>
 <tr>
 <th>Sede</th>
 <th>Empleado</th>
@@ -254,23 +256,27 @@ tbody tr:nth-child(even) { background-color: #f2f2f2; }
 foreach ($diasSemana as $d) $html .= "<th>{$d['nombre']}<br><span class='dia-num'>{$d['numero']}</span></th>";
 $html .= '</tr></thead><tbody>';
 
-$ordenDias = ['miercoles','jueves','viernes','sabado','domingo','lunes','martes'];
+// ================================
+// 10. Rellenar tabla con pivot
+// ================================
 foreach ($pivot as $row) {
     $html .= '<tr>';
     $html .= "<td>{$row['codigo_s']}</td>";
     $html .= "<td>{$row['empleado']}</td>";
     $html .= "<td><span class='nombre'>{$row['nombre']}</span><br><span class='depto'>{$row['departamento']}</span></td>";
-    foreach ($ordenDias as $d) $html .= "<td>{$row[$d]}</td>";
+    foreach ($ordenDiasPivot as $d) {
+        $html .= "<td>" . ($row[$d] ?? '') . "</td>";
+    }
     $html .= '</tr>';
 }
 $html .= '</tbody></table>';
 
 // ================================
-// 9. Generar PDF
+// 11. Generar PDF
 // ================================
 $dompdf = new Dompdf();
 $dompdf->loadHtml($html);
-$dompdf->setPaper('A4', 'portrait');
+$dompdf->setPaper('letter', 'portrait');
 $dompdf->render();
-$dompdf->stream("reporte_asistencia.pdf", ["Attachment" => false]);
+$dompdf->stream("reporte_auditoria.pdf", ["Attachment" => false]);
 ?>

@@ -3,8 +3,10 @@ include_once '../../../Conexion/BD.php';
 $RutaCS = "../../../Login/Cerrar.php";
 $RutaSC = "../../../index.php";
 include_once "../../../Login/validar_sesion.php";
-// $Pagina=basename(__FILE__);
-// Historial($Pagina,$Con);
+if(isset($_SESSION['ID']) == false){
+    echo json_encode(['expired' => true]);
+    exit;
+}
 
 // Mapeo de columnas (usar siempre $columnMap)
 $columnMap = [
@@ -14,6 +16,7 @@ $columnMap = [
     'genero'          => 'genero',
     'tipo_rh'         => 'tipo_rh',
     'departamento'    => 'departamento',
+    'tipo_pago'       => 'tipo_pago',
     'tipo_h'          => 'tipo_h',
     'fecha_ingreso'   => 'fecha_ingreso',
     'fecha_registro'  => 'fecha_registro',
@@ -88,7 +91,7 @@ $orderColumn = isset($columnMap[$orderColumnRaw]) ? $columnMap[$orderColumnRaw] 
 $start = isset($_POST['start']) ? intval($_POST['start']) : 0;
 $length = isset($_POST['length']) ? intval($_POST['length']) : 25;
 
-if ($TipoRol == "ADMINISTRADOR") {
+if ($TipoRol == "ADMINISTRADOR" || $TipoRol == "SUPERVISOR") {
     $totalQuery = "SELECT COUNT(*) as total FROM vw_pendientes WHERE 1=1 $whereSQL";
     $totalStmt = $Con->prepare($totalQuery);
     if ($totalStmt === false) { error_log("Prepare totalQuery error: " . $Con->error); }
@@ -109,7 +112,7 @@ if ($TipoRol == "ADMINISTRADOR") {
     $totalQuery = "SELECT COUNT(*) as total FROM vw_pendientes WHERE id_sede_pl = ? $whereSQL";
     $totalStmt = $Con->prepare($totalQuery);
     if ($totalStmt === false) { error_log("Prepare totalQuery (sede) error: " . $Con->error); }
-    $totalStmt->bind_param("s", $Sede);
+    $totalStmt->bind_param("i", $Sede);
     $totalStmt->execute();
     $totalResult = $totalStmt->get_result();
     $totalRecords = $totalResult->fetch_assoc()['total'];

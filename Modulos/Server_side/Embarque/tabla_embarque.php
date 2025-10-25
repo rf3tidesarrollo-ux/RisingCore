@@ -3,8 +3,10 @@ include_once '../../../Conexion/BD.php';
 $RutaCS = "../../../Login/Cerrar.php";
 $RutaSC = "../../../index.php";
 include_once "../../../Login/validar_sesion.php";
-// $Pagina=basename(__FILE__);
-// Historial($Pagina,$Con);
+if(isset($_SESSION['ID']) == false){
+    echo json_encode(['expired' => true]);
+    exit;
+}
 
 // Mapeo de columnas (usar siempre $columnMap)
 $columnMap = [

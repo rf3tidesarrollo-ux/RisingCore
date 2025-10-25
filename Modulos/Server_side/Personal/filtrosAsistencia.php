@@ -22,6 +22,15 @@ switch ($filtro) {
         $sql = "SELECT id_tipo_rh, tipo_rh, prefijo_te FROM rh_tipos_empleados ORDER BY tipo_rh";
         break;
 
+    case 'pago':
+        $data = [
+            ['tipo_pago' => 'SEMANAL'],
+            ['tipo_pago' => 'QUINCENAL']
+        ];
+        header('Content-Type: application/json');
+        echo json_encode($data, JSON_UNESCAPED_UNICODE);
+        exit;
+
     default:
         echo json_encode([]);
         exit;

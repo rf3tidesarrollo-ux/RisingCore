@@ -12,10 +12,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Acceso==true) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <link rel="shortcut icon" href="../../Images/MiniLogo.png">
+    <?php $Ruta = "../../"; include_once '../../Complementos/Logo_movil.php'; ?>
     <script src="https://code.jquery.com/jquery-3.7.1.js" type="text/javascript"></script>
     <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js" ></script>
     <link href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css" rel="stylesheet">
@@ -70,3 +67,22 @@ if ($TipoRol=="ADMINISTRADOR" || $Acceso==true) {
 </html>
 
 <?php } else { header("Location: ../../Complementos/Acceso.php"); }?>
+
+<script>
+    setInterval(function() {
+    $.ajax({
+        url: '../../Login/validar_sesion.php',
+        type: 'GET',
+        data: { check_session: 1 },
+        dataType: 'json',
+        success: function(response) {
+            if (response.expired) {
+                location.href = '../../index.php';
+            }
+        },
+        error: function() {
+            console.warn('No se pudo verificar la sesión.');
+        }
+    });
+}, 60000);
+</script>

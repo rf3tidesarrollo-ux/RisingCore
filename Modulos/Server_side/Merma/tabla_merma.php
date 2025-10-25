@@ -3,6 +3,10 @@ include_once '../../../Conexion/BD.php';
 $RutaCS = "../../../Login/Cerrar.php";
 $RutaSC = "../../../index.php";
 include_once "../../../Login/validar_sesion.php";
+if(isset($_SESSION['ID']) == false){
+    echo json_encode(['expired' => true]);
+    exit;
+}
 
 // Mapeo columnas front => columnas con alias correctos en SQL
 $columnMap = [
