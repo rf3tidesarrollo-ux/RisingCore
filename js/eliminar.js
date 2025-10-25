@@ -19,6 +19,27 @@ function eliminarRegistro(id){
       });
 }
 
+function actualizarRegistro(id){
+    swal({
+        title: "¿Realmente quiere reactivar al personal?",
+        text: "",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      })
+      .then((willDelete) => {
+        if (willDelete) {
+          window.location.href = "Eliminar.php?id=" + id;
+          swal("Reactivación completada!", {
+            icon: "success",
+            button: false,
+          });
+        } else {
+          swal("Se ha cancelado la acción");
+        }
+      });
+}
+
 function eliminarRegistroC(id,catalogo){
   swal({
       title: "¿Realmente quiere eliminar el registro?",
@@ -344,6 +365,7 @@ function mostrarRegistroNI(id){
         var genero = info.g;
         var tipo = info.te;
         var depto = info.d;
+        var tPago = info.tp;
         var tipo2 = info.th;
         var FI = info.fi;
         var fechaI = FI.split('-').reverse().join('/');
@@ -357,6 +379,7 @@ function mostrarRegistroNI(id){
         "GENÉRO: " + genero + "\n" +
         "TIPO DE EMPLEADO: " + tipo + "\n" +
         "DEPARTAMENTO: " + depto + "\n" +
+        "TIPO DE PAGO: " + tPago + "\n" +
         "TIPO DE HORARIO: " + tipo2 + "\n" +
         "FECHA DE INGRESO: " + fechaI + "\n" +
         "FECHA DE REGISTRO: " + fechaR + "\n" +
@@ -371,19 +394,33 @@ function mostrarRegistroNI(id){
   });
 }
 
-function mostrarRegistroCF(id){
-  var catalogo = '2';
+function mostrarRegistroH(id){
   $.ajax({
-    url: 'MostrarC.php',
+    url: 'MostrarH.php',
     type: 'POST',
     async: true,
-    data: {catalogo:catalogo,id:id},
+    data: {id:id},
     success: function(response){
       if (response != 'error') {
         var info = JSON.parse(response);
-        var familia = info.nombre_familia;
-        
-        swal("Información:", "FAMILIA: " + familia);
+        var sede = info.s;
+        var nombre = info.n;
+        var horaE = info.he;
+        var horaS = info.hs;
+        var horaSE = info.se;
+        var horaSS = info.ss;
+        var horaDE = info.de;
+        var horaDS = info.ds;
+
+        swal("Información:",
+        "SEDE: " + sede + "\n" +
+        "HORARIO: " + nombre + "\n" +
+        "ENTRADA: " + horaE + "\n" +
+        "SALIDA: " + horaS + "\n" +
+        "ENTRADA DEL SÁBADO: " + horaSE + "\n" +
+        "SALIDA DEL SÁBADO: " + horaSS + "\n" +
+        "ENTRADA DEL DOMINGO: " + horaDE + "\n" +
+        "SALIDA DEL DOMINGO: " + horaDS);
       }
     },
     error: function(error){
@@ -394,19 +431,71 @@ function mostrarRegistroCF(id){
   });
 }
 
-function mostrarRegistroCM(id){
-  var catalogo = '3';
+function mostrarRegistroLI(id){
   $.ajax({
-    url: 'MostrarC.php',
+    url: 'MostrarLI.php',
     type: 'POST',
     async: true,
-    data: {catalogo:catalogo,id:id},
+    data: {id:id},
     success: function(response){
       if (response != 'error') {
         var info = JSON.parse(response);
-        var marca = info.nombre_marca;
-        
-        swal("Información:", "MARCA: " + marca);
+        var sede = info.s;
+        var nombre = info.np;
+        var depto = info.d;
+        var permiso = info.tp;
+        var F = info.fp;
+        var fecha = F.split('-').reverse().join('/');
+
+        swal("Información:",
+        "SEDE: " + sede + "\n" +
+        "NOMBRE: " + nombre + "\n" +
+        "DEPARTAMENTO: " + depto + "\n" +
+        "TIPO DE PERMISO: " + permiso + "\n" +
+        "FECHA DE PERMISO: " + fecha);
+      }
+    },
+    error: function(error){
+      swal("Error!", {
+        icon: "error",
+      });
+    },
+  });
+}
+
+function mostrarRegistroRI(id){
+  $.ajax({
+    url: 'MostrarRI.php',
+    type: 'POST',
+    async: true,
+    data: {id:id},
+    success: function(response){
+      if (response != 'error') {
+        var info = JSON.parse(response);
+        var sede = info.s;
+        var badge = info.b;
+        var genero = info.g;
+        var tipo = info.te;
+        var depto = info.d;
+        var tPago = info.tp;
+        var tipo2 = info.th;
+        var FI = info.fi;
+        var fechaI = FI.split('-').reverse().join('/');
+        var FR = info.fr;
+        var fechaR = FR.split('-').reverse().join('/');
+        var cNmbre = info.nc;
+
+        swal("Información:",
+        "SEDE: " + sede + "\n" +
+        "BADGE: " + badge + "\n" +
+        "GENÉRO: " + genero + "\n" +
+        "TIPO DE EMPLEADO: " + tipo + "\n" +
+        "DEPARTAMENTO: " + depto + "\n" +
+        "TIPO DE PAGO: " + tPago + "\n" +
+        "TIPO DE HORARIO: " + tipo2 + "\n" +
+        "FECHA DE INGRESO: " + fechaI + "\n" +
+        "FECHA DE REGISTRO: " + fechaR + "\n" +
+        "REGISTRÓ: " + cNmbre);
       }
     },
     error: function(error){

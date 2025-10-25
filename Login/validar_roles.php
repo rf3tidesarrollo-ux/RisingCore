@@ -4,10 +4,11 @@ $User = $_POST['Usuario'];
 $Pass = $_POST['Password'];
 $Estado = 1;
 
-    $stmt = $Con->prepare("SELECT u.id_usuario as ID, r.rol as Rol, c.nombre_completo as Titular, c.id_sede_u as Sede
+    $stmt = $Con->prepare("SELECT u.id_usuario as ID, r.rol as Rol, c.nombre_completo as Titular, c.id_sede_u as Sede, s.codigo_s as CodigoS
         FROM usuarios u
         LEFT JOIN roles r ON u.id_rol = r.id_rol
         LEFT JOIN cargos c ON u.id_cargo = c.id_cargo
+        LEFT JOIN sedes s ON c.id_sede_u = s.id_sede
         WHERE username = ?");
     $stmt->bind_param("s",$User);
     $stmt->execute();
@@ -22,6 +23,7 @@ $Estado = 1;
             $_SESSION['Rol'] = $Reg['Rol'];
             $_SESSION['Titular'] = $Reg['Titular'];
             $_SESSION['Sede'] = $Reg['Sede'];
+            $_SESSION['CodigoS'] = $Reg['CodigoS'];
             $_SESSION['ID'] = $Reg['ID'];
         }
         $stmt->close();
@@ -65,7 +67,7 @@ $Estado = 1;
                 header("Location: ". ($_POST["retorno"] ?? "Modulos/$Supervisor/Inicio.php"));
                 break;
             case 'USUARIO':
-                header("Location: ". ($_POST["retorno"] ?? "Modulos/$Modulo/Inicio.php"));
+                header("Location: ". ($_POST["retorno"] ?? "Modulos/$Supervisor/Inicio.php"));
                 break;
         }
         

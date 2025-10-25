@@ -22,9 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
           "nb_sides": 5
         },
         "image": {
-          "src": "Images/MiniLogo.png",
-          "width": 337,
-          "height": 327
+          "src": "Images/Logo-RC.png",
+          "width": 250,
+          "height": 250
         }
       },
       "opacity": {

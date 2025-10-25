@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  
-  <link rel="shortcut icon" href="Images/MiniLogo.png">
+  <?php $Ruta = ""; include_once 'Complementos/Logo_movil.php'; ?>
   <link rel="stylesheet" href="Login/EstiloSesion.css">
   <script src="https://code.jquery.com/jquery-3.7.1.js" type="text/javascript"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -26,7 +22,7 @@
       <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="post" name="form">
         <div class="input-group">
           <span class="input-icon"><i class="fa fa-user"></i></span>
-          <input type="text" name="Usuario" placeholder="Usuario">
+          <input type="text" id="1" name="Usuario" placeholder="Usuario">
         </div>
 
         <div class="input-group">
@@ -53,3 +49,15 @@
   <script src="js/app.js"></script>
 </body>
 </html>
+
+<script>
+  document.querySelectorAll('input').forEach(input => {
+  input.addEventListener('focus', () => {
+    setTimeout(() => {
+      input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 300);
+  });
+});
+
+</script>
+

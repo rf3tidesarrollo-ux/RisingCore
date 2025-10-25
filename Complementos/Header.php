@@ -35,7 +35,8 @@ $modulosConfig = [
             "Mezcla" => "fa-solid fa-mortar-pestle",
             "Pallets" => "fa-solid fa-tag",
             "Embarque" => "fa-solid fa-truck",
-            "CamaraFria" => "fa-solid fa-temperature-low"
+            "CamaraFria" => "fa-solid fa-temperature-low",
+            "Horarios" => "fa-solid fa-business-time",
         ]
     ],
     "Produccion" => [
@@ -57,16 +58,22 @@ $modulosConfig = [
         "routes" => [
             "RegistrarNI" => "Ingreso/RegistrarNI.php",
             "CatalogoNI"  => "Ingreso/CatalogoNI.php",
-            "RegistrarDP" => "Personal/RegistrarDP.php",
-            "CatalogoDP"  => "Personal/CatalogoDP.php",
+            "CatalogoRI" => "Reingreso/CatalogoRI.php",
+            "RegistrarPR" => "Personal/RegistrarPR.php",
+            "CatalogoPR"  => "Personal/CatalogoPR.php",
             "CatalogoLA" => "Asistencia/CatalogoLA.php",
-            "CatalogoLI"  => "Inicidencias/CatalogoLI.php",
+            "RegistrarLI"  => "Incidencia/RegistrarLI.php",
+            "CatalogoLI"  => "Incidencia/CatalogoLI.php",
+            "RegistrarH" => "Horarios/RegistrarH.php",
+            "CatalogoH" => "Horarios/CatalogoH.php",
         ],
         "iconos" => [
             "Ingreso" => "fa-solid fa-fingerprint",
             "Personal" => "fa-solid fa-users-between-lines",
             "Asistencia" => "fa-solid fa-clipboard-list",
             "Incidencia" => "fa-solid fa-person-circle-exclamation",
+            "Horarios" => "fa-solid fa-business-time",
+            "Reingreso" => "fa-solid fa-person-walking-arrow-loop-left",
         ]
     ],
     // Agrega más módulos si quieres...
@@ -90,26 +97,80 @@ $claveMap = [
     'C'   => 'Codigos',
     'Cl'  => 'Cultivo',
     'U'   => 'Usuarios',
-    'NI'   => 'Ingreso',
+    'NI'  => 'Ingreso',
     'DP'  => 'Personal',
-    'LA'   => 'Asistencia',
-    'LI'   => 'Incidencia',
+    'LA'  => 'Asistencia',
+    'LI'  => 'Incidencia',
+    'H'   => 'Horarios',
+    'RI'  => 'Reingreso',
 ];
 
-$claveLabel = [
-    'Pesaje'     => 'Pesaje',
-    'Merma'      => 'Merma',
-    'Mezcla'     => 'Mezcla',
-    'Pallets'    => 'Pallets',
-    'Embarque'   => 'Embarque',
-    'CamaraFria' => 'Cámara Fría',
-    'Codigos'    => 'Códigos',
-    'Cultivo'    => 'Cultivo',
-    'Usuarios'   => 'Usuarios',
-    'Ingreso'    => 'Nuevo Ingreso',
-    'Personal'    => 'Personal',
-    'Asistencia'   => 'Lista de asistencias',
-    'Incidencia'   => 'Lista de incidencias'
+// Nombres personalizados por submódulo y tipo de menú
+$nombreMenus = [
+    'Pesaje' => [
+        'registrar' => 'Pesaje',
+        'catalogo'  => 'Pesajes'
+    ],
+    'Merma' => [
+        'registrar' => 'Merma',
+        'catalogo'  => 'Mermas'
+    ],
+    'Mezcla' => [
+        'registrar' => 'Mezcla',
+        'catalogo'  => 'Mezclas'
+    ],
+    'Pallets' => [
+        'registrar' => 'Pallet',
+        'catalogo'  => 'Pallets'
+    ],
+    'Embarque' => [
+        'registrar' => 'Embarque',
+        'catalogo'  => 'Embarques'
+    ],
+    'CamaraFria' => [
+        'registrar' => 'Cámara Fría',
+        'catalogo'  => 'Cámara Fría'
+    ],
+    'Codigos' => [
+        'registrar' => 'Código',
+        'catalogo'  => 'Códigos'
+    ],
+    'Cultivo' => [
+        'registrar' => 'Cultivo',
+        'catalogo'  => 'Cultivos'
+    ],
+    'Estimaciones' => [
+        'registrar' => 'Estimación',
+        'catalogo'  => 'Estimaciones'
+    ],
+    'Usuarios' => [
+        'registrar' => 'Usuario',
+        'catalogo'  => 'Usuarios'
+    ],
+    'Ingreso' => [
+        'registrar' => 'Nuevo Ingreso',
+        'catalogo'  => 'Pendientes de huella'
+    ],
+    'Personal' => [
+        'registrar' => 'Registrar Personal',
+        'catalogo'  => 'Personal'
+    ],
+    'Asistencia' => [
+        'registrar' => 'Asistencia',
+        'catalogo'  => 'Lista de Asistencias'
+    ],
+    'Incidencia' => [
+        'registrar' => 'Incidencia',
+        'catalogo'  => 'Lista de Incidencias'
+    ],
+    'Horarios' => [
+        'registrar' => 'Horario',
+        'catalogo'  => 'Horarios'
+    ],
+    'Reingreso' => [
+        'registrar' => 'Reingreso',
+        'catalogo'  => 'Reactivar personal'
+    ],
 ];
 
 $submodulos = [
@@ -124,8 +185,11 @@ $submodulos = [
     'Estimaciones' => "$modulo/Estimaciones",
     'Usuarios'     => "$modulo/Usuarios",
     'Ingreso'      => "$modulo/Ingreso",
-    'Personal' => "$modulo/Personal",
-    'Asistencia'     => "$modulo/Asistencia"
+    'Personal'     => "$modulo/Personal",
+    'Asistencia'   => "$modulo/Asistencia",
+    'Horarios'     => "$modulo/Horarios",
+    'Incidencia'     => "$modulo/Incidencia",
+    'Reingreso'     => "$modulo/Reingreso"
 ];
 
 // Función para generar ruta absoluta desde la raíz del sitio
@@ -179,7 +243,10 @@ $modulosInicio = [
                                 ?>
                                     <li>
                                         <a href="<?= path_abs($ruta) ?>">
-                                            <i class="<?= $config['iconos'][$clave] ?>"></i> <?= $claveLabel[$clave] ?? $clave ?>
+                                            <?php
+                                                $nombreMostrar = $nombreMenus[$clave]['registrar'] ?? ("Registrar " . $claveLabel[$clave]);
+                                            ?>
+                                            <i class="<?= $config['iconos'][$clave] ?>"></i> <?= $nombreMostrar ?>
                                         </a>
                                     </li>
                                 <?php endif; ?>
@@ -209,7 +276,10 @@ $modulosInicio = [
                                 ?>
                                     <li>
                                         <a href="<?= path_abs($ruta) ?>">
-                                            <i class="<?= $config['iconos'][$clave] ?>"></i> <?= $claveLabel[$clave] ?? $clave ?>
+                                            <?php
+                                                $nombreMostrar = $nombreMenus[$clave]['catalogo'] ?? ("Catálogo de " . $claveLabel[$clave]);
+                                            ?>
+                                            <i class="<?= $config['iconos'][$clave] ?>"></i> <?= $nombreMostrar ?>
                                         </a>
                                     </li>
                                 <?php endif; ?>

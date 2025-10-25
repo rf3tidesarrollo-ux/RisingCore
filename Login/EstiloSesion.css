@@ -37,15 +37,18 @@ html, body {
   height: 100%;
   font-family: 'Segoe UI', sans-serif;
   background-color: var(--fondo-body);
+  margin: 0;
+  padding: 0;
 }
 
 /* Wrapper para centrar todo */
 .main-wrapper {
-  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
+  min-height: 100%;  /* usar vh real para móviles */
+  width: 100%;
 }
 
 /* Contenedor del login */
@@ -122,6 +125,10 @@ button:hover {
 
 /* Responsive */
 @media (max-width: 480px) {
+  /* .main-wrapper {
+    min-height: calc(100% - 40px);
+  } */
+  
   .login-container {
     padding: 30px 20px;
   }
@@ -133,6 +140,12 @@ button:hover {
   .input-icon {
     width: 40px;
     padding: 10px;
+  }
+
+  .input-icon2 {
+    width: 40px;
+    padding: 10px;
+    margin-right: 2%;
   }
 
   .input-group input {
