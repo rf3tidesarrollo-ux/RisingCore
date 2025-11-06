@@ -77,10 +77,13 @@ $finSQL    = $diasSemana[6]['fecha'];
 // 5. Consulta principal
 // ================================
 $where = "WHERE dia BETWEEN '$inicioSQL' AND '$finSQL'";
+if (($TipoRol != 'ADMINISTRADOR' && $TipoRol != 'SUPERVISOR') && $Sede) {
+    $where .= " AND id_sede_pl = " . intval($Sede);
+}
 if ($deptoFiltro != '') $where .= " AND departamento = '".$Con->real_escape_string($deptoFiltro)."'";
 if ($tipoFiltro != '')  $where .= " AND empleado LIKE '".$Con->real_escape_string($tipoFiltro)."%'";
 if ($pago != '') $where .= " AND tipo_pago = '".$Con->real_escape_string($pago)."'";
-$sql = "SELECT * FROM vw_incidencia $where ORDER BY codigo_s ASC, empleado ASC";
+$sql = "SELECT * FROM vw_incidencia $where ORDER BY codigo_s ASC, nombre_completo ASC";
 $result = $Con->query($sql);
 
 // ================================

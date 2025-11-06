@@ -35,6 +35,10 @@
         ${"Precaucion".$i}="";
     }
 
+    for ($i=1; $i <= 1; $i++) { 
+        ${"Informacion".$i}="";
+    }
+
     class Val_User {
         public $User;
     
@@ -198,11 +202,57 @@
             $Precaucion2 = "No se ha asignado ningún permiso al usuario";
             $NumP += 1;
         }
+
+        if ($Correcto == 5) {
+            $stmt = $Con->prepare("SELECT username FROM usuarios WHERE username = ?");
+            $stmt->bind_param('s', $UserVal);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            // Check if username exists
+            if ($result->num_rows > 0) {
+                // Username exists → return JSON to trigger SweetAlert
+                $Informacion1 = "El nombre de usuario ya esta ocupado";
+                $NumI += 1;
+            } else {
+                $Correcto += 1;
+            }
+        }
+
         
         if ($Correcto==5) {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $stmt = $Con->prepare("UPDATE usuarios SET username=?, password=?, clave=?, id_cargo=?, id_rol=? WHERE id_usuario=?");
-                $stmt->bind_param('sssiii', $UserVal, $Hash, $PassVal, $Titular, $Rol, $id);
+                $stmt = $Con->prepare("SELECT id_sede_pl AS sede, id_personal AS personal, nombre_personal AS nombre, departamento AS dep FROM vw_Cargos WHERE id_personal = ? ");
+                $stmt->bind_param('i', $Titular);
+                $stmt->execute();
+                $resultPre = $stmt->get_result();
+
+                if ($row = $resultPre->fetch_assoc()) {
+                    $id_sede = $row['sede']; 
+                    $nombre = $row['nombre'];
+                    $area = $row['dep'];
+                    $personal = $row['personal'];
+                }
+                $stmt->close();
+                $puesto = "PENDIENTE";
+
+                $stmt = $Con->prepare("SELECT c.id_cargo AS cargo FROM cargos c JOIN usuarios u ON c.id_Cargo = u.id_cargo WHERE u.id_usuario = ? ");
+                $stmt->bind_param('i', $id);
+                $stmt->execute();
+                $resultPre = $stmt->get_result();
+
+                if ($row = $resultPre->fetch_assoc()) {
+                    $Cargo = $row['cargo'];
+                }
+                $stmt->close();
+                $puesto = "PENDIENTE";
+        
+                $stmt = $Con->prepare("UPDATE cargos SET id_sede_u=?, id_c_personal=?, nombre_completo=?, cargo=?, departamento_c=? WHERE id_cargo = ?");
+                $stmt->bind_param('iisssi', $id_sede, $personal, $nombre, $puesto, $area, $Cargo);
+                $stmt->execute();
+
+                $stmt = $Con->prepare("UPDATE usuarios SET username=?, password=?, clave=?, id_rol=? WHERE id_usuario=?");
+                $stmt->bind_param('sssii', $UserVal, $Hash, $PassVal, $Rol, $id);
                 $stmt->execute();
                 $stmt->close();
 
@@ -244,7 +294,7 @@
         }else{
             header('Location: CatalogoU.php');
         }
-        $stmt = $Con->prepare("SELECT * FROM usuarios WHERE usuarios.id_usuario=?");
+        $stmt = $Con->prepare("SELECT * FROM usuarios u JOIN cargos c ON c.id_Cargo = u.id_Cargo WHERE u.id_usuario=?");
         $stmt->bind_param("i",$ID);
         $stmt->execute();
         $Registro = $stmt->get_result();
@@ -255,7 +305,7 @@
                     $ID = $Reg['id_usuario'];
                     $User=$Reg['username'];
                     $Pass=$Reg['clave'];
-                    $Titular=$Reg['id_cargo'];
+                    $Titular=$Reg['id_c_personal'];
                     $Rol=$Reg['id_rol'];
                 }
                 $stmt->close();
@@ -278,7 +328,7 @@
 
     }else{
         $ID=$_GET['id'];
-        $stmt = $Con->prepare("SELECT * FROM usuarios WHERE usuarios.id_usuario=?");
+        $stmt = $Con->prepare("SELECT * FROM usuarios u JOIN cargos c ON c.id_Cargo = u.id_Cargo WHERE u.id_usuario=?");
         $stmt->bind_param("i",$ID);
         $stmt->execute();
         $Registro = $stmt->get_result();
@@ -289,7 +339,7 @@
                     $ID = $Reg['id_usuario'];
                     $User=$Reg['username'];
                     $Pass=$Reg['clave'];
-                    $Titular=$Reg['id_cargo'];
+                    $Titular=$Reg['id_c_personal'];
                     $Rol=$Reg['id_rol'];
                 }
                 $stmt->close();

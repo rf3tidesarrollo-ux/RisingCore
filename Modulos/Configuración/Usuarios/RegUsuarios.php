@@ -27,12 +27,12 @@
         <main>
             <div style="background: #f9f9f9; padding: 12px 25px; border-bottom: 1px solid #ccc; font-size: 16px;">
                 <nav style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
-                    <a href="/RisingCore/Modulos/index.php" style="color: #6c757d; text-decoration: none;">
+                    <a href="/RisingCore/Modulos/Configuración/Inicio.php" style="color: #6c757d; text-decoration: none;">
                         ⚙️ Configuración
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <a href="/RisingCore/Modulos/Empaque/index.php" style="color: #6c757d; text-decoration: none;">
+                    <a href="/RisingCore/Modulos/Configuración/Usuarios/Inicio.php" style="color: #6c757d; text-decoration: none;">
                         👤 Usuarios
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
@@ -101,28 +101,16 @@
                     <div class="FAD">
                         <label class="FAL">
                             <span class="FAS">Titular</span>
-                            <select class="FAI prueba" id="4" name="Titular">
-                                <option <?php if (($Titular) != null): ?> value="<?php echo $Titular; ?>"<?php endif; ?>>
-                                    <?php if ($Titular != null) { ?>
-                                        <?php 
-                                        $stmt = $Con->prepare("SELECT nombre_completo FROM cargos WHERE id_cargo=?");
-                                        $stmt->bind_param("i",$Titular);
-                                        $stmt->execute();
-                                        $Registro = $stmt->get_result();
-                                        $Reg = $Registro->fetch_assoc();
-                                        $stmt->close();
-                                        if(isset($Reg['nombre_completo'])){echo $Reg['nombre_completo'];}else{?> Seleccione el titular: <?php } ?>
-                                    <?php } else {?>
-                                        Seleccione el titular:
-                                    <?php } ?>
-                                </option>
+                            <select class="FAI prueba2" id="4" name="Titular">
+                                <option value="0">Seleccione el titular:</option>
                                 <?php
-                                $stmt = $Con->prepare("SELECT id_cargo,nombre_completo FROM cargos ORDER BY nombre_completo");
+                                $stmt = $Con->prepare("SELECT id_personal, nombre_personal FROM vw_cargos ORDER BY nombre_personal");
                                 $stmt->execute();
-                                $Registro = $stmt->get_result();
-                        
-                                while ($Reg = $Registro->fetch_assoc()){
-                                    echo '<option value="'.$Reg['id_cargo'].'">'.$Reg['nombre_completo'].'</option>';
+                                $result = $stmt->get_result();
+
+                                while ($Row = $result->fetch_assoc()) {
+                                    $selected = ($Titular == $Row['id_personal']) ? 'selected' : '';
+                                    echo '<option value="'.$Row['id_personal'].'" '.$selected.'>'.$Row['nombre_personal'].'</option>';
                                 }
                                 $stmt->close();
                                 ?>

@@ -37,6 +37,10 @@
         ${"Precaucion".$i}="";
     }
 
+    for ($i=1; $i <= 1; $i++) { 
+        ${"Informacion".$i}="";
+    }
+
     class Val_User {
         public $User;
     
@@ -218,8 +222,27 @@
 
         if ($Correcto==6) {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $stmt = $Con->prepare("SELECT id_sede_pl AS sede, id_personal AS personal, nombre_personal AS nombre, departamento AS dep FROM vw_Cargos WHERE id_personal = ? ");
+            $stmt->bind_param('i', $Titular);
+            $stmt->execute();
+            $resultPre = $stmt->get_result();
+
+            if ($row = $resultPre->fetch_assoc()) {
+                $id_sede = $row['sede']; 
+                $nombre = $row['nombre'];
+                $area = $row['dep']; 
+                $personal = $row['personal'];
+            }
+            $stmt->close();
+            $puesto = "PENDIENTE";
+    
+            $stmt = $Con->prepare("INSERT INTO cargos (id_sede_u, id_c_personal, nombre_completo, cargo, departamento_c) VALUES (?, ?, ?, ?, ?)");
+            $stmt->bind_param('iisss', $id_sede, $personal, $nombre, $puesto, $area);
+            $stmt->execute();
+            $Cargo = $stmt->insert_id;
+
             $stmt = $Con->prepare("INSERT INTO usuarios (username, password, clave, id_cargo, id_rol, estado) VALUES (?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param('sssiii', $UserVal, $Hash, $PassVal, $Titular, $Rol, $Estado);
+            $stmt->bind_param('sssiii', $UserVal, $Hash, $PassVal, $Cargo, $Rol, $Estado);
             $stmt->execute();
             $usuario_id = $stmt->insert_id;
 

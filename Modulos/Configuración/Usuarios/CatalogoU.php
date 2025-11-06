@@ -38,7 +38,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <script src="../../../js/eliminar.js"></script>
     <script src="../../../js/session.js"></script>
     <link rel="stylesheet" href="DesignU.css">
-    <title>Configuración: Usuarios</title>
+    <title>Usuarios: Reporte</title>
 </head>
 
 <body>
@@ -52,17 +52,17 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
         <main>
             <div style="background: #f9f9f9; padding: 12px 25px; border-bottom: 1px solid #ccc; font-size: 16px;">
                 <nav style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
-                    <a href="/RisingCore/Modulos/index.php" style="color: #6c757d; text-decoration: none;">
+                    <a href="/RisingCore/Modulos/Configuración/Inicio.php" style="color: #6c757d; text-decoration: none;">
                         ⚙️ Configuración
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <a href="/RisingCore/Modulos/Empaque/index.php" style="color: #6c757d; text-decoration: none;">
+                    <a href="/RisingCore/Modulos/Configuración/Usuarios/Inicio.php" style="color: #6c757d; text-decoration: none;">
                         👤 Usuarios
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <a href="/RisingCore/Modulos/Empaque/Pesajes" style="color: #6c757d; text-decoration: none;">
+                    <a href="#" style="color: #6c757d; text-decoration: none;">
                         📋 Reportes
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>

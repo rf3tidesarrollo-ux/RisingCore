@@ -39,6 +39,10 @@
         ${"Precaucion".$i}="";
     }
 
+    for ($i=1; $i <= 1; $i++) { 
+        ${"Informacion".$i}="";
+    }
+
     class Val_Superficie {
         public $Superficie;
     
@@ -230,6 +234,7 @@
                 $stmt->bind_param('sissdiii', $Codigo, $Variedad, $Tipo, $Color, $Superficie, $Presentacion, $Ciclo, $Nave);
                 $stmt->execute();
                 $stmt->close();
+
                 $Limpiar = new Cleanner($Variedad, $Tipo, $Color, $Superficie, $Presentacion, $Sede, $Ciclo, $Nave);
                 $Variedad = $Limpiar -> LimpiarVariedad();
                 $Tipo = $Limpiar -> LimpiarTipo();
@@ -239,7 +244,11 @@
                 $Sede = $Limpiar -> LimpiarSede();
                 $Ciclo = $Limpiar -> LimpiarCiclo();
                 $Nave = $Limpiar -> LimpiarNave();
-                $Finalizado = "Se hizo el registro correctamente";
+                
+                session_start();
+                $_SESSION['correcto'] = "Código registrado";
+                header("Location: ".$_SERVER['PHP_SELF']);
+                exit();
             }
             
         }

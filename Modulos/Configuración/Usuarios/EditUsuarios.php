@@ -28,17 +28,17 @@
 
         <div style="background: #f9f9f9; padding: 12px 25px; border-bottom: 1px solid #ccc; font-size: 16px;">
                 <nav style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
-                    <a href="/RisingCore/Modulos/index.php" style="color: #6c757d; text-decoration: none;">
+                    <a href="/RisingCore/Modulos/Configuración/Inicio.php" style="color: #6c757d; text-decoration: none;">
                         ⚙️ Configuración
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <a href="/RisingCore/Modulos/Empaque/index.php" style="color: #6c757d; text-decoration: none;">
+                    <a href="/RisingCore/Modulos/Configuración/Usuarios/Inicio.php" style="color: #6c757d; text-decoration: none;">
                         👤 Usuarios
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <a href="/RisingCore/Modulos/Empaque/Pesajes" style="color: #6c757d; text-decoration: none;">
+                    <a href="#" style="color: #6c757d; text-decoration: none;">
                         📋 Registros
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
@@ -106,28 +106,16 @@
                     <div class="FAD">
                         <label class="FAL">
                             <span class="FAS">Titular</span>
-                            <select class="FAI prueba" id="4" name="Titular">
-                                <option <?php if (($Titular) != null): ?> value="<?php echo $Titular; ?>"<?php endif; ?>>
-                                    <?php if ($Titular != null) { ?>
-                                        <?php 
-                                        $stmt = $Con->prepare("SELECT nombre_completo FROM cargos WHERE id_cargo=?");
-                                        $stmt->bind_param("i",$Titular);
-                                        $stmt->execute();
-                                        $Registro = $stmt->get_result();
-                                        $Reg = $Registro->fetch_assoc();
-                                        $stmt->close();
-                                        if(isset($Reg['nombre_completo'])){echo $Reg['nombre_completo'];}else{?> Seleccione el titular: <?php } ?>
-                                    <?php } else {?>
-                                        Seleccione el titular:
-                                    <?php } ?>
-                                </option>
+                            <select class="FAI prueba2" id="4" name="Titular">
+                                <option value="0">Seleccione el titular:</option>
                                 <?php
-                                $stmt = $Con->prepare("SELECT id_cargo,nombre_completo FROM cargos ORDER BY nombre_completo");
+                                $stmt = $Con->prepare("SELECT id_personal, nombre_personal FROM vw_cargos ORDER BY nombre_personal");
                                 $stmt->execute();
-                                $Registro = $stmt->get_result();
-                        
-                                while ($Reg = $Registro->fetch_assoc()){
-                                    echo '<option value="'.$Reg['id_cargo'].'">'.$Reg['nombre_completo'].'</option>';
+                                $result = $stmt->get_result();
+
+                                while ($Row = $result->fetch_assoc()) {
+                                    $selected = ($Titular == $Row['id_personal']) ? 'selected' : '';
+                                    echo '<option value="'.$Row['id_personal'].'" '.$selected.'>'.$Row['nombre_personal'].'</option>';
                                 }
                                 $stmt->close();
                                 ?>
@@ -161,45 +149,34 @@
             </section>
         </div>
 
-        <?php if ($Correcto < 5) {
-                    if ($NumE>0) { 
-                        for ($i=1; $i <= 4; $i++) {
-                            $Error=${"Error".$i};
-                            if (!empty($Error)) { ?>
-                                <script type="module">
-                                    var error="<?php echo $Error;?>";
-                                    import { Eggy } from '../../../js/eggy.js';
-                                    await Eggy({title: 'Error!', message: error, type: 'error', position: 'top-right', duration: 20000});
-                                </script>
-                            <?php } ?>
-                        <?php } ?>
-                    <?php }
-                    if ($NumP>0) { 
-                        for ($i=1; $i <= 3; $i++) {
-                            $Precaucion=${"Precaucion".$i};
-                            if (!empty($Precaucion)) { ?>
-                                <script type="module">
-                                    var error="<?php echo $Precaucion;?>";
-                                    import { Eggy } from '../../../js/eggy.js';
-                                    await Eggy({title: 'Precaución!', message: error, type: 'warning', position: 'top-right', duration: 20000});
-                                </script>
-                            <?php } ?>
-                        <?php } ?>
-                    <?php }
-                    if ($NumI>0) { 
-                        for ($i=1; $i <= 1; $i++) {
-                            $Informacion=${"Informacion".$i};
-                            if (!empty($Informacion)) { ?>
-                                <script type="module">
-                                    var error="<?php echo $Informacion;?>";
-                                    import { Eggy } from '../../../js/eggy.js';
-                                    await Eggy({title: 'Error!', message: error, type: 'info', position: 'top-right', duration: 20000});
-                                </script>
-                            <?php } ?>
-                        <?php } ?>
-                    <?php }
+        <?php if ($Correcto < 4) {
+                $tipos = [
+                    'Error' => ['cantidad' => $NumE, 'max' => 4, 'title' => 'Error!', 'type' => 'error'],
+                    'Precaucion' => ['cantidad' => $NumP, 'max' => 3, 'title' => 'Precaución!', 'type' => 'warning'],
+                    'Informacion' => ['cantidad' => $NumI, 'max' => 1, 'title' => 'Info!', 'type' => 'info']
+                ];
+
+                foreach ($tipos as $prefijo => $datos) {
+                    for ($i = 1; $i <= $datos['max']; $i++) {
+                        $var = ${$prefijo.$i};
+                        if (!empty($var)) { ?>
+                            <script type="module">
+                                import { Eggy } from '../../../js/eggy.js';
+                                async function showMessage(msg) {
+                                    await Eggy({
+                                        title: '<?php echo $datos['title']; ?>',
+                                        message: msg,
+                                        type: '<?php echo $datos['type']; ?>',
+                                        position: 'top-right',
+                                        duration: 20000
+                                    });
+                                }
+                                showMessage("<?php echo $var; ?>");
+                            </script>
+                        <?php }
+                    }
+                }
             } 
-            
             if (isset($_SESSION['correcto'])) { $Finalizado = $_SESSION['correcto']; unset($_SESSION['correcto']); ?>
                 <script type="module">
                 var error="<?php echo $Finalizado;?>";

@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <link rel="shortcut icon" href="../../../Images/MiniLogo.png">
+    <?php $Ruta = "../../../"; include_once '../../../Complementos/Logo_movil.php'; ?>
+
     <script src="https://code.jquery.com/jquery-3.7.1.js" type="text/javascript"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
@@ -30,13 +28,13 @@
         <main>
             <div style="background: #f9f9f9; padding: 12px 25px; border-bottom: 1px solid #ccc; font-size: 16px;">
                 <nav style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
-                    <a href="/RisingCore/Modulos/index.php" style="color: #6c757d; text-decoration: none;">
-                        📦 Empaque
+                    <a href="/RisingCore/Modulos/Produccion/Inicio.php" style="color: #6c757d; text-decoration: none;">
+                        🌱 Producción
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <a href="/RisingCore/Modulos/Empaque/index.php" style="color: #6c757d; text-decoration: none;">
-                        🏷️ Pallets
+                    <a href="/RisingCore/Modulos/Produccion/Codigos/Inicio.php" style="color: #6c757d; text-decoration: none;">
+                        📝 Códigos
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
@@ -45,7 +43,7 @@
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <strong style="color: #333;">✏️ Registro de Pallets</strong>
+                    <strong style="color: #333;">✏️ Registro de Códigos</strong>
                 </nav>
             </div>
         
@@ -60,10 +58,25 @@
                         <label class="FAL">
                             <span class="FAS">Sede</span>
                             <select class="FAI prueba" id="sedes" name="TipoRegistro" onchange="mostrarCampo2()">
-                                <option value="0">Seleccione la sede:</option>
-                                <option value="A"<?php if ($Sede == "A") echo " selected"; ?>>RF1</option>
-                                <option value="B"<?php if ($Sede == "B") echo " selected"; ?>>RF2</option>
-                                <option value="C"<?php if ($Sede == "C") echo " selected"; ?>>RF3</option>
+                                <?php
+                                if ($TipoRol === 'ADMINISTRADOR' || $TipoRol==='SUPERVISOR') {
+                                    echo '<option value="0">Seleccione la sede:</option>';
+                                    $stmt = $Con->prepare("SELECT codigo_s FROM sedes ORDER BY codigo_s");
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+
+                                    while ($row = $result->fetch_assoc()) {
+                                        $codigo = $row['codigo_s'];
+                                        $selected = ($codigo == $Sede) ? ' selected' : '';
+                                        echo "<option value='$codigo'$selected>$codigo</option>";
+                                    }
+
+                                    $stmt->close();
+                                } else {
+                                    // Usuario normal → solo mostrar su propia sede
+                                    echo "<option value='$CodigoS' $selected>$CodigoS</option>";
+                                }
+                                ?>
                             </select>
                         </label>
                     </div>
@@ -214,49 +227,40 @@
             </div>
 
             <?php if ($Correcto < 8) {
-                    if ($NumE>0) { 
-                        for ($i=1; $i <= 8; $i++) {
-                            $Error=${"Error".$i};
-                            if (!empty($Error)) { ?>
-                                <script type="module">
-                                    var error="<?php echo $Error;?>";
-                                    import { Eggy } from '../../../js/eggy.js';
-                                    await Eggy({title: 'Error!', message: error, type: 'error', position: 'top-right', duration: 20000});
-                                </script>
-                            <?php } ?>
-                        <?php } ?>
-                    <?php }
-                    if ($NumP>0) { 
-                        for ($i=1; $i <= 2; $i++) {
-                            $Precaucion=${"Precaucion".$i};
-                            if (!empty($Precaucion)) { ?>
-                                <script type="module">
-                                    var error="<?php echo $Precaucion;?>";
-                                    import { Eggy } from '../../../js/eggy.js';
-                                    await Eggy({title: 'Precaución!', message: error, type: 'warning', position: 'top-right', duration: 20000});
-                                </script>
-                            <?php } ?>
-                        <?php } ?>
-                    <?php }
-                    if ($NumI>0) { 
-                        for ($i=1; $i <= 4; $i++) {
-                            $Informacion=${"Informacion".$i};
-                            if (!empty($Informacion)) { ?>
-                                <script type="module">
-                                    var error="<?php echo $Informacion;?>";
-                                    import { Eggy } from '../../../js/eggy.js';
-                                    await Eggy({title: 'Error!', message: error, type: 'info', position: 'top-right', duration: 20000});
-                                </script>
-                            <?php } ?>
-                        <?php } ?>
-                    <?php }
-            } else { ?>
+                $tipos = [
+                    'Error' => ['cantidad' => $NumE, 'max' => 8, 'title' => 'Error!', 'type' => 'error'],
+                    'Precaucion' => ['cantidad' => $NumP, 'max' => 2, 'title' => 'Precaución!', 'type' => 'warning'],
+                    'Informacion' => ['cantidad' => $NumI, 'max' => 1, 'title' => 'Info!', 'type' => 'info']
+                ];
+
+                foreach ($tipos as $prefijo => $datos) {
+                    for ($i = 1; $i <= $datos['max']; $i++) {
+                        $var = ${$prefijo.$i};
+                        if (!empty($var)) { ?>
+                            <script type="module">
+                                import { Eggy } from '../../../js/eggy.js';
+                                async function showMessage(msg) {
+                                    await Eggy({
+                                        title: '<?php echo $datos['title']; ?>',
+                                        message: msg,
+                                        type: '<?php echo $datos['type']; ?>',
+                                        position: 'top-right',
+                                        duration: 20000
+                                    });
+                                }
+                                showMessage("<?php echo $var; ?>");
+                            </script>
+                        <?php }
+                    }
+                }
+            } 
+            if (isset($_SESSION['correcto'])) { $Finalizado = $_SESSION['correcto']; unset($_SESSION['correcto']); ?>
                 <script type="module">
                 var error="<?php echo $Finalizado;?>";
                 import { Eggy } from '../../../js/eggy.js';
-                await Eggy({title: 'Correcto!', message: error, type: 'success', position: 'top-right', duration: 50000});
+                await Eggy({title: 'Correcto!', message: error, type: 'success', position: 'top-right', duration: 10000});
                 </script>
-            <?php } ?>
+            <?php }?>
 
             <script src="../../../js/modulos.js"></script>
             <script>
