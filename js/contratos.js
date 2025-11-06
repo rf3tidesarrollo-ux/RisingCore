@@ -10,7 +10,7 @@ $(document).ready(function () {
             return;
         }
 
-        $.getJSON('../../Server_side/Incidencia/get_nombres.php?sede=' + sede +'&dep=' + dep, function (data) {
+        $.getJSON('../../Server_side/Contrato/get_personal.php?sede=' + sede +'&dep=' + dep, function (data) {
             if (data.status === 'ok' && data.nombres.length > 0) {
                 data.nombres.forEach(function (n) {
                     const selectedAttr = (n.id == nombreSeleccionado) ? 'selected' : '';
@@ -46,4 +46,58 @@ $(document).ready(function () {
         cargarNombres(sedeInicial, depInicial, nombreInicial);
     }
 
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const linkWord = document.getElementById("linkWord");
+
+    linkWord.addEventListener("click", function (e) {
+        e.preventDefault(); // Evita el href vacío
+
+        // Obtén los valores de los campos
+        const sede = document.getElementById("sede3").value;
+        const dep = document.getElementById("departamentos").value;
+        const badge = document.getElementById("nombres").value;
+        const contrato = document.getElementById("contrato").value;
+
+        // Validación simple
+        if (sede === "0") {
+            swal("Tiene que seleccionar una sede primero", {
+            icon: "warning",
+        });
+        return;
+        }
+
+        if (dep === "0") {
+            swal("Tiene que seleccionar un departamento", {
+            icon: "warning",
+        });
+        return;
+        }
+
+        if (badge === "0") {
+            swal("Tiene que seleccionar un nombre", {
+            icon: "warning",
+        });
+        return;
+        }
+
+        if (contrato === "0") {
+            swal("Tiene que seleccionar un tipo de contrato", {
+            icon: "warning",
+        });
+        return;
+        }
+
+        // Construir URL
+        const queryString = new URLSearchParams({
+            id: badge,
+            tc: contrato,
+        }).toString();
+
+        const url = `../../Plantillas/Contratos/word_contrato.php?${queryString}`;
+        console.log("URL generada:", url);
+        window.open(url, "_blank");
+    });
 });

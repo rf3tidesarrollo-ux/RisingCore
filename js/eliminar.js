@@ -362,6 +362,7 @@ function mostrarRegistroNI(id){
         var info = JSON.parse(response);
         var sede = info.s;
         var badge = info.b;
+        var personal = info.np;
         var genero = info.g;
         var tipo = info.te;
         var depto = info.d;
@@ -376,6 +377,7 @@ function mostrarRegistroNI(id){
         swal("Información:",
         "SEDE: " + sede + "\n" +
         "BADGE: " + badge + "\n" +
+        "NOMBRE: " + personal + "\n" +
         "GENÉRO: " + genero + "\n" +
         "TIPO DE EMPLEADO: " + tipo + "\n" +
         "DEPARTAMENTO: " + depto + "\n" +
@@ -474,6 +476,7 @@ function mostrarRegistroRI(id){
         var info = JSON.parse(response);
         var sede = info.s;
         var badge = info.b;
+        var personal = info.np;
         var genero = info.g;
         var tipo = info.te;
         var depto = info.d;
@@ -488,6 +491,52 @@ function mostrarRegistroRI(id){
         swal("Información:",
         "SEDE: " + sede + "\n" +
         "BADGE: " + badge + "\n" +
+        "NOMBRE: " + personal + "\n" +
+        "GENÉRO: " + genero + "\n" +
+        "TIPO DE EMPLEADO: " + tipo + "\n" +
+        "DEPARTAMENTO: " + depto + "\n" +
+        "TIPO DE PAGO: " + tPago + "\n" +
+        "TIPO DE HORARIO: " + tipo2 + "\n" +
+        "FECHA DE INGRESO: " + fechaI + "\n" +
+        "FECHA DE REGISTRO: " + fechaR + "\n" +
+        "REGISTRÓ: " + cNmbre);
+      }
+    },
+    error: function(error){
+      swal("Error!", {
+        icon: "error",
+      });
+    },
+  });
+}
+
+function mostrarRegistroPR(id){
+  $.ajax({
+    url: 'MostrarPR.php',
+    type: 'POST',
+    async: true,
+    data: {id:id},
+    success: function(response){
+      if (response != 'error') {
+        var info = JSON.parse(response);
+        var sede = info.s;
+        var badge = info.b;
+        var personal = info.np;
+        var genero = info.g;
+        var tipo = info.te;
+        var depto = info.d;
+        var tPago = info.tp;
+        var tipo2 = info.th;
+        var FI = info.fi;
+        var fechaI = FI.split('-').reverse().join('/');
+        var FR = info.fr;
+        var fechaR = FR.split('-').reverse().join('/');
+        var cNmbre = info.nc;
+
+        swal("Información:",
+        "SEDE: " + sede + "\n" +
+        "BADGE: " + badge + "\n" +
+        "NOMBRE: " + personal + "\n" +
         "GENÉRO: " + genero + "\n" +
         "TIPO DE EMPLEADO: " + tipo + "\n" +
         "DEPARTAMENTO: " + depto + "\n" +

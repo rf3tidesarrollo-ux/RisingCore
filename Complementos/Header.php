@@ -61,6 +61,7 @@ $modulosConfig = [
             "CatalogoRI" => "Reingreso/CatalogoRI.php",
             "RegistrarPR" => "Personal/RegistrarPR.php",
             "CatalogoPR"  => "Personal/CatalogoPR.php",
+            "RegistrarCC" => "Contratos/RegistrarCC.php",
             "CatalogoLA" => "Asistencia/CatalogoLA.php",
             "RegistrarLI"  => "Incidencia/RegistrarLI.php",
             "CatalogoLI"  => "Incidencia/CatalogoLI.php",
@@ -74,6 +75,40 @@ $modulosConfig = [
             "Incidencia" => "fa-solid fa-person-circle-exclamation",
             "Horarios" => "fa-solid fa-business-time",
             "Reingreso" => "fa-solid fa-person-walking-arrow-loop-left",
+            "Contratos" => "fa-solid fa-file-contract",
+        ]
+    ],
+    "Compras" => [
+        "routes" => [
+            "RegistrarRQ" => "Requisiciones/RegistrarRQ.php",
+            "CatalogoRQ"  => "Requisiciones/CatalogoRQ.php",
+            "RegistrarPO" => "Ordenes/RegistrarPO.php",
+            "CatalogoPO"  => "Ordenes/CatalogoPO.php",
+            "RegistrarCP" => "Pagos/RegistrarCP.php",
+            "CatalogoCP"  => "Pagos/CatalogoCP.php",
+            "RegistrarPD" => "Productos/RegistrarPD.php",
+            "CatalogoPD"  => "Productos/CatalogoPD.php",
+            "RegistrarPV" => "Proveedores/RegistrarPV.php",
+            "CatalogoPV"  => "Proveedores/CatalogoPV.php",
+        ],
+        "iconos" => [
+            "Requisiciones" => "fa-solid fa-bell-concierge",
+            "Ordenes" => "fa-solid fa-cart-arrow-down",
+            "Pagos" => "fa-solid fa-file-invoice-dollar",
+            "Productos" => "fa-solid fa-cubes-stacked",
+            "Proveedores" => "fa-solid fa-truck-moving",
+        ]
+    ],
+    "Almacen" => [
+        "routes" => [
+            "RegistrarIN" => "Inventario/RegistrarIN.php",
+            "CatalogoIN"  => "Inventario/CatalogoIN.php",
+            "RegistrarPC" => "Consumo/RegistrarPC.php",
+            "CatalogoPC"  => "Consumo/CatalogoPC.php",
+        ],
+        "iconos" => [
+            "Inventario" => "fa-solid fa-boxes-stacked",
+            "Consumos" => "fa-solid fa-cart-shopping",
         ]
     ],
     // Agrega más módulos si quieres...
@@ -98,11 +133,19 @@ $claveMap = [
     'Cl'  => 'Cultivo',
     'U'   => 'Usuarios',
     'NI'  => 'Ingreso',
-    'DP'  => 'Personal',
+    'PR'  => 'Personal',
     'LA'  => 'Asistencia',
     'LI'  => 'Incidencia',
     'H'   => 'Horarios',
     'RI'  => 'Reingreso',
+    'CC'  => 'Contratos',
+    'RQ'  => 'Requisiciones',
+    'PO'  => 'Ordenes',
+    'CP'  => 'Pagos',
+    'PD'  => 'Productos',
+    'PV'  => 'Proveedores',
+    'IN'  => 'Inventario',
+    'PC'  => 'Consumos',
 ];
 
 // Nombres personalizados por submódulo y tipo de menú
@@ -152,7 +195,7 @@ $nombreMenus = [
         'catalogo'  => 'Pendientes de huella'
     ],
     'Personal' => [
-        'registrar' => 'Registrar Personal',
+        'registrar' => 'Personal',
         'catalogo'  => 'Personal'
     ],
     'Asistencia' => [
@@ -170,6 +213,38 @@ $nombreMenus = [
     'Reingreso' => [
         'registrar' => 'Reingreso',
         'catalogo'  => 'Reactivar personal'
+    ],
+    'Contratos' => [
+        'registrar' => 'Contratos',
+        'catalogo'  => 'Contratos'
+    ],
+    'Requisiciones' => [
+        'registrar' => 'Requisición',
+        'catalogo'  => 'Requisiciones'
+    ],
+    'Ordenes' => [
+        'registrar' => 'Orden de Compra',
+        'catalogo'  => 'Órdenes de Compra'
+    ],
+    'Pagos' => [
+        'registrar' => 'Agregar pago',
+        'catalogo'  => 'Pagos'
+    ],
+    'Productos' => [
+        'registrar' => 'Agregar producto',
+        'catalogo'  => 'Productos'
+    ],
+    'Proveedores' => [
+        'registrar' => 'Agregar proveedor',
+        'catalogo'  => 'Proveedores'
+    ],
+    'Inventario' => [
+        'registrar' => 'Agregar artículo',
+        'catalogo'  => 'Inventario'
+    ],
+    'Consumos' => [
+        'registrar' => 'Consumo',
+        'catalogo'  => 'Consumos'
     ],
 ];
 
@@ -189,7 +264,15 @@ $submodulos = [
     'Asistencia'   => "$modulo/Asistencia",
     'Horarios'     => "$modulo/Horarios",
     'Incidencia'     => "$modulo/Incidencia",
-    'Reingreso'     => "$modulo/Reingreso"
+    'Reingreso'     => "$modulo/Reingreso",
+    'Contratos'     => "$modulo/Contratos",
+    'Requisiciones' => "$modulo/Requisiciones",
+    'Ordenes'       => "$modulo/Ordenes",
+    'Pagos'         => "$modulo/Pagos",
+    'Productos'     => "$modulo/Productos",
+    'Proveedores'   => "$modulo/Proveedores",
+    'Inventario'    => "$modulo/Inventario",
+    'Consumos'      => "$modulo/Consumo",
 ];
 
 // Función para generar ruta absoluta desde la raíz del sitio
@@ -200,12 +283,14 @@ function path_abs($rutaRelativa) {
 
 // === RUTAS DE INICIO POR MÓDULO ===
 $modulosInicio = [
-    "Producción"   => ["path" => "Produccion/Inicio.php", "icon" => "fa-solid fa-seedling"],
-    "Empaque"      => ["path" => "Empaque/Inicio.php", "icon" => "fa-solid fa-box-open"],
-    "Exportacion"  => ["path" => "Exportacion/Inicio.php", "icon" => "fa-solid fa-truck-fast"],
-    "Calidad"      => ["path" => "Calidad/Inicio.php", "icon" => "fa-solid fa-certificate"],
-    "RRHH"    => ["path" => "RRHH/Inicio.php", "icon" => "fa-solid fa-users-rectangle"],
-    "Sistemas"     => ["path" => "Sistemas/Inicio.php", "icon" => "fa-solid fa-laptop-code"],
+    "Producción"    => ["path" => "Produccion/Inicio.php", "icon" => "fa-solid fa-seedling"],
+    "Empaque"       => ["path" => "Empaque/Inicio.php", "icon" => "fa-solid fa-box-open"],
+    "Exportacion"   => ["path" => "Exportacion/Inicio.php", "icon" => "fa-solid fa-truck-fast"],
+    "Calidad"       => ["path" => "Calidad/Inicio.php", "icon" => "fa-solid fa-certificate"],
+    "RRHH"          => ["path" => "RRHH/Inicio.php", "icon" => "fa-solid fa-users-rectangle"],
+    "Compras"       => ["path" => "Compras/Inicio.php", "icon" => "fa-solid fa-cart-shopping"],
+    "Almacén"       => ["path" => "Almacen/Inicio.php", "icon" => "fa-solid fa-warehouse"],
+    "Sistemas"      => ["path" => "Sistemas/Inicio.php", "icon" => "fa-solid fa-laptop-code"],
     "Configuración" => ["path" => "Configuración/Inicio.php", "icon" => "fa-solid fa-gear"]
 ];
 
