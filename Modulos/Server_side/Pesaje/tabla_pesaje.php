@@ -117,7 +117,7 @@ if ($TipoRol == "ADMINISTRADOR") {
                     LEFT JOIN ciclos ON tipo_variaciones.id_ciclo_v = ciclos.id_ciclo
                     LEFT JOIN invernaderos ON tipo_variaciones.id_modulo_v = invernaderos.id_invernadero
                     LEFT JOIN sedes ON invernaderos.id_sede_i = sedes.id_sede
-                    WHERE activo_r = 1 $whereSQL";
+                    WHERE activo_r = 1 AND activo_c = 1 $whereSQL";
      $totalStmt = $Con->prepare($totalQuery);
     $totalStmt->execute();
     $totalResult = $totalStmt->get_result();
@@ -134,7 +134,7 @@ if ($TipoRol == "ADMINISTRADOR") {
                     LEFT JOIN ciclos ON tipo_variaciones.id_ciclo_v = ciclos.id_ciclo
                     LEFT JOIN invernaderos ON tipo_variaciones.id_modulo_v = invernaderos.id_invernadero
                     LEFT JOIN sedes ON invernaderos.id_sede_i = sedes.id_sede
-                    WHERE activo_r = 1 $whereSQL
+                    WHERE activo_r = 1 AND activo_c = 1 $whereSQL
                     ORDER BY $orderColumn $orderDir
                     LIMIT ?, ?";
     $dataStmt = $Con->prepare($dataQuery);
@@ -153,7 +153,7 @@ if ($TipoRol == "ADMINISTRADOR") {
                     LEFT JOIN ciclos ON tipo_variaciones.id_ciclo_v = ciclos.id_ciclo
                     LEFT JOIN invernaderos ON tipo_variaciones.id_modulo_v = invernaderos.id_invernadero
                     LEFT JOIN sedes ON invernaderos.id_sede_i = sedes.id_sede
-                    WHERE invernaderos.id_Sede_i = ? AND activo_r = 1 $whereSQL";
+                    WHERE invernaderos.id_Sede_i = ? AND activo_r = 1 AND activo_c = 1 $whereSQL";
     $totalStmt = $Con->prepare($totalQuery);
     $totalStmt->bind_param("i", $Sede);
     $totalStmt->execute();
@@ -170,7 +170,7 @@ if ($TipoRol == "ADMINISTRADOR") {
                     LEFT JOIN ciclos ON tipo_variaciones.id_ciclo_v = ciclos.id_ciclo
                     LEFT JOIN invernaderos ON tipo_variaciones.id_modulo_v = invernaderos.id_invernadero
                     LEFT JOIN sedes ON invernaderos.id_sede_i = sedes.id_sede
-                    WHERE invernaderos.id_Sede_i = ? AND activo_r = 1 $whereSQL
+                    WHERE invernaderos.id_Sede_i = ? AND activo_r = 1 AND activo_c = 1 $whereSQL
     ORDER BY $orderColumn $orderDir
     LIMIT ?, ?";
     $dataStmt = $Con->prepare($dataQuery);

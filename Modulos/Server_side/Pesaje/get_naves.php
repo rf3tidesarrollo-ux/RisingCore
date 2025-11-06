@@ -5,9 +5,9 @@ $tipo = $_GET['tipo'] ?? '';
 
 // Mapeo de códigos a nombres
 $mapa_tipos = [
-    'A' => '1',
-    'B' => '2',
-    'C' => '3'
+    'RF1' => 1,
+    'RF2' => 2,
+    'RF3' => 3
 ];
 
 if (isset($mapa_tipos[$tipo])) {

@@ -14,9 +14,11 @@ if ($columna !== null) {
         5 => 'kilos_em',
         6 => 'cajas_emt',
         7 => 'kilos_emt',
-        8 => 'fecha_em',
-        9 => 'semana_em',
-        10 => 'nombre_completo',
+        8 => 'fecha_ep',
+        9 => 'fecha_em',
+        10 => 'estado_em',
+        11 => 'semana_em',
+        12 => 'nombre_completo',
     ];
 
     if (isset($mapColumnas[$columna])) {

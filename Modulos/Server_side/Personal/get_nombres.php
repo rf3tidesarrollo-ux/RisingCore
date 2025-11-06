@@ -16,7 +16,7 @@ header('Content-Type: application/json');
 if (isset($mapa_tipos[$sede]) && isset($dep)) {
     $sedes = $mapa_tipos[$sede];
 
-    $stmt = $Con->prepare("SELECT p.badge, CONCAT(p.nombre, ' ', p.apellido_p, ' ', p.apellido_m) AS NC
+    $stmt = $Con->prepare("SELECT p.id_personal, p.badge, CONCAT(p.nombre, ' ', p.apellido_p, ' ', p.apellido_m) AS NC
                             FROM rh_personal p WHERE p.id_sede_pl = ? AND p.id_depto_pl = ? AND p.status_pl = 1
                             AND EXISTS (
                                 SELECT 1 
@@ -33,7 +33,7 @@ if (isset($mapa_tipos[$sede]) && isset($dep)) {
 
     while ($fila = $resultado->fetch_assoc()) {
         $nombres[] = [
-            'id' => $fila['badge'],
+            'id' => $fila['id_personal'],
             'nombre' => $fila['NC']
         ];
     }

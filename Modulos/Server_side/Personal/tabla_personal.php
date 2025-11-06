@@ -10,21 +10,17 @@ if(isset($_SESSION['ID']) == false){
 
 // Mapeo de columnas (usar siempre $columnMap)
 $columnMap = [
-    'codigo_s'       => 's.codigo_s',
-    'folio_em'       => 'em.folio_em',
-    'folio_d'        => 'd.folio_d',
-    'po_em'          => 'em.po_em',
-    'cajas_em'       => 'em.cajas_em',
-    'kilos_em'       => 'em.kilos_em',
-    'cajas_emt'      => 'em.cajas_emt',
-    'kilos_emt'      => 'em.kilos_emt',
-    'fecha_ep'       => 'em.fecha_ep',
-    'hora_ep'       => 'em.hora_ep',
-    'fecha_em'       => 'em.fecha_em',
-    'hora_em'       => 'em.hora_em',
-    'estado_em'      => 'em.estado_em',
-    'semana'         => 'em.semana_em',
-    'nombre_completo'=> 'c.nombre_completo',
+    'codigo_s'        => 'codigo_s',
+    'badge'           => 'badge',
+    'nombre_personal' => 'nombre_personal',
+    'genero'          => 'genero',
+    'tipo_rh'         => 'tipo_rh',
+    'departamento'    => 'departamento',
+    'tipo_pago'       => 'tipo_pago',
+    'tipo_h'          => 'tipo_h',
+    'fecha_ingreso'   => 'fecha_ingreso',
+    'fecha_registro'  => 'fecha_registro',
+    'nombre_completo' => 'nombre_completo',
 ];
 
 // Recuperar columnas seguro
@@ -55,7 +51,7 @@ foreach ($searchColumns as $index => $column) {
         // input normal (texto o fecha)
         $escaped = $Con->real_escape_string($rawSearch);
         // Ajustar si la columna es fecha (usar DATE())
-        if ($columnName === 'em.fecha_em' ) {
+        if ($columnName === 'p.fecha_ingreso' || $columnName === 'p.fecha_registro') {
             $whereClauses[] = "DATE($columnName) = '$escaped'";
         } else {
             $whereClauses[] = "$columnName LIKE '%$escaped%'";
@@ -88,21 +84,15 @@ if (!empty($whereClauses)) {
 $orderColumnIndex = isset($_POST['order'][0]['column']) ? intval($_POST['order'][0]['column']) : 0;
 $orderDir = (isset($_POST['order'][0]['dir']) && in_array(strtolower($_POST['order'][0]['dir']), ['asc','desc'])) 
             ? $_POST['order'][0]['dir'] : 'asc';
-$orderColumnRaw = isset($_POST['columns'][$orderColumnIndex]['data']) ? $_POST['columns'][$orderColumnIndex]['data'] : 'folio_p';
-$orderColumn = isset($columnMap[$orderColumnRaw]) ? $columnMap[$orderColumnRaw] : 'p.folio_p';
+$orderColumnRaw = isset($_POST['columns'][$orderColumnIndex]['data']) ? $_POST['columns'][$orderColumnIndex]['data'] : 'fecha_registro';
+$orderColumn = isset($columnMap[$orderColumnRaw]) ? $columnMap[$orderColumnRaw] : 'p.fecha_registro';
 
 // Paginación
 $start = isset($_POST['start']) ? intval($_POST['start']) : 0;
 $length = isset($_POST['length']) ? intval($_POST['length']) : 25;
 
-if ($TipoRol == "ADMINISTRADOR") {
-    $totalQuery = "SELECT COUNT(*) as total FROM embarques_pallets em
-                    LEFT JOIN usuarios u ON em.usuario_id = u.id_usuario
-                    LEFT JOIN cargos cr ON u.id_cargo = cr.id_cargo
-                    LEFT JOIN sedes s ON em.id_sede_em= s.id_sede
-                    LEFT JOIN destinos_embarque d ON em.id_destino_em = d.id_destino
-                    LEFT JOIN ciclos c ON em.id_ciclo_em = c.id_ciclo
-                    WHERE em.activo_em = 1 AND em.estado_em = 0 AND c.activo_c = 1 $whereSQL";
+if ($TipoRol == "ADMINISTRADOR" || $TipoRol == "SUPERVISOR") {
+    $totalQuery = "SELECT COUNT(*) as total FROM vw_personal WHERE 1=1 $whereSQL";
     $totalStmt = $Con->prepare($totalQuery);
     if ($totalStmt === false) { error_log("Prepare totalQuery error: " . $Con->error); }
     $totalStmt->execute();
@@ -110,15 +100,7 @@ if ($TipoRol == "ADMINISTRADOR") {
     $totalRecords = $totalResult->fetch_assoc()['total'];
 
     // Datos con paginación
-    $dataQuery = "SELECT em.*, cr.nombre_completo, s.codigo_s, d.folio_d FROM embarques_pallets em
-                    LEFT JOIN usuarios u ON em.usuario_id = u.id_usuario
-                    LEFT JOIN cargos cr ON u.id_cargo = cr.id_cargo
-                    LEFT JOIN sedes s ON em.id_sede_em= s.id_sede
-                    LEFT JOIN destinos_embarque d ON em.id_destino_em = d.id_destino
-                    LEFT JOIN ciclos c ON em.id_ciclo_em = c.id_ciclo
-                    WHERE em.activo_em = 1 AND em.estado_em = 0 AND c.activo_c = 1 $whereSQL
-                    ORDER BY $orderColumn $orderDir
-                    LIMIT ?, ?";
+    $dataQuery = "SELECT * FROM vw_personal WHERE 1=1 $whereSQL ORDER BY $orderColumn $orderDir LIMIT ?, ?";
     $dataStmt = $Con->prepare($dataQuery);
     if ($dataStmt === false) { error_log("Prepare dataQuery error: " . $Con->error); }
     $dataStmt->bind_param("ii", $start, $length);
@@ -127,32 +109,18 @@ if ($TipoRol == "ADMINISTRADOR") {
 
 } else {
     // No admin -> filtrar por sede
-    $totalQuery = "SELECT COUNT(*) as total FROM embarques_pallets em
-                    LEFT JOIN usuarios u ON em.usuario_id = u.id_usuario
-                    LEFT JOIN cargos cr ON u.id_cargo = cr.id_cargo
-                    LEFT JOIN sedes s ON em.id_sede_em= s.id_sede
-                    LEFT JOIN destinos_embarque d ON em.id_destino_em = d.id_destino
-                    LEFT JOIN ciclos c ON em.id_ciclo_em = c.id_ciclo
-                    WHERE em.activo_em = 1 AND em.estado_em = 0 AND c.activo_c = 1 AND em.id_sede_em = ? $whereSQL";
+    $totalQuery = "SELECT COUNT(*) as total FROM vw_personal WHERE id_sede_pl = ? $whereSQL";
     $totalStmt = $Con->prepare($totalQuery);
     if ($totalStmt === false) { error_log("Prepare totalQuery (sede) error: " . $Con->error); }
-    $totalStmt->bind_param("s", $Sede);
+    $totalStmt->bind_param("i", $Sede);
     $totalStmt->execute();
     $totalResult = $totalStmt->get_result();
     $totalRecords = $totalResult->fetch_assoc()['total'];
 
-    $dataQuery = "SELECT em.*, cr.nombre_completo, s.codigo_s, d.folio_d FROM embarques_pallets em
-                    LEFT JOIN usuarios u ON em.usuario_id = u.id_usuario
-                    LEFT JOIN cargos cr ON u.id_cargo = cr.id_cargo
-                    LEFT JOIN sedes s ON em.id_sede_em= s.id_sede
-                    LEFT JOIN destinos_embarque d ON em.id_destino_em = d.id_destino
-                    LEFT JOIN ciclos c ON em.id_ciclo_em = c.id_ciclo
-                    WHERE em.activo_em = 1 AND em.estado_em = 0 AND c.activo_c = 1 AND em.id_sede_em = ? $whereSQL
-                    ORDER BY $orderColumn $orderDir
-                    LIMIT ?, ?";
+    $dataQuery = "SELECT * FROM vw_personal WHERE id_sede_pl = ? $whereSQL ORDER BY $orderColumn $orderDir LIMIT ?, ?";
     $dataStmt = $Con->prepare($dataQuery);
     if ($dataStmt === false) { error_log("Prepare dataQuery (sede) error: " . $Con->error); }
-    $dataStmt->bind_param("sii", $Sede, $start, $length);
+    $dataStmt->bind_param("iii", $Sede, $start, $length);
     $dataStmt->execute();
     $dataResult = $dataStmt->get_result();
 }

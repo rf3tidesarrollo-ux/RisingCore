@@ -93,12 +93,17 @@ $length = isset($_POST['length']) ? intval($_POST['length']) : 25;
 if ($TipoRol == "ADMINISTRADOR") {
     $totalQuery = "SELECT COUNT(*) as total FROM pallets p
                     LEFT JOIN usuarios u ON p.id_usuario_p = u.id_usuario
-                    LEFT JOIN cargos c ON u.id_cargo = c.id_cargo
-                    LEFT JOIN tipos_tarimas t ON p.id_tarima_p = t.id_tarima
+                    LEFT JOIN cargos cr ON u.id_cargo = cr.id_cargo
                     LEFT JOIN presentaciones_pallet pp ON p.id_presen_p = pp.id_presentacion_p
                     LEFT JOIN sedes s ON p.id_sede_p = s.id_sede
                     LEFT JOIN embarques_pallets em ON p.id_embarque_p = em.id_embarque
-                    WHERE p.activo_p = 1 $whereSQL";
+                    LEFT JOIN pallet_mezclas pm ON p.id_pallet = pm.id_pallet_m
+                    LEFT JOIN mezclas m ON pm.id_mezcla_m = m.id_mezcla
+                    LEFT JOIN mezcla_lotes ml ON m.id_mezcla = ml.id_mezcla_l
+                    LEFT JOIN registro_empaque re ON ml.id_lote_l = re.id_registro_r
+                    LEFT JOIN tipo_variaciones tv ON re.id_codigo_r = tv.id_variedad
+                    LEFT JOIN ciclos c ON tv.id_ciclo_v = c.id_ciclo
+                    WHERE p.activo_p = 1 AND c.activo_c = 1 $whereSQL";
     $totalStmt = $Con->prepare($totalQuery);
     if ($totalStmt === false) { error_log("Prepare totalQuery error: " . $Con->error); }
     $totalStmt->execute();
@@ -106,14 +111,19 @@ if ($TipoRol == "ADMINISTRADOR") {
     $totalRecords = $totalResult->fetch_assoc()['total'];
 
     // Datos con paginación
-    $dataQuery = "SELECT p.*, u.*, c.*, t.*, pp.*, s.*, em.* FROM pallets p
+    $dataQuery = "SELECT p.*, cr.nombre_completo, pp.presentacion, pp.cliente_id, s.codigo_s, em.folio_em FROM pallets p
                     LEFT JOIN usuarios u ON p.id_usuario_p = u.id_usuario
-                    LEFT JOIN cargos c ON u.id_cargo = c.id_cargo
-                    LEFT JOIN tipos_tarimas t ON p.id_tarima_p = t.id_tarima
+                    LEFT JOIN cargos cr ON u.id_cargo = cr.id_cargo
                     LEFT JOIN presentaciones_pallet pp ON p.id_presen_p = pp.id_presentacion_p
                     LEFT JOIN sedes s ON p.id_sede_p = s.id_sede
                     LEFT JOIN embarques_pallets em ON p.id_embarque_p = em.id_embarque
-                    WHERE p.activo_p = 1 $whereSQL
+                    LEFT JOIN pallet_mezclas pm ON p.id_pallet = pm.id_pallet_m
+                    LEFT JOIN mezclas m ON pm.id_mezcla_m = m.id_mezcla
+                    LEFT JOIN mezcla_lotes ml ON m.id_mezcla = ml.id_mezcla_l
+                    LEFT JOIN registro_empaque re ON ml.id_lote_l = re.id_registro_r
+                    LEFT JOIN tipo_variaciones tv ON re.id_codigo_r = tv.id_variedad
+                    LEFT JOIN ciclos c ON tv.id_ciclo_v = c.id_ciclo
+                    WHERE p.activo_p = 1 AND c.activo_c = 1 $whereSQL
                     ORDER BY $orderColumn $orderDir
                     LIMIT ?, ?";
     $dataStmt = $Con->prepare($dataQuery);
@@ -126,12 +136,17 @@ if ($TipoRol == "ADMINISTRADOR") {
     // No admin -> filtrar por sede
     $totalQuery = "SELECT COUNT(*) as total FROM pallets p
                     LEFT JOIN usuarios u ON p.id_usuario_p = u.id_usuario
-                    LEFT JOIN cargos c ON u.id_cargo = c.id_cargo
-                    LEFT JOIN tipos_tarimas t ON p.id_tarima_p = t.id_tarima
+                    LEFT JOIN cargos cr ON u.id_cargo = cr.id_cargo
                     LEFT JOIN presentaciones_pallet pp ON p.id_presen_p = pp.id_presentacion_p
                     LEFT JOIN sedes s ON p.id_sede_p = s.id_sede
                     LEFT JOIN embarques_pallets em ON p.id_embarque_p = em.id_embarque
-                    WHERE p.activo_p = 1 AND p.id_sede_p = ? $whereSQL";
+                    LEFT JOIN pallet_mezclas pm ON p.id_pallet = pm.id_pallet_m
+                    LEFT JOIN mezclas m ON pm.id_mezcla_m = m.id_mezcla
+                    LEFT JOIN mezcla_lotes ml ON m.id_mezcla = ml.id_mezcla_l
+                    LEFT JOIN registro_empaque re ON ml.id_lote_l = re.id_registro_r
+                    LEFT JOIN tipo_variaciones tv ON re.id_codigo_r = tv.id_variedad
+                    LEFT JOIN ciclos c ON tv.id_ciclo_v = c.id_ciclo
+                    WHERE p.activo_p = 1 AND c.activo_c = 1 AND p.id_sede_p = ? $whereSQL";
     $totalStmt = $Con->prepare($totalQuery);
     if ($totalStmt === false) { error_log("Prepare totalQuery (sede) error: " . $Con->error); }
     $totalStmt->bind_param("s", $Sede);
@@ -139,14 +154,19 @@ if ($TipoRol == "ADMINISTRADOR") {
     $totalResult = $totalStmt->get_result();
     $totalRecords = $totalResult->fetch_assoc()['total'];
 
-    $dataQuery = "SELECT p.*, u.*, c.*, t.*, pp.*, s.*, em.* FROM pallets p
+    $dataQuery = "SELECT p.*, cr.nombre_completo, pp.presentacion, pp.cliente_id, s.codigo_s, em.folio_em FROM pallets p
                     LEFT JOIN usuarios u ON p.id_usuario_p = u.id_usuario
-                    LEFT JOIN cargos c ON u.id_cargo = c.id_cargo
-                    LEFT JOIN tipos_tarimas t ON p.id_tarima_p = t.id_tarima
+                    LEFT JOIN cargos cr ON u.id_cargo = cr.id_cargo
                     LEFT JOIN presentaciones_pallet pp ON p.id_presen_p = pp.id_presentacion_p
                     LEFT JOIN sedes s ON p.id_sede_p = s.id_sede
                     LEFT JOIN embarques_pallets em ON p.id_embarque_p = em.id_embarque
-                    WHERE p.activo_p = 1 AND p.id_sede_p = ? $whereSQL
+                    LEFT JOIN pallet_mezclas pm ON p.id_pallet = pm.id_pallet_m
+                    LEFT JOIN mezclas m ON pm.id_mezcla_m = m.id_mezcla
+                    LEFT JOIN mezcla_lotes ml ON m.id_mezcla = ml.id_mezcla_l
+                    LEFT JOIN registro_empaque re ON ml.id_lote_l = re.id_registro_r
+                    LEFT JOIN tipo_variaciones tv ON re.id_codigo_r = tv.id_variedad
+                    LEFT JOIN ciclos c ON tv.id_ciclo_v = c.id_ciclo
+                    WHERE p.activo_p = 1 AND c.activo_c = 1 AND p.id_sede_p = ? $whereSQL
                     ORDER BY $orderColumn $orderDir
                     LIMIT ?, ?";
     $dataStmt = $Con->prepare($dataQuery);

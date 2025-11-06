@@ -96,24 +96,32 @@ $start = isset($_POST['start']) ? intval($_POST['start']) : 0;
 $length = isset($_POST['length']) ? intval($_POST['length']) : 25;
 
 if ($TipoRol == "ADMINISTRADOR") {
-    $totalQuery = "SELECT COUNT(*) as total FROM mezclas
-                    LEFT JOIN usuarios ON mezclas.id_usuario_m = usuarios.id_usuario
-                    LEFT JOIN cargos ON usuarios.id_cargo = cargos.id_cargo
-                    LEFT JOIN clientes ON mezclas.id_cliente_m = clientes.id_cliente
-                    LEFT JOIN sedes ON mezclas.id_sede_m = sedes.id_sede
-                    WHERE mezclas.activo_m = 1 $whereSQL";
+    $totalQuery = "SELECT COUNT(*) as total FROM mezclas m
+                    LEFT JOIN usuarios u ON m.id_usuario_m = u.id_usuario
+                    LEFT JOIN cargos cr ON u.id_cargo = cr.id_cargo
+                    LEFT JOIN clientes cl ON m.id_cliente_m = cl.id_cliente
+                    LEFT JOIN sedes s ON m.id_sede_m = s.id_sede
+                    LEFT JOIN mezcla_lotes ml ON m.id_mezcla = ml.id_mezcla_l
+                    LEFT JOIN registro_empaque p ON ml.id_lote_l = p.id_registro_r
+                    LEFT JOIN tipo_variaciones tv ON p.id_codigo_r = tv.id_variedad
+                    LEFT JOIN ciclos c ON tv.id_ciclo_v = c.id_ciclo
+                    WHERE m.activo_m = 1 AND c.activo_c = 1 $whereSQL";
     $totalStmt = $Con->prepare($totalQuery);
     $totalStmt->execute();
     $totalResult = $totalStmt->get_result();
     $totalRecords = $totalResult->fetch_assoc()['total'];
 
     // Consulta de datos con orden y paginación
-    $dataQuery = "SELECT * FROM mezclas
-                    LEFT JOIN usuarios ON mezclas.id_usuario_m = usuarios.id_usuario
-                    LEFT JOIN cargos ON usuarios.id_cargo = cargos.id_cargo
-                    LEFT JOIN clientes ON mezclas.id_cliente_m = clientes.id_cliente
-                    LEFT JOIN sedes ON mezclas.id_sede_m = sedes.id_sede
-                    WHERE mezclas.activo_m = 1 $whereSQL
+    $dataQuery = "SELECT m.*, cr.nombre_completo, s.codigo_s, cl.nombre_cliente FROM mezclas m
+                    LEFT JOIN usuarios u ON m.id_usuario_m = u.id_usuario
+                    LEFT JOIN cargos cr ON u.id_cargo = cr.id_cargo
+                    LEFT JOIN clientes cl ON m.id_cliente_m = cl.id_cliente
+                    LEFT JOIN sedes s ON m.id_sede_m = s.id_sede
+                    LEFT JOIN mezcla_lotes ml ON m.id_mezcla = ml.id_mezcla_l
+                    LEFT JOIN registro_empaque p ON ml.id_lote_l = p.id_registro_r
+                    LEFT JOIN tipo_variaciones tv ON p.id_codigo_r = tv.id_variedad
+                    LEFT JOIN ciclos c ON tv.id_ciclo_v = c.id_ciclo
+                    WHERE m.activo_m = 1 AND c.activo_c = 1 $whereSQL
                     ORDER BY $orderColumn $orderDir
                     LIMIT ?, ?";
     $dataStmt = $Con->prepare($dataQuery);
@@ -122,24 +130,32 @@ if ($TipoRol == "ADMINISTRADOR") {
     $dataResult = $dataStmt->get_result();
     
 } else {
-    $totalQuery = "SELECT COUNT(*) as total FROM mezclas
-                    LEFT JOIN usuarios ON mezclas.id_usuario_m = usuarios.id_usuario
-                    LEFT JOIN cargos ON usuarios.id_cargo = cargos.id_cargo
-                    LEFT JOIN clientes ON mezclas.id_cliente_m = clientes.id_cliente
-                    LEFT JOIN sedes ON mezclas.id_sede_m = sedes.id_sede
-                    WHERE mezclas.activo_m = 1 AND id_sede_m = ? $whereSQL";
+    $totalQuery = "SELECT COUNT(*) as total FROM mezclas m
+                    LEFT JOIN usuarios u ON m.id_usuario_m = u.id_usuario
+                    LEFT JOIN cargos cr ON u.id_cargo = cr.id_cargo
+                    LEFT JOIN clientes cl ON m.id_cliente_m = cl.id_cliente
+                    LEFT JOIN sedes s ON m.id_sede_m = s.id_sede
+                    LEFT JOIN mezcla_lotes ml ON m.id_mezcla = ml.id_mezcla_l
+                    LEFT JOIN registro_empaque p ON ml.id_lote_l = p.id_registro_r
+                    LEFT JOIN tipo_variaciones tv ON p.id_codigo_r = tv.id_variedad
+                    LEFT JOIN ciclos c ON tv.id_ciclo_v = c.id_ciclo
+                    WHERE m.activo_m = 1 AND c.activo_c = 1 AND id_sede_m = ? $whereSQL";
     $totalStmt = $Con->prepare($totalQuery);
     $totalStmt->bind_param("i", $Sede);
     $totalStmt->execute();
     $totalResult = $totalStmt->get_result();
     $totalRecords = $totalResult->fetch_assoc()['total'];
 
-    $dataQuery = "SELECT * FROM mezclas
-                    LEFT JOIN usuarios ON mezclas.id_usuario_m = usuarios.id_usuario
-                    LEFT JOIN cargos ON usuarios.id_cargo = cargos.id_cargo
-                    LEFT JOIN clientes ON mezclas.id_cliente_m = clientes.id_cliente
-                    LEFT JOIN sedes ON mezclas.id_sede_m = sedes.id_sede
-                    WHERE mezclas.activo_m = 1 AND id_sede_m = ? $whereSQL
+    $dataQuery = "SELECT m.*, cr.nombre_completo, s.codigo_s, cl.nombre_cliente FROM mezclas m
+                    LEFT JOIN usuarios u ON m.id_usuario_m = u.id_usuario
+                    LEFT JOIN cargos cr ON u.id_cargo = cr.id_cargo
+                    LEFT JOIN clientes cl ON m.id_cliente_m = cl.id_cliente
+                    LEFT JOIN sedes s ON m.id_sede_m = s.id_sede
+                    LEFT JOIN mezcla_lotes ml ON m.id_mezcla = ml.id_mezcla_l
+                    LEFT JOIN registro_empaque p ON ml.id_lote_l = p.id_registro_r
+                    LEFT JOIN tipo_variaciones tv ON p.id_codigo_r = tv.id_variedad
+                    LEFT JOIN ciclos c ON tv.id_ciclo_v = c.id_ciclo
+                    WHERE m.activo_m = 1 AND c.activo_c = 1 AND id_sede_m = ? $whereSQL
                     ORDER BY $orderColumn $orderDir
                     LIMIT ?, ?";
     $dataStmt = $Con->prepare($dataQuery);
