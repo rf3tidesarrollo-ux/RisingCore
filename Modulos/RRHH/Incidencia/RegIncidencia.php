@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="../../../css/progressbar.css" />
     <link rel="stylesheet" href="../../../css/theme.css" />
     <link rel="stylesheet" href="DesignLI.css">
-    <title>RRHH: Incidencias</title>
+    <title>Incidencias: Registrar</title>
 </head>
 
 <body onload="validar()">
@@ -78,7 +78,7 @@
                         </label>
                     </div>
 
-                    <div class="FAD" id="campo_departamento" style="display:none;">
+                    <div class="FAD" id="campo_departamento">
                         <label class="FAL">
                             <span class="FAS">Departamento</span>
                             <select class="FAI prueba" name="Departamento" id="departamentos">

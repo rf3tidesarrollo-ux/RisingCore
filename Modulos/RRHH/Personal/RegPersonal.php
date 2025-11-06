@@ -13,8 +13,8 @@
     <link rel="stylesheet" href="../../../css/eggy.css" />
     <link rel="stylesheet" href="../../../css/progressbar.css" />
     <link rel="stylesheet" href="../../../css/theme.css" />
-    <link rel="stylesheet" href="DesignNI.css">
-    <title>RRHH: Nuevo Ingreso</title>
+    <link rel="stylesheet" href="DesignPR.css">
+    <title>Personal: Registrar</title>
 </head>
 
 <body onload="validar()">
@@ -43,7 +43,7 @@
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <strong style="color: #333;">✏️ Registros de personal</strong>
+                    <strong style="color: #333;">✏️ Registro de personal</strong>
                 </nav>
             </div>
             <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true) { ?> <a title="Reporte" href="CatalogoNI.php"><div class="back"><i class="fa-solid fa-fingerprint fa-xl"></i></div></a><?php } ?>
@@ -55,56 +55,70 @@
                         <label class="FAL">
                             <span class="FAS">Sede</span>
                             <select class="FAI prueba" id="sede3" name="Sede">
-                                <option value="0">Seleccione la sede:</option>
                                 <?php
-                                $stmt = $Con->prepare("SELECT codigo_s FROM sedes ORDER BY codigo_s");
+                                if ($TipoRol === 'ADMINISTRADOR' || $TipoRol==='SUPERVISOR') {
+                                    echo '<option value="0">Seleccione la sede:</option>';
+                                    $stmt = $Con->prepare("SELECT codigo_s FROM sedes ORDER BY codigo_s");
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+
+                                    while ($row = $result->fetch_assoc()) {
+                                        $codigo = $row['codigo_s'];
+                                        $selected = ($codigo == $Sede) ? ' selected' : '';
+                                        echo "<option value='$codigo'$selected>$codigo</option>";
+                                    }
+
+                                    $stmt->close();
+                                } else {
+                                    // Usuario normal → solo mostrar su propia sede
+                                    echo "<option value='$CodigoS' $selected>$CodigoS</option>";
+                                }
+                                ?>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="FAD" id="campo_departamento" style="display:none;">
+                        <label class="FAL">
+                            <span class="FAS">Departamento</span>
+                            <select class="FAI prueba" name="Departamento" id="departamentos">
+                                <option value="0">Seleccione el tipo de departamento:</option>
+                                <?php
+                                $stmt = $Con->prepare("SELECT id_departamento, departamento FROM rh_departamentos ORDER BY id_departamento");
                                 $stmt->execute();
                                 $result = $stmt->get_result();
 
-                                while ($row = $result->fetch_assoc()) {
-                                    $codigo = $row['codigo_s'];
-                                    $selected = ($codigo == $Sede) ? ' selected' : '';
-                                    echo "<option value='$codigo'$selected>$codigo</option>";
+                                while ($Row = $result->fetch_assoc()) {
+                                    $selected = ($Departamento == $Row['id_departamento']) ? 'selected' : '';
+                                    echo '<option value="'.$Row['id_departamento'].'" '.$selected.'>'.$Row['departamento'].'</option>';
                                 }
-
                                 $stmt->close();
                                 ?>
                             </select>
                         </label>
                     </div>
 
-                    <div class="FAD" id="campo_personal" style="display:none;">
+                    <div class="FAD" id="campo_nombres" style="display:none;">
                         <label class="FAL">
                             <span class="FAS">Personal</span>
-                            <select class="FAI prueba" name="Personal" id="personal">
+                            <select class="FAI prueba2" name="Nombre" id="nombres">
                                 <option value="0">Seleccione una sede primero</option>
                             </select>
                         </label>
                     </div>
-                    <input type="hidden" id="personalSeleccionado" value="<?= htmlspecialchars($Personal) ?>">
-
-                    <div class="FAD" id="campo_municipio" style="display:none;">
-                        <label class="FAL">
-                            <span class="FAS">Municipio</span>
-                            <select class="FAI prueba" name="Municipio" id="municipio">
-                                <option value="0">Seleccione una sede primero</option>
-                            </select>
-                        </label>
-                    </div>
-                    <input type="hidden" id="municipioSeleccionado" value="<?= htmlspecialchars($Municipio) ?>">
+                    <input type="hidden" id="nombreSeleccionado" value="<?= htmlspecialchars($Nombre) ?>">
 
                     <div class="FAD">
                         <label class="FAL">
                             <span class="FAS">Fecha de nacimiento</span>
-                            <?php $Fecha=date("2000-01-01");?>
-                            <input class="FAI" id="Fecha" type="date" name="Fecha" value="<?php echo $Fecha; ?>">
+                            <input class="FAI" id="FechaN" type="date" name="FechaN" value="<?php echo !empty($FechaN) ? $FechaN : date('2000-01-01'); ?>">
                         </label>
                     </div>
 
                     <div class="FAD">
                         <label class="FAL">
-                            <span class="FAS">CURP</span>
-                            <input class="FAI" id="CURP" type="Text" name="CURP" <?php if (isset($_POST['CURP']) != ''): ?> value="<?php echo $CURP; ?>"<?php endif; ?> size="25" maxLength="50" onkeyup="mayus(this);">
+                            <span class="FAS">Lugar de nacimiento</span>
+                            <input class="FAI" id="Lugar" type="Text" name="Lugar" <?php if (isset($_POST['Lugar']) != ''): ?> value="<?php echo $Lugar; ?>"<?php endif; ?> size="25" maxLength="50" onkeyup="mayus(this);">
                         </label>
                     </div>
 
@@ -124,8 +138,135 @@
 
                     <div class="FAD">
                         <label class="FAL">
-                            <span class="FAS">Apto</span>
-                            <input class="FAI" id="Apto" type="Text" name="Apto" <?php if (isset($_POST['Apto']) != ''): ?> value="<?php echo $Apto; ?>"<?php endif; ?> size="25" maxLength="50" onkeyup="mayus(this);">
+                            <span class="FAS">CURP</span>
+                            <input class="FAI" id="CURP" type="Text" name="CURP" <?php if (isset($_POST['CURP']) != ''): ?> value="<?php echo $CURP; ?>"<?php endif; ?> size="25" maxLength="50" onkeyup="mayus(this);">
+                        </label>
+                    </div>
+
+                    <div class="FAD">
+                        <label class="FAL">
+                            <span class="FAS">INE</span>
+                            <input class="FAI" id="INE" type="Text" name="INE" <?php if (isset($_POST['INE']) != ''): ?> value="<?php echo $INE; ?>"<?php endif; ?> size="25" maxLength="50" onkeyup="mayus(this);">
+                        </label>
+                    </div>
+
+                    <div class="FAD">
+                        <label class="FAL">
+                            <span class="FAS">Codigo postal</span>
+                            <input class="FAI" id="CP" type="Number" name="CP" <?php if (isset($_POST['CP']) != ''): ?> value="<?php echo $CP; ?>"<?php endif; ?> size="5" maxLength="5">
+                        </label>
+                    </div>
+
+                    <div class="FAD">
+                        <label class="FAL">
+                            <span class="FAS">Rol</span>
+                            <select class="FAI prueba" id="Rol" name="Rol">
+                                <option value="0">Seleccione el rol:</option>
+                                <option value="OPERATIVO" <?= ($Rol == 'OPERATIVO') ? 'selected' : '' ?>>OPERATIVO</option>
+                                <option value="ADMINISTRATIVO" <?= ($Rol == 'ADMINISTRATIVO') ? 'selected' : '' ?>>ADMINISTRATIVO</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="FAD">
+                        <label class="FAL">
+                            <span class="FAS">Puesto</span>
+                            <input class="FAI" id="Puesto" type="Text" name="Puesto" <?php if (isset($_POST['Puesto']) != ''): ?> value="<?php echo $Puesto; ?>"<?php endif; ?> size="25" maxLength="50" onkeyup="mayus(this);">
+                        </label>
+                    </div>
+
+                    <div class="FAD">
+                        <label class="FAL">
+                            <span class="FAS">Salario diario</span>
+                            <input class="FAI" id="Salario" type="Number" step="0.01" name="Salario" <?php if (isset($_POST['Salario']) != ''): ?> value="<?php echo $Salario; ?>"<?php endif; ?> size="15" maxLength="20">
+                        </label>
+                    </div>
+
+                    <div class="FAD">
+                        <label class="FAL">
+                            <span class="FAS">Escolaridad</span>
+                            <select class="FAI prueba" id="Escolaridad" name="Escolaridad">
+                                <option value="0">Seleccione la escolaridad:</option>
+                                <?php
+                                $stmt = $Con->prepare("SELECT id_escolaridad, escolaridad FROM rh_escolaridad ORDER BY id_escolaridad");
+                                $stmt->execute();
+                                $result = $stmt->get_result();
+
+                                while ($Row = $result->fetch_assoc()) {
+                                    $selected = ($Escolaridad == $Row['id_escolaridad']) ? 'selected' : '';
+                                    echo '<option value="'.$Row['id_escolaridad'].'" '.$selected.'>'.$Row['escolaridad'].'</option>';
+                                }
+                                $stmt->close();
+                                ?>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="FAD">
+                        <label class="FAL">
+                            <span class="FAS">Estado civil</span>
+                            <select class="FAI prueba" id="EstadoC" name="EstadoC">
+                                <option value="0">Seleccione el estado civil:</option>
+                                <?php
+                                $stmt = $Con->prepare("SELECT id_estado_c, estado_civil FROM rh_estado_c ORDER BY id_estado_c");
+                                $stmt->execute();
+                                $result = $stmt->get_result();
+
+                                while ($Row = $result->fetch_assoc()) {
+                                    $selected = ($EstadoC == $Row['id_estado_c']) ? 'selected' : '';
+                                    echo '<option value="'.$Row['id_estado_c'].'" '.$selected.'>'.$Row['estado_civil'].'</option>';
+                                }
+                                $stmt->close();
+                                ?>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="FAD" id="campo_municipio" style="display:none;">
+                        <label class="FAL">
+                            <span class="FAS">Municipio</span>
+                            <select class="FAI prueba2" name="Municipio" id="municipio">
+                                <option value="0">Seleccione una sede primero</option>
+                            </select>
+                        </label>
+                    </div>
+                    <input type="hidden" id="municipioSeleccionado" value="<?= htmlspecialchars($Municipio) ?>">
+
+                    <div class="FAD">
+                        <label class="FAL">
+                            <span class="FAS">Domicilio</span>
+                            <input class="FAI" id="Domicilio" type="Text" name="Domicilio" <?php if (isset($_POST['Domicilio']) != ''): ?> value="<?php echo $Domicilio; ?>"<?php endif; ?> size="25" maxLength="50" onkeyup="mayus(this);">
+                        </label>
+                    </div>
+
+                    <div class="FAD" id="campo_ruta" style="display:none;">
+                        <label class="FAL">
+                            <span class="FAS">Ruta</span>
+                            <select class="FAI prueba" name="Ruta" id="ruta">
+                                <option value="0">Seleccione una sede primero</option>
+                            </select>
+                        </label>
+                    </div>
+                    <input type="hidden" id="rutaSeleccionada" value="<?= htmlspecialchars($Camino) ?>">
+
+                    <div class="FAD">
+                        <label class="FAL">
+                            <span class="FAS">Beneficiario</span>
+                            <input class="FAI" id="Beneficiario" type="Text" name="Beneficiario" <?php if (isset($_POST['Beneficiario']) != ''): ?> value="<?php echo $Beneficiario; ?>"<?php endif; ?> size="25" maxLength="50" onkeyup="mayus(this);">
+                        </label>
+                    </div>
+
+                    <div class="FAD">
+                        <label class="FAL">
+                            <span class="FAS">Parentesco</span>
+                            <input class="FAI" id="Parentesco" type="Text" name="Parentesco" <?php if (isset($_POST['Parentesco']) != ''): ?> value="<?php echo $Parentesco; ?>"<?php endif; ?> size="25" maxLength="50" onkeyup="mayus(this);">
+                        </label>
+                    </div>
+
+                    <div class="FAD">
+                        <label class="FAL">
+                            <span class="FAS">Termino de contrato</span>
+                            <input class="FAI" id="FechaTC" type="date" name="FechaTC" value="<?php echo !empty($FechaTC) ? $FechaTC : date('Y-m-d'); ?>">
                         </label>
                     </div>
 
@@ -134,11 +275,11 @@
                     </div>
                 </section>
 
-            <?php if ($Correcto < 11) {
+            <?php if ($Correcto < 21) {
                 $tipos = [
-                    'Error' => ['cantidad' => $NumE, 'max' => 10, 'title' => 'Error!', 'type' => 'error'],
-                    'Precaucion' => ['cantidad' => $NumP, 'max' => 3, 'title' => 'Precaución!', 'type' => 'warning'],
-                    'Informacion' => ['cantidad' => $NumI, 'max' => 5, 'title' => 'Info!', 'type' => 'info']
+                    'Error' => ['cantidad' => $NumE, 'max' => 21, 'title' => 'Error!', 'type' => 'error'],
+                    'Precaucion' => ['cantidad' => $NumP, 'max' => 10, 'title' => 'Precaución!', 'type' => 'warning'],
+                    'Informacion' => ['cantidad' => $NumI, 'max' => 1, 'title' => 'Info!', 'type' => 'info']
                 ];
 
                 foreach ($tipos as $prefijo => $datos) {
@@ -171,7 +312,7 @@
             <?php }?>
             
             <script src="../../../js/modulos.js"></script>
-            <script src="../../../js/ingresos.js"></script>
+            <script src="../../../js/personal.js"></script>
         </main>
     </body>
 

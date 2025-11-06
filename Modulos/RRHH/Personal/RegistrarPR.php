@@ -5,12 +5,10 @@
     include_once "../../../Login/validar_sesion.php";
     // $Pagina=basename(__FILE__);
     // Historial($Pagina,$Con);
-    $Ver = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 1, $Con);
-    $Crear = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 2, $Con);
-    $Editar = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 3, $Con);
-    $Eliminar = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 4, $Con);
-
-    $FechaR=date("Y-m-d");
+    $Ver = TienePermiso($_SESSION['ID'], "RRHH/Personal", 1, $Con);
+    $Crear = TienePermiso($_SESSION['ID'], "RRHH/Personal", 2, $Con);
+    $Editar = TienePermiso($_SESSION['ID'], "RRHH/Personal", 3, $Con);
+    $Eliminar = TienePermiso($_SESSION['ID'], "RRHH/Personal", 4, $Con);
 
    if ($TipoRol=="ADMINISTRADOR" || $Crear==true) {
     $NumE=0;
@@ -19,47 +17,127 @@
     $Finalizado="";
     $Correcto=0;
     $Sede = isset($_POST['Sede']) ? $_POST['Sede'] : '';
-    $Nombre = isset($_POST['Nombre']) ? $_POST['Nombre'] : '';
-    $AM = isset($_POST['AM']) ? $_POST['AM'] : '';
-    $AP = isset($_POST['AP']) ? $_POST['AP'] : '';
-    $Genero = isset($_POST['Genero']) ? $_POST['Genero'] : '';
     $Departamento = isset($_POST['Departamento']) ? $_POST['Departamento'] : '';
-    $Tipo = isset($_POST['Tipo']) ? $_POST['Tipo'] : '';
-    $TipoP = isset($_POST['TipoPago']) ? $_POST['TipoPago'] : '';
-    $Horario = isset($_POST['Horarios']) ? $_POST['Horarios'] : '';
-    $Fecha = isset($_POST['Fecha']) ? $_POST['Fecha'] : '';
-    $Badge = "";
+    $Nombre = isset($_POST['Nombre']) ? $_POST['Nombre'] : '';
+    $FechaN = isset($_POST['FechaN']) ? $_POST['FechaN'] : '';
+    $Lugar = isset($_POST['Lugar']) ? $_POST['Lugar'] : '';
+    $NSS = isset($_POST['NSS']) ? $_POST['NSS'] : '';
+    $RFC = isset($_POST['RFC']) ? $_POST['RFC'] : '';
+    $CURP = isset($_POST['CURP']) ? $_POST['CURP'] : '';
+    $INE = isset($_POST['INE']) ? $_POST['INE'] : '';
+    $CP = isset($_POST['CP']) ? $_POST['CP'] : '';
+    $Rol = isset($_POST['Rol']) ? $_POST['Rol'] : '';
+    $Puesto = isset($_POST['Puesto']) ? $_POST['Puesto'] : '';
+    $Salario = isset($_POST['Salario']) ? $_POST['Salario'] : '';
+    $Escolaridad = isset($_POST['Escolaridad']) ? $_POST['Escolaridad'] : '';
+    $EstadoC = isset($_POST['EstadoC']) ? $_POST['EstadoC'] : '';
+    $Municipio = isset($_POST['Municipio']) ? $_POST['Municipio'] : '';
+    $Domicilio = isset($_POST['Domicilio']) ? $_POST['Domicilio'] : '';
+    $Camino = isset($_POST['Ruta']) ? $_POST['Ruta'] : '';
+    $Beneficiario = isset($_POST['Beneficiario']) ? $_POST['Beneficiario'] : '';
+    $Parentesco = isset($_POST['Parentesco']) ? $_POST['Parentesco'] : '';
+    $FechaTC = isset($_POST['FechaTC']) ? $_POST['FechaTC'] : '';
 
-    for ($i=1; $i <= 10; $i++) {
+    for ($i=1; $i <= 21; $i++) {
         ${"Error".$i}="";
     }
 
-    for ($i=1; $i <= 3; $i++) { 
+    for ($i=1; $i <= 10; $i++) { 
         ${"Precaucion".$i}="";
     }
 
-    for ($i=1; $i <= 5; $i++) { 
+    for ($i=1; $i <= 1; $i++) { 
         ${"Informacion".$i}="";
     }
 
-    class Val_Nombre {
-        public $Nombre;
+    class Val_Lugar {
+        public $Lugar;
+    
+        function __Construct($L){
+            $this -> Lugar = $L;
+        }
+    
+        public function getLugar(){
+            return $this -> Lugar;
+        }
+    
+        public function setLugar($Lugar){
+            $this -> Lugar = $Lugar;
+            
+            if (!empty($Lugar)) {
+                $Lugar=filter_var($Lugar, FILTER_SANITIZE_SPECIAL_CHARS);
+                
+                if (!preg_match('/^[A-ZÁÉÍÓÚÑ.,\s]*$/', $Lugar)){
+                    $Valor = 1;
+                    return $Valor;
+                }else{
+                    $Valor = 2;
+                    return $Valor;
+                }
+            }else{
+                    $Valor = 3;
+                    return $Valor;
+            }
+        }
+    }
+
+    class Val_NSS {
+        public $NSS;
     
         function __Construct($N){
-            $this -> Nombre = $N;
+            $this -> NSS = $N;
         }
     
-        public function getNombre(){
-            return $this -> Nombre;
+        public function getNSS(){
+            return $this -> NSS;
         }
     
-        public function setNombre($Nombre){
-            $this -> Nombre = $Nombre;
+        public function setNSS($NSS){
+            $this -> NSS = $NSS;
             
-            if (!empty($Nombre)) {
-                $Nombre=filter_var($Nombre, FILTER_SANITIZE_SPECIAL_CHARS);
+            if (!empty($NSS)) {
+                if (is_numeric($NSS)){
+                    if (strlen($NSS)==11) {
+                        if ($NSS >= 00000000001 && $NSS <= 99999999999) {
+                            $Valor = 1;
+                            return $Valor;
+                        }else{
+                            $Valor = 2;
+                            return $Valor; 
+                        }
+                    }else{
+                        $Valor = 3;
+                        return $Valor; 
+                    }
+                }else{
+                    $Valor = 4;
+                    return $Valor;
+                }
+            }else{
+                    $Valor = 5;
+                    return $Valor;
+            }
+        }
+    }
+
+    class Val_Codigo {
+        public $Codigo;
+    
+        function __Construct($C){
+            $this -> Codigo = $C;
+        }
+    
+        public function getCodigo(){
+            return $this -> Codigo;
+        }
+    
+        public function setCodigo($Codigo){
+            $this -> Codigo = $Codigo;
+            
+            if (!empty($Codigo)) {
+                $Codigo=filter_var($Codigo, FILTER_SANITIZE_SPECIAL_CHARS);
                 
-                if (!preg_match('/^[A-ZÁÉÍÓÚÑ.\s]*$/', $Nombre)){
+                if (!preg_match('/^[A-Z0-9.\s]*$/', $Codigo)){
                     $Valor = 1;
                     return $Valor;
                 }else{
@@ -73,24 +151,24 @@
         }
     }
 
-    class Val_ApellidoP {
-        public $ApellidoP;
+    class Val_Domicilio {
+        public $Domicilio;
     
-        function __Construct($AP){
-            $this -> ApellidoP = $AP;
+        function __Construct($D){
+            $this -> Domicilio = $D;
         }
     
-        public function getApellidoP(){
-            return $this -> ApellidoP;
+        public function getDomicilio(){
+            return $this -> Domicilio;
         }
     
-        public function setApellidoP($ApellidoP){
-            $this -> ApellidoP = $ApellidoP;
+        public function setDomicilio($Domicilio){
+            $this -> Domicilio = $Domicilio;
             
-            if (!empty($ApellidoP)) {
-                $ApellidoP=filter_var($ApellidoP, FILTER_SANITIZE_SPECIAL_CHARS);
+            if (!empty($Domicilio)) {
+                $Domicilio=filter_var($Domicilio, FILTER_SANITIZE_SPECIAL_CHARS);
                 
-                if (!preg_match('/^[A-ZÁÉÍÓÚÜÑ.\s]*$/', $ApellidoP)){
+                if (!preg_match('/^[A-ZÁÉÍÓÚÜÑ0-9.,#\s]*$/', $Domicilio)){
                     $Valor = 1;
                     return $Valor;
                 }else{
@@ -104,32 +182,74 @@
         }
     }
 
-    class Val_ApellidoM {
-        public $ApellidoM;
+    class Val_CP {
+        public $CP;
     
-        function __Construct($AM){
-            $this -> ApellidoM = $AM;
+        function __Construct($CP){
+            $this -> CP = $CP;
         }
     
-        public function getApellidoM(){
-            return $this -> ApellidoM;
+        public function getCP(){
+            return $this -> CP;
         }
     
-        public function setApellidoM($ApellidoM){
-            $this -> ApellidoM = $ApellidoM;
+        public function setCP($CP){
+            $this -> CP = $CP;
             
-            if (!empty($ApellidoM)) {
-                $ApellidoM=filter_var($ApellidoM, FILTER_SANITIZE_SPECIAL_CHARS);
-                
-                if (!preg_match('/^[A-ZÁÉÍÓÚÜÑ.\s]*$/', $ApellidoM)){
-                    $Valor = 1;
-                    return $Valor;
+            if (!empty($CP)) {
+                if (is_numeric($CP)){
+                    if (strlen($CP)==5) {
+                        if ($CP >= 10000 && $CP <= 99999) {
+                            $Valor = 1;
+                            return $Valor;
+                        }else{
+                            $Valor = 2;
+                            return $Valor; 
+                        }
+                    }else{
+                        $Valor = 3;
+                        return $Valor; 
+                    }
                 }else{
-                    $Valor = 2;
+                    $Valor = 4;
                     return $Valor;
                 }
             }else{
+                    $Valor = 5;
+                    return $Valor;
+            }
+        }
+    }
+
+    class Val_Salario {
+        public $Salario;
+    
+        function __Construct($S){
+            $this -> Salario = $S;
+        }
+    
+        public function getSalario(){
+            return $this -> Salario;
+        }
+    
+        public function setSalario($Salario){
+            $this -> Salario = $Salario;
+            
+            if (!empty($Salario)) {
+                if (is_numeric($Salario)){
+                    if ($Salario > 0 && $Salario <= 9999999999) {
+                        $Valor = 1;
+                        return $Valor;
+                    }else{
+                        $Valor = 2;
+                        return $Valor; 
+                    }
+                }else{
                     $Valor = 3;
+                    return $Valor;
+                }
+            }else{
+                    $Valor = 4;
                     return $Valor;
             }
         }
@@ -149,20 +269,15 @@
         function setFecha($Fecha){
             if (!empty($Fecha)) {
                 $Valores = explode('-', $Fecha);
-                $FechaMin="2000/01/01";
 
-                if (strtotime($Fecha) > strtotime($FechaMin)) {
-                    if(count($Valores) == 3){
-                        $Valor = 1;
-                        return $Valor;
-                    }else{
-                        $Valor = 2;
-                        return $Valor;
-                    }
+                if(count($Valores) == 3){
+                    $Valor = 1;
+                    return $Valor;
                 }else{
                     $Valor = 2;
                     return $Valor;
                 }
+
             }else{
                 $Valor = 3;
                 return $Valor;
@@ -170,52 +285,29 @@
         }
     }
 
-    // class Val_Hora {
-    //     public $Hora;
-
-    //     function __construct($H){
-    //         $this->Hora = $H;
-    //     }
-
-    //     public function getHora(){
-    //         return $this->Hora;
-    //     }
-
-    //     function setHora($Hora){
-    //         if (!empty($Hora)) {
-    //             // Validar formato con regex HH:MM o HH:MM:SS
-    //             if (preg_match('/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/', $Hora)) {
-    //                 $HoraMin = "08:00"; // Hora mínima permitida
-    //                 // Convertimos ambas a timestamp
-    //                 $horaIngresada = strtotime($Hora);
-    //                 $horaMinima = strtotime($HoraMin);
-
-    //                 if ($horaIngresada >= $horaMinima) {
-    //                     return 1; // Hora válida
-    //                 } else {
-    //                     return 2; // Hora anterior a la mínima
-    //                 }
-    //             } else {
-    //                 return 2; // Formato incorrecto
-    //             }
-    //         } else {
-    //             return 3; // Hora vacía
-    //         }
-    //     }
-    // }
-
     class Cleanner{
         public $Limpiar;
         public $Sede;
-        public $Nombre;
-        public $ApellidoP;
-        public $ApellidoM;
-        public $Genero;
         public $Departamento;
-        public $Tipo;
-        public $TipoP;
-        public $Horario;
-        public $Fecha;
+        public $Nombre;
+        public $FechaN;
+        public $Lugar;
+        public $NSS;
+        public $RFC;
+        public $CURP;
+        public $INE;
+        public $CP;
+        public $Rol;
+        public $Puesto;
+        public $Salario;
+        public $Escolaridad;
+        public $EstadoC;
+        public $Municipio;
+        public $Domicilio;
+        public $Camino;
+        public $Beneficiario;
+        public $Parentesco;
+        public $FechaTC;
 
         function __Construct($L){
             $this -> Limpiar = $L;
@@ -225,54 +317,109 @@
             return $this -> Sede="Seleccione la sede:";
         }
 
-        public function LimpiarNombre(){
-            return $this -> Nombre="";
-        }
-
-        public function LimpiarApellidoP(){
-            return $this -> ApellidoP="";
-        }
-
-        public function LimpiarApellidoM(){
-            return $this -> ApellidoM="";
-        }
-
-        public function LimpiarGenero(){
-            return $this -> Genero="Seleccione el género:";
-        }
-
         public function LimpiarDepartamento(){
             return $this -> Departamento="Seleccione el departamento:";
         }
 
-        public function LimpiarTipo(){
-            return $this -> Tipo="Seleccione el tipo de empleado:";
+        public function LimpiarNombre(){
+            return $this -> Nombre="";
         }
 
-        public function LimpiarPago(){
-            return $this -> TipoP="Seleccione el tipo de pago:";
+        public function LimpiarFechaN(){
+            return $this -> FechaN="";
         }
 
-        public function LimpiarHorario(){
-            return $this -> Tipo="Seleccione el tipo de horario:";
+        public function LimpiarLugar(){
+            return $this -> Lugar="";
         }
 
-        public function LimpiarFecha(){
-            return $this -> Fecha="";
+        public function LimpiarNSS(){
+            return $this -> NSS="";
+        }
+
+        public function LimpiarRFC(){
+            return $this -> RFC="";
+        }
+
+        public function LimpiarCURP(){
+            return $this -> CURP="";
+        }
+
+        public function LimpiarINE(){
+            return $this -> INE="";
+        }
+
+        public function LimpiarCP(){
+            return $this -> CP="";
+        }
+
+        public function LimpiarRol(){
+            return $this -> Genero="Seleccione el rol:";
+        }
+
+        public function LimpiarPuesto(){
+            return $this -> Puesto="";
+        }
+
+        public function LimpiarSalario(){
+            return $this -> Salario="";
+        }
+
+        public function LimpiarEscolaridad(){
+            return $this -> Escolaridad="Seleccione la escolaridad:";
+        }
+
+        public function LimpiarEstadoC(){
+            return $this -> Tipo="Seleccione el estado civil:";
+        }
+
+        public function LimpiarMunicipio(){
+            return $this -> TipoP="Seleccione el municipio:";
+        }
+
+        public function LimpiarDomicilio(){
+            return $this -> Domicilio="";
+        }
+
+        public function LimpiarCamino(){
+            return $this -> Camino="";
+        }
+
+        public function LimpiarBeneficiario(){
+            return $this -> Beneficiario="";
+        }
+
+        public function LimpiarParentesco(){
+            return $this -> Parentesco="";
+        }
+
+        public function LimpiarFechaTC(){
+            return $this -> FechaTC="";
         }
     }
 
     if (isset($_POST['Insertar'])) {
         $Sede=$_POST['Sede'];
-        $Nombre=$_POST['Nombre'];
-        $AP=$_POST['AP'];
-        $AM=$_POST['AM'];
-        $Genero=$_POST['Genero'];
         $Departamento=$_POST['Departamento'];
-        $Tipo=$_POST['Tipo'];
-        $TipoP=$_POST['TipoPago'];
-        $Horario=$_POST['Horarios'];
-        $Fecha=$_POST['Fecha'];
+        $Nombre=$_POST['Nombre'];
+        $FechaN=$_POST['FechaN'];
+        $Lugar=$_POST['Lugar'];
+        $NSS=$_POST['NSS'];
+        $RFC=$_POST['RFC'];
+        $CURP=$_POST['CURP'];
+        $INE=$_POST['INE'];
+        $CP=$_POST['CP'];
+        $Rol=$_POST['Rol'];
+        $Puesto=$_POST['Puesto'];
+        $Salario=$_POST['Salario'];
+        $Escolaridad=$_POST['Escolaridad'];
+        $EstadoC=$_POST['EstadoC'];
+        $Municipio=$_POST['Municipio'];
+        $Domicilio=$_POST['Domicilio'];
+        $Camino=$_POST['Ruta'];
+        $Beneficiario=$_POST['Beneficiario'];
+        $Parentesco=$_POST['Parentesco'];
+        $FechaTC=$_POST['FechaTC'];
         
         if ($Sede == "0") {
             $Error1 = "Tienes que seleccionar una sede";
@@ -292,230 +439,365 @@
             $Correcto += 1;
         }
 
-        $ValidarNombre = new Val_Nombre($Nombre);
-        $Retorno = $ValidarNombre -> setNombre($Nombre);
-        $NombreVal = $ValidarNombre -> getNombre();
-        
-        switch ($Retorno) {
-            case '1':
-                $Precaucion1 = "El nombre solo lleva mayúsculas y letras";
-                $NumP += 1;
-                break;
-            case '2':
-                $Correcto += 1;
-                break;
-            case '3':
-                $Error2 = "El campo de nombre no puede ir vacío";
-                $NumE += 1;
-                break;    
-        }
-        
-        $ValidarApellidoP = new Val_ApellidoP($AP);
-        $Retorno = $ValidarApellidoP -> setApellidoP($AP);
-        $ApellidoPVal = $ValidarApellidoP -> getApellidoP();
-        
-        switch ($Retorno) {
-            case '1':
-                $Precaucion2 = "El apellido paterno solo lleva mayúsculas y letras";
-                $NumP += 1;
-                break;
-            case '2':
-                $Correcto += 1;
-                break;
-            case '3':
-                $Error3 = "El apellido paterno no puede ir vacío";
-                $NumE += 1;
-                break;    
-        }
-
-        $ValidarApellidoM = new Val_ApellidoM($AM);
-        $Retorno = $ValidarApellidoM -> setApellidoM($AM);
-        $ApellidoMVal = $ValidarApellidoM -> getApellidoM();
-        
-        switch ($Retorno) {
-            case '1':
-                $Precaucion3 = "El apellido materno solo lleva mayúsculas y letras";
-                $NumP += 1;
-                break;
-            case '2':
-                $Correcto += 1;
-                break;
-            case '3':
-                $Error4 = "El apellido materno no puede ir vacío";
-                $NumE += 1;
-                break;    
-        }
-
-        if ($Genero == "0") {
-            $Error5 = "Tienes que seleccionar un género";
-            $NumE += 1;
-        }else{
-            $Correcto += 1;
-        }
-       
         if ($Departamento == "0") {
-            $Error6 = "Tienes que seleccionar un departamento";
+            $Error2 = "Tienes que seleccionar un departamento";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
 
-        if ($Tipo == "0") {
-            $Error7 = "Tienes que seleccionar un tipo de empleado";
+        if ($Nombre == "0") {
+            $Error3 = "Tienes que seleccionar a alguien del personal";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
-
-        if ($TipoP == "0") {
-            $Error8 = "Tienes que seleccionar un tipo de pago";
-            $NumE += 1;
-        }else{
-            $Correcto += 1;
-        }
-
-        if ($Horario == "0") {
-            $Error9 = "Tienes que seleccionar un tipo de horario";
-            $NumE += 1;
-        }else{
-            $Correcto += 1;
-        }
-
-        $ValidarFecha = new Val_Fecha($Fecha);
-        $Retorno = $ValidarFecha -> setFecha($Fecha);
-        $FechaVal = $ValidarFecha -> getFecha();
+        
+        $ValidarFecha = new Val_Fecha($FechaN);
+        $Retorno = $ValidarFecha -> setFecha($FechaN);
+        $FechaNVal = $ValidarFecha -> getFecha();
 
         switch ($Retorno) {
             case '1':
                 $Correcto += 1;
                 break;
             case '2':
-                $Error10 = "La fecha ingresada es incorrecta";
+                $Error4 = "La fecha de nacimiento ingresada es incorrecta";
                 $NumE += 1;
                 break;
             case '3':
-                $Error10 = "El campo de fecha no puede ir vacío";
+                $Error4 = "La fecha de nacimiento no puede ir vacío";
                 $NumE += 1;
                 break;    
         }
 
-        if ($Correcto===10) {
-require_once '../../../Librerias/zkteco/zklib/ZKLib.php';
-include_once '../../../Conexion/BD.php';
+        $ValidarLugar = new Val_Lugar($Lugar);
+        $Retorno = $ValidarLugar -> setLugar($Lugar);
+        $LugarVal = $ValidarLugar -> getLugar();
+        
+        switch ($Retorno) {
+            case '1':
+                $Precaucion1 = "El lugar solo lleva mayúsculas y letras";
+                $NumP += 1;
+                break;
+            case '2':
+                $Correcto += 1;
+                break;
+            case '3':
+                $Error5 = "El lugar no puede ir vacío";
+                $NumE += 1;
+                break;    
+        }
 
-date_default_timezone_set('America/Mexico_City');
-$logFile = __DIR__ . '/log.txt'; // Archivo de log
+        $ValidarNSS = new Val_NSS($NSS);
+        $Retorno = $ValidarNSS -> setNSS($NSS);
+        $NSSVal = $ValidarNSS -> getNSS();
 
-function logMessage($msg) {
-    global $logFile;
-    $timestamp = date('[Y-m-d H:i:s]');
-    file_put_contents($logFile, "$timestamp $msg\n", FILE_APPEND);
-}
+        switch ($Retorno) {
+            case '1':
+                $Correcto += 1;
+                break;
+            case '2':
+                $Precaucion2 = "El NSS debe estar entre 00000000001 y 99999999999";
+                $NumP += 1;
+                break;
+            case '3':
+                $Precaucion2 = "El NSS debe ser de 11 dígitos";
+                $NumP += 1;
+                break;
+            case '4':
+                $Precaucion2 = "Tienes que ingresar solo números en el NSS";
+                $NumP += 1;
+                break;
+            case '5':
+                $Error6 = "El NSS no puede ir vacío";
+                $NumE += 1;
+                break;   
+        }
 
-// =============================
-// 1️⃣ Calcular nuevo badge
-// =============================
-$stmt = $Con->prepare("SELECT MAX(CAST(badge AS UNSIGNED)) AS Ultimo FROM rh_personal WHERE badge REGEXP '^[0-9]+$'");
-$stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
-$stmt->close();
+        $ValidarCodigo = new Val_Codigo($RFC);
+        $Retorno = $ValidarCodigo -> setCodigo($RFC);
+        $RFCVal = $ValidarCodigo -> getCodigo();
+        
+        switch ($Retorno) {
+            case '1':
+                $Precaucion3 = "El RFC solo lleva mayúsculas, números y letras";
+                $NumP += 1;
+                break;
+            case '2':
+                if (strlen($RFCVal) == 13) {
+                    $Correcto += 1;
+                    break;
+                }else{
+                    $Precaucion3 = "El RFC tiene que tener 13 caracteres";
+                    $NumE += 1;
+                    break; 
+                }
+            case '3':
+                $Error7 = "El RFC no puede ir vacío";
+                $NumE += 1;
+                break;    
+        }
 
-$Ultimo = $row['Ultimo'] ?? 0;
-$Badge = ($Ultimo == 0) ? '1001' : str_pad($Ultimo + 1, 4, "0", STR_PAD_LEFT);
+        $ValidarCodigo = new Val_Codigo($CURP);
+        $Retorno = $ValidarCodigo -> setCodigo($CURP);
+        $CURPVal = $ValidarCodigo -> getCodigo();
+        
+        switch ($Retorno) {
+            case '1':
+                $Precaucion4 = "La curp solo lleva mayúsculas, números y letras";
+                $NumP += 1;
+                break;
+            case '2':
+                if (strlen($CURPVal) == 18) {
+                    $Correcto += 1;
+                    break;
+                }else{
+                    $Precaucion4 = "La curp tiene que tener 18 caracteres";
+                    $NumE += 1;
+                    break; 
+                }
+            case '3':
+                $Error8 = "La curp no puede ir vacío";
+                $NumE += 1;
+                break;    
+        }
 
-$user_id  = $Badge;
-$name     = $Badge; // badge como nombre
-$password = "";
-$role     = 0;
+        $ValidarCodigo = new Val_Codigo($INE);
+        $Retorno = $ValidarCodigo -> setCodigo($INE);
+        $INEVal = $ValidarCodigo -> getCodigo();
+        
+        switch ($Retorno) {
+            case '1':
+                $Precaucion5 = "La INE solo lleva mayúsculas, números y letras";
+                $NumP += 1;
+                break;
+            case '2':
+                if (strlen($INEVal) == 18) {
+                    $Correcto += 1;
+                    break;
+                }else{
+                    $Precaucion5 = "La INE tiene que tener 18 caracteres";
+                    $NumE += 1;
+                    break; 
+                }
+            case '3':
+                $INE = "";
+                $Correcto += 1;
+                break;    
+        }
 
-// =============================
-// 2️⃣ Obtener dispositivos de la sede
-// =============================
-$stmt = $Con->prepare("SELECT ip, puerto, dispositivo FROM rh_dpbiometrico WHERE id_sede_dp = ? AND id_dpbiometrico=2");
-$stmt->bind_param('i', $SedeVal);
-$stmt->execute();
-$dispositivos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-$stmt->close();
+        $ValidarCP = new Val_CP($CP);
+        $Retorno = $ValidarCP -> setCP($CP);
+        $CPVal = $ValidarCP -> getCP();
 
-// =============================
-// 3️⃣ Función ping rápido
-// =============================
-function puerto_abierto($host, $port, $timeout = 1) {
-    $conn = @fsockopen($host, $port, $errno, $errstr, $timeout);
-    if ($conn) { fclose($conn); return true; }
-    return false;
-}
+        switch ($Retorno) {
+            case '1':
+                $Correcto += 1;
+                break;
+            case '2':
+                $Precaucion6 = "El código postal debe estar entre 10000 y 99999";
+                $NumP += 1;
+                break;
+            case '3':
+                $Precaucion6 = "El código postal debe ser de 5 dígitos";
+                $NumP += 1;
+                break;
+            case '4':
+                $Precaucion6 = "Tienes que ingresar solo números en el código postal";
+                $NumP += 1;
+                break;
+            case '5':
+                $Error10 = "El código postal no puede ir vacío";
+                $NumE += 1;
+                break;   
+        }
 
-// =============================
-// 4️⃣ Enviar usuario a cada dispositivo
-// =============================
-$total = 0;
-foreach ($dispositivos as $disp) {
-    if (!puerto_abierto($disp['ip'], $disp['puerto'])) {
-        logMessage("❌ Dispositivo {$disp['dispositivo']} ({$disp['ip']}:{$disp['puerto']}) no responde.");
-        continue;
-    }
+        if ($Rol == "0") {
+            $Error11 = "Tienes que seleccionar un rol";
+            $NumE += 1;
+        }else{
+            $Correcto += 1;
+        }
 
-    $zk = new ZKLib($disp['ip'], $disp['puerto']);
-    if (!$zk->connect()) {
-        logMessage("❌ No se pudo conectar a {$disp['dispositivo']} ({$disp['ip']}:{$disp['puerto']}).");
-        continue;
-    }
+        $ValidarLugar = new Val_Lugar($Puesto);
+        $Retorno = $ValidarLugar -> setLugar($Puesto);
+        $PuestoVal = $ValidarLugar -> getLugar();
+        
+        switch ($Retorno) {
+            case '1':
+                $Precaucion7 = "El puesto solo lleva mayúsculas y letras";
+                $NumP += 1;
+                break;
+            case '2':
+                $Correcto += 1;
+                break;
+            case '3':
+                $Error12 = "El puesto no puede ir vacío";
+                $NumE += 1;
+                break;    
+        }
 
-    // Calcular nextUID individual por dispositivo
-    $users = $zk->getUser();
-    $nextUID = !empty($users) ? max(array_keys($users)) + 1 : 1;
+        $ValidarSalario = new Val_Salario($Salario);
+        $Retorno = $ValidarSalario -> setSalario($Salario);
+        $SalarioVal = $ValidarSalario -> getSalario();
 
-    $zk->disableDevice();
-    $zk->setUser($Badge, $user_id, $name, $password, $role);
-    $Correcto += 1;
-    $zk->enableDevice();
-    $zk->disconnect();
+        switch ($Retorno) {
+            case '1':
+                $Correcto += 1;
+                break;
+            case '2':
+                $Precaucion8 = "El salario debe ser mayor a 0";
+                $NumP += 1;
+                break;
+            case '3':
+                $Precaucion8 = "Tienes que ingresar solo números en el salario";
+                $NumP += 1;
+                break;
+            case '4':
+                $Error13 = "El salario no puede ir vacío";
+                $NumE += 1;
+                break;    
+        }
 
-    logMessage("✅ Usuario $user_id ($name) enviado a {$disp['dispositivo']} ({$disp['ip']}:{$disp['puerto']}) con UID $nextUID");
-    $total++;
-}
+        if ($Escolaridad == "0") {
+            $Error14 = "Tienes que seleccionar una escolaridad";
+            $NumE += 1;
+        }else{
+            $Correcto += 1;
+        }
 
-logMessage("🚀 Proceso finalizado. Total de dispositivos actualizados: $total");
+        if ($EstadoC == "0") {
+            $Error15 = "Tienes que seleccionar un estado civil";
+            $NumE += 1;
+        }else{
+            $Correcto += 1;
+        }
 
+        if ($Municipio == "0") {
+            $Error16 = "Tienes que seleccionar un municipio";
+            $NumE += 1;
+        }else{
+            $Correcto += 1;
+        }
+
+        $ValidarDomicilio = new Val_Domicilio($Domicilio);
+        $Retorno = $ValidarDomicilio -> setDomicilio($Domicilio);
+        $DomicilioVal = $ValidarDomicilio -> getDomicilio();
+        
+        switch ($Retorno) {
+            case '1':
+                $Precaucion9 = "El domicilio solo lleva mayúsculas y letras";
+                $NumP += 1;
+                break;
+            case '2':
+                $Correcto += 1;
+                break;
+            case '3':
+                $Error17 = "El domicilio no puede ir vacío";
+                $NumE += 1;
+                break;    
+        }
+
+        if ($Camino == "0") {
+            $Error18 = "Tienes que seleccionar una ruta";
+            $NumE += 1;
+        }else{
+            $Correcto += 1;
+        }
+
+        $ValidarLugar = new Val_Lugar($Beneficiario);
+        $Retorno = $ValidarLugar -> setLugar($Beneficiario);
+        $BeneficiarioVal = $ValidarLugar -> getLugar();
+        
+        switch ($Retorno) {
+            case '1':
+                $Precaucion10 = "El beneficiario solo lleva mayúsculas y letras";
+                $NumP += 1;
+                break;
+            case '2':
+                $Correcto += 1;
+                break;
+            case '3':
+                $Error19 = "El beneficiario no puede ir vacío";
+                $NumE += 1;
+                break;    
+        }
+
+        $ValidarLugar = new Val_Lugar($Parentesco);
+        $Retorno = $ValidarLugar -> setLugar($Parentesco);
+        $ParentescoVal = $ValidarLugar -> getLugar();
+        
+        switch ($Retorno) {
+            case '1':
+                $Precaucion11 = "El parentesco solo lleva mayúsculas y letras";
+                $NumP += 1;
+                break;
+            case '2':
+                $Correcto += 1;
+                break;
+            case '3':
+                $Error20 = "El parentesco no puede ir vacío";
+                $NumE += 1;
+                break;    
         }
         
-        if ($Correcto>=11) {
+        $ValidarFecha = new Val_Fecha($FechaTC);
+        $Retorno = $ValidarFecha -> setFecha($FechaTC);
+        $FechaTCVal = $ValidarFecha -> getFecha();
+
+        switch ($Retorno) {
+            case '1':
+                $Correcto += 1;
+                break;
+            case '2':
+                $Error21 = "El termino de contrato ingresado es incorrecto";
+                $NumE += 1;
+                break;
+            case '3':
+                $Error21 = "El termino de contrato no puede ir vacío";
+                $NumE += 1;
+                break;    
+        }
+        
+        if ($Correcto==21) {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $stmt = $Con->prepare("SELECT MAX(CAST(badge AS UNSIGNED)) AS Ultimo FROM rh_personal WHERE badge REGEXP '^[0-9]+$'");
-                $stmt->execute();
-                $result = $stmt->get_result();
-                $row = $result->fetch_assoc();
-
-                $Ultimo = $row['Ultimo'] ?? 0;
-                $Badge = str_pad($Ultimo + 1, 4, "0", STR_PAD_LEFT);
-                $stmt->close();
-
-                $stmt = $Con->prepare("INSERT INTO rh_personal (id_sede_pl, badge, nombre, apellido_p, apellido_m, id_genero_pl, id_te_pl, id_depto_pl, tipo_pago, id_tipo_h, fecha_ingreso, fecha_registro, id_user_p, status_pl) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)");
-                $stmt->bind_param('issssiiisissi', $SedeVal, $Badge, $NombreVal, $ApellidoPVal, $ApellidoMVal, $Genero, $Tipo, $Departamento, $TipoP, $Horario, $FechaVal, $FechaR, $ID);
+                $stmt = $Con->prepare("INSERT INTO rh_personal_completo (id_registro_p, fecha_nacimiento, lugar_nacimiento, nss, rfc, curp, ine, codigo_postal, rol_p, puesto_p, salario_diario, id_escolaridad_p, id_estado_p, id_municipio_p, domicilio, id_ruta_p, beneficiario, parentesco, terminacion_contrato, activo_p) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)");
+                $stmt->bind_param('isssssssssdiiisisss', $Nombre, $FechaNVal, $LugarVal, $NSSVal, $RFCVal, $CURPVal, $INEVal, $CPVal, $Rol, $PuestoVal, $SalarioVal, $Escolaridad, $EstadoC, $Municipio, $DomicilioVal, $Camino, $BeneficiarioVal, $ParentescoVal, $FechaTCVal);
                 $stmt->execute();
                 $stmt->close();
                 
                 $Limpiar = new Cleanner($Sede,$Nombre,$AP,$AM,$Genero,$Departamento,$Tipo,$TipoP,$Fecha);
                 $Sede = $Limpiar -> LimpiarSede();
-                $Nombre = $Limpiar -> LimpiarNombre();
-                $AP = $Limpiar -> LimpiarApellidoP();
-                $AM = $Limpiar -> LimpiarApellidoM();
-                $Genero = $Limpiar -> LimpiarGenero();
                 $Departamento = $Limpiar -> LimpiarDepartamento();
-                $Tipo = $Limpiar -> LimpiarTipo();
-                $TipoP = $Limpiar -> LimpiarPago();
-                $Fecha = $Limpiar -> LimpiarFecha();
+                $Nombre = $Limpiar -> LimpiarNombre();
+                $FechaN = $Limpiar -> LimpiarFechaN();
+                $Lugar = $Limpiar -> LimpiarLugar();
+                $NSS = $Limpiar -> LimpiarNSS();
+                $RFC = $Limpiar -> LimpiarRFC();
+                $CURP = $Limpiar -> LimpiarCURP();
+                $INE = $Limpiar -> LimpiarINE();
+                $CP = $Limpiar -> LimpiarCP();
+                $Rol = $Limpiar -> LimpiarRol();
+                $Puesto = $Limpiar -> LimpiarPuesto();
+                $Salario = $Limpiar -> LimpiarSalario();
+                $Escolaridad = $Limpiar -> LimpiarEscolaridad();
+                $EstadoC = $Limpiar -> LimpiarEstadoC();
+                $Municipio = $Limpiar -> LimpiarMunicipio();
+                $Domicilio = $Limpiar -> LimpiarDomicilio();
+                $Camino = $Limpiar -> LimpiarCamino();
+                $Beneficiario = $Limpiar -> LimpiarBeneficiario();
+                $Parentesco = $Limpiar -> LimpiarParentesco();
+                $FechaTC = $Limpiar -> LimpiarFechaTC();
                 
                 session_start();
-                $_SESSION['correcto'] = "Nuevo ingreso registrado";
+                $_SESSION['correcto'] = "Datos del personal registrado";
                 header("Location: ".$_SERVER['PHP_SELF']);
                 exit();
             }
         }
     }
 
-    include 'RegIngreso.php';
-    } else { header("Location: CatalogoNI.php"); }
+    include 'RegPersonal.php';
+    } else { header("Location: CatalogoPR.php"); }
 ?>

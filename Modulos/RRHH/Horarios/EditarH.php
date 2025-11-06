@@ -25,7 +25,7 @@
     $HoraDE = isset($_POST['HoraDE']) ? $_POST['HoraDE'] : '';
     $HoraDS = isset($_POST['HoraDS']) ? $_POST['HoraDS'] : '';
 
-    for ($i=1; $i <= 8; $i++) {
+    for ($i=1; $i <= 11; $i++) {
         ${"Error".$i}="";
     }
 
@@ -171,7 +171,7 @@
         
         $ValidarHora = new Val_Hora($HoraE);
         $Retorno = $ValidarHora -> setHora($HoraE);
-        $HoraVal = $ValidarHora -> getHora();
+        $HoraEVal = $ValidarHora -> getHora();
 
         switch ($Retorno) {
             case '1':
@@ -189,7 +189,7 @@
 
         $ValidarHora = new Val_Hora($HoraS);
         $Retorno = $ValidarHora -> setHora($HoraS);
-        $HoraVal = $ValidarHora -> getHora();
+        $HoraSVal = $ValidarHora -> getHora();
 
         switch ($Retorno) {
             case '1':
@@ -207,7 +207,7 @@
 
         $ValidarHora = new Val_Hora($HoraSE);
         $Retorno = $ValidarHora -> setHora($HoraSE);
-        $HoraVal = $ValidarHora -> getHora();
+        $HoraSEVal = $ValidarHora -> getHora();
 
         switch ($Retorno) {
             case '1':
@@ -225,7 +225,7 @@
 
         $ValidarHora = new Val_Hora($HoraSS);
         $Retorno = $ValidarHora -> setHora($HoraSS);
-        $HoraVal = $ValidarHora -> getHora();
+        $HoraSSVal = $ValidarHora -> getHora();
 
         switch ($Retorno) {
             case '1':
@@ -243,7 +243,7 @@
 
         $ValidarHora = new Val_Hora($HoraDE);
         $Retorno = $ValidarHora -> setHora($HoraDE);
-        $HoraVal = $ValidarHora -> getHora();
+        $HoraDEVal = $ValidarHora -> getHora();
 
         switch ($Retorno) {
             case '1':
@@ -261,7 +261,7 @@
 
         $ValidarHora = new Val_Hora($HoraDS);
         $Retorno = $ValidarHora -> setHora($HoraDS);
-        $HoraVal = $ValidarHora -> getHora();
+        $HoraDSVal = $ValidarHora -> getHora();
 
         switch ($Retorno) {
             case '1':
@@ -299,7 +299,7 @@
                 $Correcto += 1;
             }
         }
-
+        
         if ($Correcto==11) {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt = $Con->prepare("UPDATE rh_tipos_horarios SET id_sede_h=?, tipo_h=?, hora_entrada=?, hora_salida=?, hora_sabado_e=?, hora_sabado=?, hora_domingo_e=?, hora_domingo=? WHERE id_thorario=?");

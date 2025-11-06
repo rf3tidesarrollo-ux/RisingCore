@@ -39,7 +39,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <script src="../../../js/eliminar.js"></script>
     <script src="../../../js/session.js"></script>
     <link rel="stylesheet" href="DesignNI.css">
-    <title>Ingreso: Reporte</title>
+    <title>Ingresos: Reporte</title>
 </head>
 
 <body>
@@ -90,7 +90,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                             <th>Fecha ingreso</th>
                             <th>Fecha registro</th>
                             <th>Registró</th>
-                            <?php if ($TipoRol=="ADMINISTRADOR" || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
+                            <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
                         </tr>
                     </thead>
                     
@@ -107,7 +107,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                             <th>Fecha ingreso</th>
                             <th>Fecha registro</th>
                             <th>Registró</th>
-                            <?php if ($TipoRol=="ADMINISTRADOR" || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
+                            <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
                         </tr>
                     </tfoot>
                 </table>

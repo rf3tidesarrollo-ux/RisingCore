@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="../../../css/progressbar.css" />
     <link rel="stylesheet" href="../../../css/theme.css" />
     <link rel="stylesheet" href="DesignRI.css">
-    <title>RRHH: Reingreso</title>
+    <title>Reingreso: Editar</title>
 </head>
 
     <body onload="validar()">

@@ -35,7 +35,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <script src="../../../js/eliminar.js"></script>
     <script src="../../../js/session.js"></script>
     <link rel="stylesheet" href="DesignLI.css">
-    <title>RRHH: Incidencias</title>
+    <title>Incidencias: Reporte</title>
 </head>
 
 <body>

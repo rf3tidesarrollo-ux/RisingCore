@@ -12,7 +12,7 @@ if(isset($_GET['id']) && !empty($_GET['id'])) {
     if ($stmt->execute()) {
         // $Pagina="EliminarArticulo";
         // Historial($Pagina,$Con);
-        header("Location: CatalogoNI.php");
+        header("Location: CatalogoPR.php");
         exit();
     } else {
         echo '<script>swal("Error!", "¡Ha ocurrido un error!", "error");</script>';;
@@ -20,7 +20,7 @@ if(isset($_GET['id']) && !empty($_GET['id'])) {
     $stmt->close();
     $Con->close();
 } else {
-    header("Location: CatalogoNI.php");
+    header("Location: CatalogoPR.php");
     exit();
 }
 ?>  

@@ -23,7 +23,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <script src="../../../js/script.js"></script>
     <script src="../../../js/session.js"></script>
     <link rel="stylesheet" href="DesignLI.css">
-    <title>RRHH: Inicio</title>
+    <title>Incidencias: Inicio</title>
 </head>
 
     <body>

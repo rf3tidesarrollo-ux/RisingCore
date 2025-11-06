@@ -87,49 +87,43 @@
 
                     <div class="FAD">
                         <label class="FAL">
-                            <?php $HoraE='06:30'; ?>
                             <span class="FAS">Hora de entrada</span>
-                            <input class="FAI" id="HoraE" type="time" name="HoraE" value="<?php echo $HoraE; ?>">
+                            <input class="FAI" id="HoraE" type="time" name="HoraE" value="<?php echo !empty($HoraE) ? $HoraE : '06:30'; ?>">
                         </label>
                     </div>
 
                     <div class="FAD">
                         <label class="FAL">
-                            <?php $HoraS='15:00'; ?>
                             <span class="FAS">Hora de salida</span>
-                            <input class="FAI" id="HoraS" type="time" name="HoraS" value="<?php echo $HoraS; ?>">
+                            <input class="FAI" id="HoraS" type="time" name="HoraS" value="<?php echo !empty($HoraS) ? $HoraS : '15:00'; ?>">
                         </label>
                     </div>
 
                     <div class="FAD">
                         <label class="FAL">
-                            <?php $HoraSE='06:30'; ?>
                             <span class="FAS">Hora de entrada sabádo</span>
-                            <input class="FAI" id="HoraSE" type="time" name="HoraSE" value="<?php echo $HoraSE; ?>">
+                            <input class="FAI" id="HoraSE" type="time" name="HoraSE" value="<?php echo !empty($HoraSE) ? $HoraSE : '06:30'; ?>">
                         </label>
                     </div>
 
                     <div class="FAD">
                         <label class="FAL">
-                            <?php $HoraSS='12:00'; ?>
                             <span class="FAS">Hora de salida sábado</span>
-                            <input class="FAI" id="HoraSS" type="time" name="HoraSS" value="<?php echo $HoraSS; ?>">
+                            <input class="FAI" id="HoraSS" type="time" name="HoraSS" value="<?php echo !empty($HoraSS) ? $HoraSS : '12:00'; ?>">
                         </label>
                     </div>
 
                     <div class="FAD">
                         <label class="FAL">
-                            <?php $HoraDE='06:30'; ?>
                             <span class="FAS">Hora de entrada domingo</span>
-                            <input class="FAI" id="HoraDE" type="time" name="HoraDE" value="<?php echo $HoraDE; ?>">
+                            <input class="FAI" id="HoraDE" type="time" name="HoraDE" value="<?php echo !empty($HoraDE) ? $HoraDE : '06:30'; ?>">
                         </label>
                     </div>
 
                     <div class="FAD">
                         <label class="FAL">
-                            <?php $HoraDS='12:00'; ?>
                             <span class="FAS">Hora de salida domingo</span>
-                            <input class="FAI" id="HoraDS" type="time" name="HoraDS" value="<?php echo $HoraDS; ?>">
+                            <input class="FAI" id="HoraDS" type="time" name="HoraDS" value="<?php echo !empty($HoraDS) ? $HoraDS : '12:00'; ?>">
                         </label>
                     </div>
 
@@ -140,8 +134,8 @@
 
             <?php if ($Correcto < 11) {
                 $tipos = [
-                    'Error' => ['cantidad' => $NumE, 'max' => 8, 'title' => 'Error!', 'type' => 'error'],
-                    'Precaucion' => ['cantidad' => $NumP, 'max' => 4, 'title' => 'Precaución!', 'type' => 'warning'],
+                    'Error' => ['cantidad' => $NumE, 'max' => 11, 'title' => 'Error!', 'type' => 'error'],
+                    'Precaucion' => ['cantidad' => $NumP, 'max' => 7, 'title' => 'Precaución!', 'type' => 'warning'],
                     'Informacion' => ['cantidad' => $NumI, 'max' => 1, 'title' => 'Info!', 'type' => 'info']
                 ];
 

@@ -39,7 +39,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <script src="../../../js/eliminar.js"></script>
     <script src="../../../js/session.js"></script>
     <link rel="stylesheet" href="DesignLI.css">
-    <title>Ingreso: Reporte</title>
+    <title>L. Incidencias: Reporte</title>
 </head>
 
 <body>

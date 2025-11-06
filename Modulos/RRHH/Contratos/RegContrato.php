@@ -4,21 +4,21 @@
     <?php $Ruta = "../../../"; include_once '../../../Complementos/Logo_movil.php'; ?>
     
     <script src="https://code.jquery.com/jquery-3.7.1.js" type="text/javascript"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://kit.fontawesome.com/367278d2a4.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <script src="../../../js/select.js"></script>
     <script src="../../../js/session.js"></script>
     <link rel="stylesheet" href="../../../css/eggy.css" />
     <link rel="stylesheet" href="../../../css/progressbar.css" />
     <link rel="stylesheet" href="../../../css/theme.css" />
-    <link rel="stylesheet" href="DesignLI.css">
-    <title>Incidencias: Editar</title>
+    <link rel="stylesheet" href="DesignCC.css">
+    <title>Contratos: Registrar</title>
 </head>
 
-    <body onload="validar()">
+<body onload="validar()">
         <?php
         $basePath = "../";
         $Logo = "../../../";
@@ -29,13 +29,13 @@
         <main>
             <div style="background: #f9f9f9; padding: 12px 25px; border-bottom: 1px solid #ccc; font-size: 16px;">
                 <nav style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
-                    <a href="/RisingCore/Modulos/RRHH/Inciio.php" style="color: #6c757d; text-decoration: none;">
+                    <a href="/RisingCore/Modulos/RRHH/Inicio.php" style="color: #6c757d; text-decoration: none;">
                         👥 Recursos Humanos
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <a href="/RisingCore/Modulos/RRHH/Merma/Inicio.php" style="color: #6c757d; text-decoration: none;">
-                        ❗ Incidencias
+                    <a href="/RisingCore/Modulos/RRHH/Ingreso/Inicio.php" style="color: #6c757d; text-decoration: none;">
+                        📝 Contratos
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
@@ -44,16 +44,13 @@
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <strong style="color: #333;">✏️ Registros de incidencias</strong>
+                    <strong style="color: #333;">✏️ Generación de contratos</strong>
                 </nav>
             </div>
-            
-            <a title="Reporte" href="CatalogoCI.php"><div class="back"><i class="fa-solid fa-left-long fa-xl"></i></div></a>
 
             <section class="Registro">
-                <h4>Registro de incidencia</h4>
+                <h4>Generación de contrato</h4>
                 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" method="POST" name="octavo" id="">
-                    <input class="Controles" id="0" type="hidden" name="id" value="<?php echo $ID; ?>">
                     <div class="FAD">
                         <label class="FAL">
                             <span class="FAS">Sede</span>
@@ -113,40 +110,27 @@
 
                     <div class="FAD">
                         <label class="FAL">
-                            <span class="FAS">Tipo de permiso</span>
-                            <select class="FAI prueba" id="Permiso" name="Permiso">
-                                <option value="0">Seleccione el tipo de permiso:</option>
-                                <?php
-                                $stmt = $Con->prepare("SELECT id_permiso, tipo_permiso FROM rh_permisos WHERE id_permiso NOT IN (1) ORDER BY id_permiso");
-                                $stmt->execute();
-                                $result = $stmt->get_result();
-
-                                while ($Row = $result->fetch_assoc()) {
-                                    $selected = ($Permiso == $Row['id_permiso']) ? 'selected' : '';
-                                    echo '<option value="'.$Row['id_permiso'].'" '.$selected.'>'.$Row['tipo_permiso'].'</option>';
-                                }
-                                $stmt->close();
-                                ?>
+                            <span class="FAS">Tipo de contrato</span>
+                            <select class="FAI prueba" id="contrato" name="Contrato">
+                                <option value="0">Seleccione un tipo de contrato:</option>
+                                <option value="1">PRUEBA DE 1 MES</option>
+                                <option value="2">PRUEBA DE 3 MESES</option>
+                                <option value="3">INDETERMINADO</option>
+                                <option value="4">OBRA DETERMINADA</option>
                             </select>
                         </label>
                     </div>
 
-                    <div class="FAD">
-                        <label class="FAL">
-                            <span class="FAS">Fecha</span>
-                            <input class="FAI" id="FI" type="date" name="FI" value="<?php echo !empty($FI) ? $FI : date('Y-m-d'); ?>">
-                        </label>
-                    </div>
+                    <div class=Center2>
 
-
-                    <div class=Center>
-                        <input class="Boton" id="AB" type="Submit" value="Actualizar" name="Modificar">
+                        <a id="linkWord" title="Mostrar" class="Boton" href="" target="_blank"><i class="fa-solid fa-file-word fa-2xl" style="color: #ffffffff;"></i></a>
+                        
                     </div>
                 </section>
 
-            <?php if ($Correcto < 4) {
+            <?php if ($Correcto < 3) {
                 $tipos = [
-                    'Error' => ['cantidad' => $NumE, 'max' => 4, 'title' => 'Error!', 'type' => 'error'],
+                    'Error' => ['cantidad' => $NumE, 'max' => 3, 'title' => 'Error!', 'type' => 'error'],
                     'Precaucion' => ['cantidad' => $NumP, 'max' => 1, 'title' => 'Precaución!', 'type' => 'warning'],
                     'Informacion' => ['cantidad' => $NumI, 'max' => 1, 'title' => 'Info!', 'type' => 'info']
                 ];
@@ -181,7 +165,7 @@
             <?php }?>
             
             <script src="../../../js/modulos.js"></script>
-            <script src="../../../js/incidencias.js"></script>
+            <script src="../../../js/contratos.js"></script>
         </main>
     </body>
 

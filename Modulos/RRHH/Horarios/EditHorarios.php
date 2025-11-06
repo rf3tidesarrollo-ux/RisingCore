@@ -137,7 +137,7 @@
 
             <?php if ($Correcto < 11) {
                 $tipos = [
-                    'Error' => ['cantidad' => $NumE, 'max' => 8, 'title' => 'Error!', 'type' => 'error'],
+                    'Error' => ['cantidad' => $NumE, 'max' => 11, 'title' => 'Error!', 'type' => 'error'],
                     'Precaucion' => ['cantidad' => $NumP, 'max' => 4, 'title' => 'Precaución!', 'type' => 'warning'],
                     'Informacion' => ['cantidad' => $NumI, 'max' => 1, 'title' => 'Info!', 'type' => 'info']
                 ];

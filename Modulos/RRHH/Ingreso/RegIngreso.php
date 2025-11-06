@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="../../../css/progressbar.css" />
     <link rel="stylesheet" href="../../../css/theme.css" />
     <link rel="stylesheet" href="DesignNI.css">
-    <title>RRHH: Nuevo Ingreso</title>
+    <title>Ingresos: Registrar</title>
 </head>
 
 <body onload="validar()">
