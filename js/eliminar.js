@@ -92,7 +92,7 @@ function mostrarRegistroR(id){
         var pNombre = info.np;
         var nave = info.i;
         var cCajas = info.cc; 
-        var tCaja = info.tc; 
+        var tCaja = info.c; 
         var pBruto = info.pb; 
         var pTaraje = info.pt;
         var pNeto = info.pn; 
@@ -111,17 +111,17 @@ function mostrarRegistroR(id){
         "VARIEDAD: " + vNombre + "\n" +
         "PRESENTACIÓN: " + pNombre + "\n" +
         "NAVE: " + nave + "\n" +
-        "CANTIDAD DE CAJAS: " + cCajas + "\n" +
+        "TIPO DE CARRO: " + tCarro + "\n" +
+        "TIPO DE TARIMAS: " + nTarima + "\n" +
+        "CANTIDAD DE TARIMAS: " + cTarima + "\n" +
         "TIPO DE CAJA: " + tCaja + "\n" +
+        "CANTIDAD DE CAJAS: " + cCajas + "\n" +
         "PESO BRUTO: " + pBruto + "\n" +
         "PESO TARAJE: " + pTaraje + "\n" +
         "PESO NETO: " + pNeto + "\n" +
         "FECHA DE REGISTRO: " + fecha + "\n" +
         "HORA: " + hora + "\n" +
-        "SEMANA: " + rSemana + "\n" +
-        "TIPO DE CARRO: " + tCarro + "\n" +
-        "TIPO DE TARIMAS: " + nTarima + "\n" +
-        "CANTIDAD DE TARIMAS: " + cTarima);
+        "SEMANA: " + rSemana );
       }
     },
     error: function(error){
@@ -145,7 +145,7 @@ function mostrarRegistroM(id){
         var cNombre = info.tm;
         var motivo = info.m;
         var cCajas = info.cc; 
-        var tCaja = info.tc; 
+        var tCaja = info.c; 
         var pBruto = info.pb; 
         var pTaraje = info.pt;
         var pNeto = info.pn; 
@@ -162,7 +162,7 @@ function mostrarRegistroM(id){
         "CLASIFICACIÓN: " + cNombre + "\n" +
         "MOTIVO: " + motivo + "\n" +
         "TRAILA: " + tCarro + "\n" +
-        "TIPO DE TARIMAS: " + nTarima + "\n" +
+        "TIPO DE TARIMA: " + nTarima + "\n" +
         "CANTIDAD DE TARIMAS: " + cTarima + "\n" +
         "TIPO DE CAJA: " + tCaja + "\n" +
         "CANTIDAD DE CAJAS: " + cCajas + "\n" +
@@ -322,11 +322,6 @@ function mostrarRegistroEm(id){
         var semana = info.se;
         var cNmbre = info.nc;
         var estado = info.ee;
-          if (estado=="0") {
-            estado = "PENDIENTE";
-          }else{
-            estado = "ENVIADO";
-          }
 
         swal("Información:",
         "SEDE: " + sede + "\n" +
@@ -354,6 +349,51 @@ function mostrarRegistroEm(id){
 function mostrarRegistroNI(id){
   $.ajax({
     url: 'MostrarNI.php',
+    type: 'POST',
+    async: true,
+    data: {id:id},
+    success: function(response){
+      if (response != 'error') {
+        var info = JSON.parse(response);
+        var sede = info.s;
+        var badge = info.b;
+        var personal = info.np;
+        var genero = info.g;
+        var tipo = info.te;
+        var depto = info.d;
+        var tPago = info.tp;
+        var tipo2 = info.th;
+        var FI = info.fi;
+        var fechaI = FI.split('-').reverse().join('/');
+        var FR = info.fr;
+        var fechaR = FR.split('-').reverse().join('/');
+        var cNmbre = info.nc;
+
+        swal("Información:",
+        "SEDE: " + sede + "\n" +
+        "BADGE: " + badge + "\n" +
+        "NOMBRE: " + personal + "\n" +
+        "GENÉRO: " + genero + "\n" +
+        "TIPO DE EMPLEADO: " + tipo + "\n" +
+        "DEPARTAMENTO: " + depto + "\n" +
+        "TIPO DE PAGO: " + tPago + "\n" +
+        "TIPO DE HORARIO: " + tipo2 + "\n" +
+        "FECHA DE INGRESO: " + fechaI + "\n" +
+        "FECHA DE REGISTRO: " + fechaR + "\n" +
+        "REGISTRÓ: " + cNmbre);
+      }
+    },
+    error: function(error){
+      swal("Error!", {
+        icon: "error",
+      });
+    },
+  });
+}
+
+function mostrarRegistroPI(id){
+  $.ajax({
+    url: 'MostrarPI.php',
     type: 'POST',
     async: true,
     data: {id:id},

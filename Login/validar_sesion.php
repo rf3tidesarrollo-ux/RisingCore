@@ -4,7 +4,7 @@
 // =======================================
 ob_start();
 session_start();
-$Inactividad = 3600; // Tiempo de inactividad en segundos (1 hora)
+$Inactividad = 1800; // Tiempo de inactividad en segundos (30 minutos)
 
 // =======================================
 // Función para cerrar sesión
@@ -29,6 +29,35 @@ $CodigoS   = $_SESSION['CodigoS'] ?? null;
 $ID        = $_SESSION['ID'] ?? null;
 
 // =======================================
+// Verificar si la sesión fue invalidada desde la BD
+// =======================================
+if (!empty($ID)) {
+    include_once __DIR__ . '/../Conexion/BD.php'; // Ajusta ruta si es diferente
+
+    $stmt = $Con->prepare("SELECT id_session FROM usuarios WHERE id_usuario = ?");
+    $stmt->bind_param("i", $ID);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $dbSession = $res->fetch_assoc()['id_session'] ?? null;
+    $stmt->close();
+
+    // ⚠️ Si el id_session en BD no coincide con el actual, forzar logout
+    if ($dbSession === null || $dbSession !== session_id()) {
+        session_unset();
+        session_destroy();
+
+        if ($isAjax) {
+            header('Content-Type: application/json');
+            echo json_encode(['expired' => true, 'msg' => 'Sesión cerrada por administrador']);
+            exit;
+        } else {
+            header("Location: $RutaSC?msg=sesion_cerrada");
+            exit;
+        }
+    }
+}
+
+// =======================================
 // Detectar peticiones AJAX
 // =======================================
 $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
@@ -40,16 +69,28 @@ $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
 if (isset($_SESSION["Timeout"])) {
     $TiempoSession = time() - $_SESSION["Timeout"];
     if ($TiempoSession > $Inactividad) {
+        // --- 🔹 Actualizar estado e id_session en BD ---
+        if (!empty($_SESSION['ID'])) {
+            include_once __DIR__ . '/../Conexion/BD.php';
+            $stmt = $Con->prepare("UPDATE usuarios SET estado = 0, id_session = NULL WHERE id_usuario = ?");
+            $stmt->bind_param("i", $_SESSION['ID']);
+            $stmt->execute();
+            $stmt->close();
+        }
+
+        // --- 🔹 Destruir sesión ---
         session_destroy();
+
         if ($isAjax) {
             header('Content-Type: application/json');
             echo json_encode(['expired' => true]);
             exit;
         } else {
-            cerrar_sesion($RutaCS);
+            cerrar_sesion($RutaCS); // ya redirige al cierre general
         }
     }
 }
+
 $_SESSION["Timeout"] = time();
 
 // =======================================
