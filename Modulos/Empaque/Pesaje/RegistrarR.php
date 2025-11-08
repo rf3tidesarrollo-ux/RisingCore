@@ -35,12 +35,16 @@
     $NoSerie="";
     $CodigoR="";
 
-    for ($i=1; $i <= 10; $i++) {
+    for ($i=1; $i <= 11; $i++) {
         ${"Error".$i}="";
     }
 
     for ($i=1; $i <= 5; $i++) { 
         ${"Precaucion".$i}="";
+    }
+
+    for ($i=1; $i <= 1; $i++) { 
+        ${"Informacion".$i}="";
     }
 
     class Val_KilosB {
@@ -266,14 +270,14 @@
             $Correcto += 1;
         }
 
-        if ($Carro == "Seleccione la traila:") {
+        if ($Carro == "0") {
             $Error3 = "Tienes que seleccionar una traila";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
 
-        if ($Tarima == "Seleccione la tarima:") {
+        if ($Tarima == "0") {
             $Error4 = "Tienes que seleccionar una tarima";
             $NumE += 1;
         }else{
@@ -313,7 +317,7 @@
                 }
         }
 
-        if ($Caja == "Seleccione la caja:") {
+        if ($Caja == "0") {
             $Error6 = "Tienes que seleccionar una caja";
             $NumE += 1;
         }else{

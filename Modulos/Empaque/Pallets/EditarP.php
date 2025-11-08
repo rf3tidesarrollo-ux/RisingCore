@@ -39,6 +39,10 @@
         ${"Precaucion".$i}="";
     }
 
+    for ($i=1; $i <= 1; $i++) { 
+        ${"Informacion".$i}="";
+    }
+
     class Val_Fecha {
         public $Fecha;
     

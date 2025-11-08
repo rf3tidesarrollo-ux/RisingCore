@@ -29,12 +29,16 @@
     $CajasA = isset($_POST['CajasA']) ? $_POST['CajasA'] : '';
     $Activo=1;
 
-    for ($i=1; $i <= 6; $i++) {
+    for ($i=1; $i <= 3; $i++) {
         ${"Error".$i}="";
     }
 
     for ($i=1; $i <= 1; $i++) { 
         ${"Precaucion".$i}="";
+    }
+
+    for ($i=1; $i <= 1; $i++) { 
+        ${"Informacion".$i}="";
     }
 
     class Cleanner{

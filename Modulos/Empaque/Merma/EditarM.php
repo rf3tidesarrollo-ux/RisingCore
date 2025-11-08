@@ -5,10 +5,10 @@
     include_once "../../../Login/validar_sesion.php";
     // $Pagina=basename(__FILE__);
     // Historial($Pagina,$Con);
-    $Ver = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 1, $Con);
-    $Crear = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 2, $Con);
-    $Editar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 3, $Con);
-    $Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 4, $Con);
+    $Ver = TienePermiso($_SESSION['ID'], "Empaque/Merma", 1, $Con);
+    $Crear = TienePermiso($_SESSION['ID'], "Empaque/Merma", 2, $Con);
+    $Editar = TienePermiso($_SESSION['ID'], "Empaque/Merma", 3, $Con);
+    $Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Merma", 4, $Con);
 
     $FechaR=date("Y-m-d");
     $HoraR=date("H:i:s");
@@ -35,12 +35,16 @@
     $Clasificacion = "";
     $CodigoR = "";
 
-    for ($i=1; $i <= 14; $i++) {
+    for ($i=1; $i <= 13; $i++) {
         ${"Error".$i}="";
     }
 
-    for ($i=1; $i <= 5; $i++) { 
+    for ($i=1; $i <= 4; $i++) { 
         ${"Precaucion".$i}="";
+    }
+
+    for ($i=1; $i <= 1; $i++) { 
+        ${"Informacion".$i}="";
     }
 
     class Val_KilosB {
@@ -308,14 +312,14 @@
             $Correcto += 1;
         }
 
-        if ($Carro == "Seleccione el carro:") {
+        if ($Carro == "0") {
             $Error5 = "Tienes que seleccionar un carro";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
 
-        if ($Tarima == "Seleccione la tarima:") {
+        if ($Tarima == "0") {
             $Error6 = "Tienes que seleccionar una tarima";
             $NumE += 1;
         }else{
@@ -355,7 +359,7 @@
                 }
         }
 
-        if ($Caja == "Seleccione la caja:") {
+        if ($Caja == "0") {
             $Error8 = "Tienes que seleccionar una caja";
             $NumE += 1;
         }else{

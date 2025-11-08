@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-        <link rel="shortcut icon" href="../../../Images/MiniLogo.png">
+        <?php $Ruta = "../../../"; include_once '../../../Complementos/Logo_movil.php'; ?>
+
         <script src="https://code.jquery.com/jquery-3.7.1.js" type="text/javascript"></script>
         <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js" ></script>
         <link href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css" rel="stylesheet">
@@ -21,11 +19,12 @@
         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <script src="../../../js/select.js"></script>
+        <script src="../../../js/session.js"></script>
         <link rel="stylesheet" href="../../../css/eggy.css" />
         <link rel="stylesheet" href="../../../css/progressbar.css" />
         <link rel="stylesheet" href="../../../css/theme.css" />
         <link rel="stylesheet" href="DesignMz.css">
-        <title>Empaque: Mezclas</title>
+        <title>Mezcla: Registrar</title>
     </head>
 
     <body onload="validar()">
@@ -39,17 +38,17 @@
         <main>
             <div style="background: #f9f9f9; padding: 12px 25px; border-bottom: 1px solid #ccc; font-size: 16px;">
                 <nav style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
-                    <a href="/RisingCore/Modulos/index.php" style="color: #6c757d; text-decoration: none;">
+                    <a href="/RisingCore/Modulos/Empaque/Inicio.php" style="color: #6c757d; text-decoration: none;">
                         📦 Empaque
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <a href="/RisingCore/Modulos/Empaque/index.php" style="color: #6c757d; text-decoration: none;">
+                    <a href="/RisingCore/Modulos/Empaque/Mezcla/Inicio.php" style="color: #6c757d; text-decoration: none;">
                         🥗 Mezclas
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <a href="/RisingCore/Modulos/Empaque/Pesajes" style="color: #6c757d; text-decoration: none;">
+                    <a href="#" style="color: #6c757d; text-decoration: none;">
                         📋 Registros
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
@@ -68,20 +67,24 @@
                         <label class="FAL">
                             <span class="FAS">Sede</span>
                             <select class="FAI prueba" id="sede2" name="Sede">
-                                <option value="0">Seleccione la sede:</option>
                                 <?php
-                                $stmt = $Con->prepare("SELECT codigo_s FROM sedes ORDER BY codigo_s");
-                                $stmt->execute();
-                                $result = $stmt->get_result();
+                                if ($TipoRol === 'ADMINISTRADOR' || $TipoRol==='SUPERVISOR') {
+                                    echo '<option value="0">Seleccione la sede:</option>';
+                                    $stmt = $Con->prepare("SELECT codigo_s FROM sedes ORDER BY codigo_s");
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
 
-                                while ($row = $result->fetch_assoc()) {
-                                    $codigo = $row['codigo_s'];
-                                    // Si coincide con la variable $Sede, lo marca como seleccionado
-                                    $selected = ($codigo == $Sede) ? ' selected' : '';
-                                    echo "<option value='$codigo'$selected>$codigo</option>";
+                                    while ($row = $result->fetch_assoc()) {
+                                        $codigo = $row['codigo_s'];
+                                        $selected = ($codigo == $Sede) ? ' selected' : '';
+                                        echo "<option value='$codigo'$selected>$codigo</option>";
+                                    }
+
+                                    $stmt->close();
+                                } else {
+                                    // Usuario normal → solo mostrar su propia sede
+                                    echo "<option value='$CodigoS' $selected>$CodigoS</option>";
                                 }
-
-                                $stmt->close();
                                 ?>
                             </select>
                         </label>
@@ -225,44 +228,34 @@
             </section>
         </div>
 
-        <?php if ($Correcto < 5) {
-                 if ($NumE>0) { 
-                    for ($i=1; $i <= 5; $i++) {
-                        $Error=${"Error".$i};
-                        if (!empty($Error)) { ?>
+        <?php if ($Correcto < 3) {
+                $tipos = [
+                    'Error' => ['cantidad' => $NumE, 'max' => 3, 'title' => 'Error!', 'type' => 'error'],
+                    'Precaucion' => ['cantidad' => $NumP, 'max' => 1, 'title' => 'Precaución!', 'type' => 'warning'],
+                    'Informacion' => ['cantidad' => $NumI, 'max' => 1, 'title' => 'Info!', 'type' => 'info']
+                ];
+
+                foreach ($tipos as $prefijo => $datos) {
+                    for ($i = 1; $i <= $datos['max']; $i++) {
+                        $var = ${$prefijo.$i};
+                        if (!empty($var)) { ?>
                             <script type="module">
-                                var error="<?php echo $Error;?>";
                                 import { Eggy } from '../../../js/eggy.js';
-                                await Eggy({title: 'Error!', message: error, type: 'error', position: 'top-right', duration: 20000});
+                                async function showMessage(msg) {
+                                    await Eggy({
+                                        title: '<?php echo $datos['title']; ?>',
+                                        message: msg,
+                                        type: '<?php echo $datos['type']; ?>',
+                                        position: 'top-right',
+                                        duration: 20000
+                                    });
+                                }
+                                showMessage("<?php echo $var; ?>");
                             </script>
-                        <?php } ?>
-                    <?php } ?>
-                <?php }
-                if ($NumP>0) { 
-                    for ($i=1; $i <= 5; $i++) {
-                        $Precaucion=${"Precaucion".$i};
-                        if (!empty($Precaucion)) { ?>
-                            <script type="module">
-                                var error="<?php echo $Precaucion;?>";
-                                import { Eggy } from '../../../js/eggy.js';
-                                await Eggy({title: 'Precaución!', message: error, type: 'warning', position: 'top-right', duration: 20000});
-                            </script>
-                        <?php } ?>
-                    <?php } ?>
-                <?php }
-                if ($NumI>0) { 
-                    for ($i=1; $i <= 4; $i++) {
-                        $Informacion=${"Informacion".$i};
-                        if (!empty($Informacion)) { ?>
-                            <script type="module">
-                                var error="<?php echo $Informacion;?>";
-                                import { Eggy } from '../../../js/eggy.js';
-                                await Eggy({title: 'Error!', message: error, type: 'info', position: 'top-right', duration: 20000});
-                            </script>
-                        <?php } ?>
-                    <?php } ?>
-                <?php }
-        } 
+                        <?php }
+                    }
+                }
+            } 
         if (isset($_SESSION['correcto'])) { $Finalizado = $_SESSION['correcto']; unset($_SESSION['correcto']); ?>
             <script type="module">
             var error="<?php echo $Finalizado;?>";
@@ -291,6 +284,19 @@
             ajax: {
                 url: '../../Server_side/Mezcla/get_lotes_temp.php?id=0',
                 type: 'POST',
+                dataFilter: function(data){
+                // Intentar parsear JSON
+                    try {
+                        var json = JSON.parse(data);
+                        if(json.expired) {
+                            location.href = '../../../index.php';
+                            return JSON.stringify({ data: [] }); // evitar error en DataTables
+                        }
+                        return data;
+                    } catch(e) {
+                        return data; // si no es JSON, seguir normal
+                    }
+                }
             },
             columns: [
                     { data: 'no_serie_r' },

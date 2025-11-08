@@ -5,20 +5,18 @@ $RutaSC = "../../../index.php";
 include_once "../../../Login/validar_sesion.php";
 // $Pagina=basename(__FILE__);
 // Historial($Pagina,$Con);
-$Ver = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 1, $Con);
-$Crear = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 2, $Con);
-$Editar = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 3, $Con);
-$Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 4, $Con);
+$Ver = TienePermiso($_SESSION['ID'], "Empaque/CamaraFria", 1, $Con);
+$Crear = TienePermiso($_SESSION['ID'], "Empaque/CamaraFria", 2, $Con);
+$Editar = TienePermiso($_SESSION['ID'], "Empaque/CamaraFria", 3, $Con);
+$Eliminar = TienePermiso($_SESSION['ID'], "Empaque/CamaraFria", 4, $Con);
 
 if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <link rel="shortcut icon" href="../../../Images/MiniLogo.png">
+    <?php $Ruta = "../../../"; include_once '../../../Complementos/Logo_movil.php'; ?>
+
     <script src="https://code.jquery.com/jquery-3.7.1.js" type="text/javascript"></script>
     <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js" ></script>
     <link href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css" rel="stylesheet">
@@ -35,6 +33,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <script src="../../../js/select.js"></script>
+    <script src="../../../js/session.js"></script>
     <link rel="stylesheet" href="DesignCF.css">
     <title>Camára Fría: Registro</title>
 </head>
@@ -50,12 +49,12 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
         <main>
             <div style="background: #f9f9f9; padding: 12px 25px; border-bottom: 1px solid #ccc; font-size: 16px;">
                 <nav style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
-                    <a href="/RisingCore/Modulos/Empaque/index.php" style="color: #6c757d; text-decoration: none;">
+                    <a href="/RisingCore/Modulos/Empaque/Inicio.php" style="color: #6c757d; text-decoration: none;">
                         📦 Empaque
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <a href="/RisingCore/Modulos/Empaque/Merma/index.php" style="color: #6c757d; text-decoration: none;">
+                    <a href="/RisingCore/Modulos/Empaque/CamaraFria/Inicio.php" style="color: #6c757d; text-decoration: none;">
                         🌡️❄️ Camára Fría
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
@@ -77,22 +76,26 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                             <label class="FAL">
                                 <span class="FAS">Sede</span>
                                 <select class="FAI prueba" id="sede3" name="Sede">
-                                    <option value="0">Seleccione la sede:</option>
-                                    <?php
+                                <?php
+                                if ($TipoRol === 'ADMINISTRADOR' || $TipoRol==='SUPERVISOR') {
+                                    echo '<option value="0">Seleccione la sede:</option>';
                                     $stmt = $Con->prepare("SELECT codigo_s FROM sedes ORDER BY codigo_s");
                                     $stmt->execute();
                                     $result = $stmt->get_result();
 
                                     while ($row = $result->fetch_assoc()) {
                                         $codigo = $row['codigo_s'];
-                                        // Si coincide con la variable $Sede, lo marca como seleccionado
                                         $selected = ($codigo == $Sede) ? ' selected' : '';
                                         echo "<option value='$codigo'$selected>$codigo</option>";
                                     }
 
                                     $stmt->close();
-                                    ?>
-                                </select>
+                                } else {
+                                    // Usuario normal → solo mostrar su propia sede
+                                    echo "<option value='$CodigoS' $selected>$CodigoS</option>";
+                                }
+                                ?>
+                            </select>
                             </label>
                         </div>
 
@@ -150,8 +153,21 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
             ajax: {
                 url: 'get_pallets.php',
                 type: 'POST',
-                 data: function(d) {
+                data: function(d) {
                 d.embarque_id = $('#embarques').val(); //enviar embarque seleccionado
+                },
+                dataFilter: function(data){
+                // Intentar parsear JSON
+                try {
+                    var json = JSON.parse(data);
+                    if(json.expired) {
+                        location.href = '../../../index.php';
+                        return JSON.stringify({ data: [] }); // evitar error en DataTables
+                    }
+                    return data;
+                } catch(e) {
+                    return data; // si no es JSON, seguir normal
+                }
                 }
             },
             columns: [

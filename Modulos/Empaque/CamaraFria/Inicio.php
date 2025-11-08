@@ -5,10 +5,10 @@ $RutaSC = "../../../index.php";
 include_once "../../../Login/validar_sesion.php";
 // $Pagina=basename(__FILE__);
 // Historial($Pagina,$Con);
-$Ver = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 1, $Con);
-$Crear = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 2, $Con);
-$Editar = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 3, $Con);
-$Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pallets", 4, $Con);
+$Ver = TienePermiso($_SESSION['ID'], "Empaque/CamaraFria", 1, $Con);
+$Crear = TienePermiso($_SESSION['ID'], "Empaque/CamaraFria", 2, $Con);
+$Editar = TienePermiso($_SESSION['ID'], "Empaque/CamaraFria", 3, $Con);
+$Eliminar = TienePermiso($_SESSION['ID'], "Empaque/CamaraFria", 4, $Con);
 
 if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 ?>
@@ -22,8 +22,8 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="../../../js/script.js"></script>
     <script src="../../../js/session.js"></script>
-    <link rel="stylesheet" href="DesignP.css">
-    <title>Pallets: Inicio</title>
+    <link rel="stylesheet" href="DesignCF.css">
+    <title>Camára Fría: Inicio</title>
 </head>
 
     <body>
@@ -42,7 +42,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                             box-shadow: 0 8px 20px rgba(0,0,0,0.2); 
                             font-family: 'Segoe UI', sans-serif;">
                     <h1 style="font-size: 2.5rem; margin-bottom: 15px;">¡BIENVENID@ <span style="color: #000000ff;"><?=$Titular?></span>!</h1>
-                    <h2 style="font-size: 1.5rem; font-weight: 400;">A <b>PALLETS</b></h2>
+                    <h2 style="font-size: 1.5rem; font-weight: 400;">A <b>CAMÁRA FRÍA</b></h2>
                     <p style="margin-top: 20px; font-size: 1rem; opacity: 0.9;">
                     Nos alegra tenerte de vuelta.
                     </p>

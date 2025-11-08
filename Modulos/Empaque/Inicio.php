@@ -12,25 +12,8 @@ if ($TipoRol=="ADMINISTRADOR" || $Acceso==true) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <link rel="shortcut icon" href="../../Images/MiniLogo.png">
-    <script src="https://code.jquery.com/jquery-3.7.1.js" type="text/javascript"></script>
-    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js" ></script>
-    <link href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.dataTables.css" rel="stylesheet"/>
-    <link href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.dataTables.css" rel="stylesheet"/>
-    <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js" ></script>
-    <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.dataTables.js" ></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.2/js/dataTables.buttons.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.dataTables.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.print.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.colVis.min.js"></script>
+    <?php $Ruta = "../../"; include_once '../../Complementos/Logo_movil.php'; ?>
+    
     <script src="https://kit.fontawesome.com/367278d2a4.js" crossorigin="anonymous"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -70,3 +53,22 @@ if ($TipoRol=="ADMINISTRADOR" || $Acceso==true) {
 </html>
 
 <?php } else { header("Location: ../../Complementos/Acceso.php"); }?>
+
+<script>
+    setInterval(function() {
+    $.ajax({
+        url: '../../Login/validar_sesion.php',
+        type: 'GET',
+        data: { check_session: 1 },
+        dataType: 'json',
+        success: function(response) {
+            if (response.expired) {
+                location.href = '../../index.php';
+            }
+        },
+        error: function() {
+            console.warn('No se pudo verificar la sesión.');
+        }
+    });
+}, 60000);
+</script>

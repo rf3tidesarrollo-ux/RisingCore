@@ -5,10 +5,10 @@
     include_once "../../../Login/validar_sesion.php";
     // $Pagina=basename(__FILE__);
     // Historial($Pagina,$Con);
-    $Ver = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 1, $Con);
-    $Crear = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 2, $Con);
-    $Editar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 3, $Con);
-    $Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 4, $Con);
+    $Ver = TienePermiso($_SESSION['ID'], "Empaque/Merma", 1, $Con);
+    $Crear = TienePermiso($_SESSION['ID'], "Empaque/Merma", 2, $Con);
+    $Editar = TienePermiso($_SESSION['ID'], "Empaque/Merma", 3, $Con);
+    $Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Merma", 4, $Con);
 
     $FechaR=date("Y-m-d");
     $HoraR=date("H:i:s");
@@ -39,8 +39,12 @@
         ${"Error".$i}="";
     }
 
-    for ($i=1; $i <= 5; $i++) { 
+    for ($i=1; $i <= 4; $i++) { 
         ${"Precaucion".$i}="";
+    }
+
+    for ($i=1; $i <= 1; $i++) { 
+        ${"Informacion".$i}="";
     }
 
     class Val_KilosB {
@@ -307,14 +311,14 @@
             $Correcto += 1;
         }
 
-        if ($Carro == "Seleccione el carro:") {
+        if ($Carro == "0") {
             $Error5 = "Tienes que seleccionar un carro";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
 
-        if ($Tarima == "Seleccione la tarima:") {
+        if ($Tarima == "0") {
             $Error6 = "Tienes que seleccionar una tarima";
             $NumE += 1;
         }else{
@@ -344,7 +348,7 @@
                 $NumP += 1;
                 break;
             case '4':
-                if ($Tarima == "1") {
+                if ($Tarima == "0") {
                     $Correcto += 1;
                     $NoTarima = 0;
                 }else{
@@ -354,7 +358,7 @@
                 }
         }
 
-        if ($Caja == "Seleccione la caja:") {
+        if ($Caja == "0") {
             $Error8 = "Tienes que seleccionar una caja";
             $NumE += 1;
         }else{
@@ -429,7 +433,7 @@
             $Error12 = "Error con la fecha, hora o semana";
             $NumE += 1;
         }
-
+        
         if ($Correcto==13) {
             $stmt = $Con->prepare("SELECT 
                                 (SELECT peso_caja FROM tipos_cajas WHERE id_caja = ?) AS cajas,
@@ -455,11 +459,11 @@
             if ($KilosN > 0) {
                 $Correcto += 1;
             }else{
-                $Precaucion5 = "El taraje supera la cantidad neta";
+                $Precaucion4 = "El taraje supera la cantidad neta";
                 $NumP += 1;
             }
         }
-
+        
         if ($Correcto==14) {
             $Fecha = date("dmy");
             $stmt = $Con->prepare("SELECT codigo FROM tipo_variaciones WHERE id_variedad = ?");

@@ -23,6 +23,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="../../../js/script.js"></script>
+    <script src="../../../js/session.js"></script>
     <link rel="stylesheet" href="DesignE.css">
     <title>Embarque: Inicio</title>
 </head>

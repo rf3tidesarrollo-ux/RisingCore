@@ -15,10 +15,8 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <link rel="shortcut icon" href="../../../Images/MiniLogo.png">
+    <?php $Ruta = "../../../"; include_once '../../../Complementos/Logo_movil.php'; ?>
+
     <script src="https://code.jquery.com/jquery-3.7.1.js" type="text/javascript"></script>
     <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js" ></script>
     <link href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css" rel="stylesheet">
@@ -39,8 +37,9 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="../../../js/script.js"></script>
     <script src="../../../js/eliminar.js"></script>
+    <script src="../../../js/session.js"></script>
     <link rel="stylesheet" href="DesignE.css">
-    <title>Empaque: Reporte</title>
+    <title>Embarque: Reporte</title>
 </head>
 
 <body>
@@ -54,12 +53,12 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
         <main>
             <div style="background: #f9f9f9; padding: 12px 25px; border-bottom: 1px solid #ccc; font-size: 16px;">
                 <nav style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
-                    <a href="/RisingCore/Modulos/Empaque/index.php" style="color: #6c757d; text-decoration: none;">
+                    <a href="/RisingCore/Modulos/Empaque/Inicio.php" style="color: #6c757d; text-decoration: none;">
                         📦 Empaque
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <a href="/RisingCore/Modulos/Empaque/Merma/index.php" style="color: #6c757d; text-decoration: none;">
+                    <a href="/RisingCore/Modulos/Empaque/Embarque/Inicio.php" style="color: #6c757d; text-decoration: none;">
                         🚚 Embarque
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
@@ -89,9 +88,11 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                             <th>Cajas actuales</th>
                             <th>Kilos actuales</th>
                             <th>Envió programado</th>
+                            <th>Envió enviado</th>
+                            <th>Estado</th>
                             <th>Semana</th>
                             <th>Registró</th>
-                            <?php if ($TipoRol=="ADMINISTRADOR" || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
+                            <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
                         </tr>
                     </thead>
                     
@@ -106,9 +107,11 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                             <th>Cajas actuales</th>
                             <th>Kilos actuales</th>
                             <th>Envió programado</th>
+                            <th>Envió enviado</th>
+                            <th>Estado</th>
                             <th>Semana</th>
                             <th>Registró</th>
-                            <?php if ($TipoRol=="ADMINISTRADOR" || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
+                            <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
                         </tr>
                     </tfoot>
                 </table>
@@ -131,6 +134,19 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
         ajax: {
             url: '../../Server_side/Embarque/tabla_embarque.php',
             type: 'POST',
+            dataFilter: function(data){
+                // Intentar parsear JSON
+                try {
+                    var json = JSON.parse(data);
+                    if(json.expired) {
+                        location.href = '../../../index.php';
+                        return JSON.stringify({ data: [] }); // evitar error en DataTables
+                    }
+                    return data;
+                } catch(e) {
+                    return data; // si no es JSON, seguir normal
+                }
+            }
         },
         columns: [
                   { data: 'codigo_s' },
@@ -141,17 +157,47 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                   { data: 'kilos_em', },
                   { data: 'cajas_emt', },
                   { data: 'kilos_emt', },
-                  { data: 'fecha_em',
-                    "render": function ( data, type, row ) {
-                        if(type === 'display'){
-                            // Asumiendo que viene como "yyyy-mm-dd"
-                            let partes = row.fecha_em.split('-'); // [yyyy, mm, dd]
-                            return partes[2] + '/' + partes[1] + '/' + partes[0]; // dd/mm/yyyy
-                        }else{
-                            return data;
+                  { data: 'fecha_ep',
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                        // Validar que la fecha no sea null, undefined o vacía
+                        if (!row.fecha_ep) {
+                            return ''; // o "SIN FECHA" si prefieres mostrar algo
+                        }
+
+                        // Si la fecha viene como "yyyy-mm-dd"
+                        let partes = row.fecha_ep.split('-'); // [yyyy, mm, dd]
+                        let fechaFormateada = partes[2] + '/' + partes[1] + '/' + partes[0];
+
+                        // Si también tienes hora_em, la concatenas solo si existe
+                        let hora = row.hora_ep ? row.hora_ep : '';
+                        return fechaFormateada + (hora ? ' ' + hora : '');
+                        } else {
+                        return data;
                         }
                     }
-                   },
+                  },
+                  { data: 'fecha_em',
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                        // Validar que la fecha no sea null, undefined o vacía
+                        if (!row.fecha_em) {
+                            return ''; // o "SIN FECHA" si prefieres mostrar algo
+                        }
+
+                        // Si la fecha viene como "yyyy-mm-dd"
+                        let partes = row.fecha_em.split('-'); // [yyyy, mm, dd]
+                        let fechaFormateada = partes[2] + '/' + partes[1] + '/' + partes[0];
+
+                        // Si también tienes hora_em, la concatenas solo si existe
+                        let hora = row.hora_em ? row.hora_em : '';
+                        return fechaFormateada + (hora ? ' ' + hora : '');
+                        } else {
+                        return data;
+                        }
+                    }
+                  },
+                  { data: 'estado_em'},
                   { data: 'semana_em' },
                   { data: 'nombre_completo' },
                   { 
@@ -186,10 +232,12 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
         responsive: true,
         columnDefs: [
         <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true || $Editar==true || $Eliminar==true) { ?>
-                            { responsivePriority: 1, targets: 11 },
+                            { responsivePriority: 1, targets: 13 },
         <?php  } ?>
-                            { responsivePriority: 3, targets: 10 },
-                            { responsivePriority: 3, targets: 9 },
+                            { responsivePriority: 3, targets: 12 },
+                            { responsivePriority: 2, targets: 11 },
+                            { responsivePriority: 1, targets: 10 },
+                            { responsivePriority: 2, targets: 9 },
                             { responsivePriority: 2, targets: 8 },
                             { responsivePriority: 2, targets: 7 },
                             { responsivePriority: 3, targets: 6 },
@@ -213,8 +261,8 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                 if (title !== "Acciones") {
                     $(column.footer()).empty();
 
-                    const selectColumns = [0, 2, 9, 10]; // columnas con select
-                    const dateColumns = [8]; // columna fecha
+                    const selectColumns = [0, 2, 10, 11, 12]; // columnas con select
+                    const dateColumns = [8, 9]; // columna fecha
 
                     if (selectColumns.includes(column.index())) {
                         const select = $('<select><option value="">Todos</option></select>')

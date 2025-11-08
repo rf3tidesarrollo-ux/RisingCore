@@ -10,7 +10,7 @@
     $Editar = TienePermiso($_SESSION['ID'], "Empaque/Embarque", 3, $Con);
     $Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Embarque", 4, $Con);
 
-   if ($TipoRol=="ADMINISTRADOR" || $Crear==true) {
+   if ($TipoRol=="ADMINISTRADOR" || $Editar==true) {
     $NumE=0;
     $NumI=0;
     $NumP=0;
@@ -23,14 +23,23 @@
     $KilosT = isset($_POST['KilosT']) ? $_POST['KilosT'] : '';
     $Tipo = isset($_POST['Tipo']) ? $_POST['Tipo'] : '';
     $Fecha = isset($_POST['Fecha']) ? $_POST['Fecha'] : '';
+    $Hora = isset($_POST['Hora']) ? $_POST['Hora'] : '';
+    $FechaE = isset($_POST['FechaE']) ? $_POST['FechaE'] : '';
+    $HoraE = isset($_POST['HoraE']) ? $_POST['HoraE'] : '';
+    $Ciclo = isset($_POST['Ciclo']) ? $_POST['Ciclo'] : '';
+    $Estado = isset($_POST['Estado']) ? $_POST['Estado']: '';
     $FolioE = "";
 
-    for ($i=1; $i <= 7; $i++) {
+    for ($i=1; $i <= 12; $i++) {
         ${"Error".$i}="";
     }
 
     for ($i=1; $i <= 3; $i++) { 
         ${"Precaucion".$i}="";
+    }
+
+    for ($i=1; $i <= 1; $i++) { 
+        ${"Informacion".$i}="";
     }
 
     class Val_PO {
@@ -167,6 +176,32 @@
         }
     }
 
+    class Val_Hora {
+        public $Hora;
+
+        function __construct($H){
+            $this->Hora = $H;
+        }
+
+        public function getHora(){
+            return $this->Hora;
+        }
+
+        function setHora($Hora){
+            if (!empty($Hora)) {
+                // Validar formato con regex HH:MM o HH:MM:SS
+                if (preg_match('/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/', $Hora)) {
+                    return 1; // Hora válida
+                    
+                } else {
+                    return 2; // Formato incorrecto
+                }
+            } else {
+                return 3; // Hora vacía
+            }
+        }
+    }
+
     class Cleanner{
         public $Limpiar;
         public $Sede;
@@ -176,6 +211,11 @@
         public $CajasT;
         public $Tipo;
         public $Fecha;
+        public $Hora;
+        public $FechaE;
+        public $HoraE;
+        public $Ciclo;
+        public $Estado;
 
         function __Construct($L){
             $this -> Limpiar = $L;
@@ -208,6 +248,26 @@
         public function LimpiarFecha(){
             return $this -> Fecha="";
         }
+
+        public function LimpiarHora(){
+            return $this -> Hora="";
+        }
+
+        public function LimpiarFechaE(){
+            return $this -> FechaE="";
+        }
+
+        public function LimpiarHoraE(){
+            return $this -> HoraE="";
+        }
+
+        public function LimpiarCiclo(){
+            return $this -> Ciclo="Seleccione el ciclo:";
+        }
+
+        public function LimpiarEstado(){
+            return $this -> Estado="Seleccione el estado:";
+        }
     }
 
     if (isset($_POST['Modificar'])) {
@@ -219,6 +279,11 @@
         $KilosT=$_POST['KilosT'];
         $Tipo=$_POST['Tipo'];
         $Fecha=$_POST['Fecha'];
+        $Hora=$_POST['Hora'];
+        $FechaE=$_POST['FechaE'];
+        $HoraE=$_POST['HoraE'];
+        $Ciclo=$_POST['Ciclo'];
+        $Estado=$_POST['Estado'];
         
         if ($Sede == "0") {
             $Error1 = "Tienes que seleccionar una sede";
@@ -320,26 +385,94 @@
                 $NumE += 1;
                 break;
             case '3':
-                $Error6 = "El campo de fecha no puede ir vacío";
+                $Error6 = "La fecha ingresada no puede ir vacía";
                 $NumE += 1;
                 break;    
         }
 
-        if ($Tipo == "") {
-            $Error2 = "El tipo de descargo no puede ir vacío";
+        $ValidarHora = new Val_Hora($Hora);
+        $Retorno = $ValidarHora -> setHora($Hora);
+        $HoraVal = $ValidarHora -> getHora();
+
+        switch ($Retorno) {
+            case '1':
+                $Correcto += 1;
+                break;
+            case '2':
+                $Error7 = "La hora programada es incorrecta";
+                $NumE += 1;
+                break;
+            case '3':
+                $Error7 = "La hora programada no puede ir vacía";
+                $NumE += 1;
+                break;    
+        }
+
+        $ValidarFecha = new Val_Fecha($Fecha);
+        $Retorno = $ValidarFecha -> setFecha($Fecha);
+        $FechaEVal = $ValidarFecha -> getFecha();
+
+        switch ($Retorno) {
+            case '1':
+                $Correcto += 1;
+                break;
+            case '2':
+                $Error8 = "La fecha de envió es incorrecta";
+                $NumE += 1;
+                break;
+            case '3':
+                $Error8 = "La fecha de envió no puede ir vacía";
+                $NumE += 1;
+                break;    
+        }
+
+        $ValidarHora = new Val_Hora($Hora);
+        $Retorno = $ValidarHora -> setHora($Hora);
+        $HoraEVal = $ValidarHora -> getHora();
+
+        switch ($Retorno) {
+            case '1':
+                $Correcto += 1;
+                break;
+            case '2':
+                $Error9 = "La hora de envió es incorrecta";
+                $NumE += 1;
+                break;
+            case '3':
+                $Error9 = "La hora de envió no puede ir vacía";
+                $NumE += 1;
+                break;    
+        }
+
+        if ($Ciclo == "0") {
+            $Error10 = "El ciclo no puede ir vacío";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
 
-        if ($Correcto==7) {
+        if ($Estado == "0") {
+            $Error11 = "El estado no puede ir vacío";
+            $NumE += 1;
+        }else{
+            $Correcto += 1;
+        }
+
+        if ($Tipo == "") {
+            $Error12 = "El tipo de descargo no puede ir vacío";
+            $NumE += 1;
+        }else{
+            $Correcto += 1;
+        }
+
+        if ($Correcto==12) {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 $fechaObj = new DateTime($FechaVal); 
                 $SemanaE = $fechaObj->format("Y-W");
 
-                $stmt = $Con->prepare("UPDATE embarques_pallets SET id_sede_em=?, po_em=?, cajas_em=?, kilos_em=?, id_destino_em=?, fecha_em=?, semana_em=?, usuario_id=? WHERE id_embarque=?");
-                $stmt->bind_param("isidissii", $SedeVal, $PO, $CajasTVal, $KilosTVal, $Destino, $FechaVal, $SemanaE, $ID, $idEmbarque);
+                $stmt = $Con->prepare("UPDATE embarques_pallets SET id_sede_em=?, po_em=?, cajas_em=?, kilos_em=?, id_destino_em=?, fecha_ep=?, hora_ep=?, fecha_em=?, hora_em=?, id_ciclo_em=?, semana_em=?, estado_em=?, usuario_id=? WHERE id_embarque=?");
+                $stmt->bind_param("isidissssissii", $SedeVal, $PO, $CajasTVal, $KilosTVal, $Destino, $FechaVal, $HoraVal, $FechaEVal, $HoraEVal, $Ciclo, $SemanaE, $Estado, $ID, $idEmbarque);
                 $stmt->execute();
                 $stmt->close();
                 
@@ -350,6 +483,11 @@
                 $KilosT = $Limpiar -> LimpiarKilosT();
                 $Tipo = $Limpiar -> LimpiarTipo();
                 $Fecha = $Limpiar -> LimpiarFecha();
+                $Hora = $Limpiar -> LimpiarHora();
+                $FechaE = $Limpiar -> LimpiarFechaE();
+                $HoraE = $Limpiar -> LimpiarHoraE();
+                $Ciclo = $Limpiar -> LimpiarCiclo();
+                $Estado = $Limpiar -> LimpiarEstado();
 
                 session_start();
                 $_SESSION['correcto'] = "Embarque actualizado";
@@ -380,6 +518,12 @@
                     $CajasT=$Reg['cajas_em'];
                     $KilosT = $Reg['kilos_em'];
                     $Destino=$Reg['id_destino_em'];
+                    $Fecha=$Reg['fecha_ep'];
+                    $Hora=$Reg['hora_ep'];
+                    $FechaE=$Reg['fecha_em'];
+                    $HoraE=$Reg['hora_em'];
+                    $Ciclo=$Reg['id_ciclo_em'];
+                    $Estado=$Reg['estado_em'];
                 }
                 $stmt->close();
             }else{
@@ -402,6 +546,10 @@
                     $CajasT=$Reg['cajas_em'];
                     $KilosT = $Reg['kilos_em'];
                     $Destino=$Reg['id_destino_em'];
+                    $FechaE=$Reg['fecha_em'];
+                    $HoraE=$Reg['hora_em'];
+                    $Ciclo=$Reg['id_ciclo_em'];
+                    $Estado=$Reg['estado_em'];
                 }
                 $stmt->close();
             }else{

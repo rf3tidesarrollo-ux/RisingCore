@@ -5,20 +5,18 @@ $RutaSC = "../../../index.php";
 include_once "../../../Login/validar_sesion.php";
 // $Pagina=basename(__FILE__);
 // Historial($Pagina,$Con);
-$Ver = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 1, $Con);
-$Crear = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 2, $Con);
-$Editar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 3, $Con);
-$Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Pesaje", 4, $Con);
+$Ver = TienePermiso($_SESSION['ID'], "Empaque/Merma", 1, $Con);
+$Crear = TienePermiso($_SESSION['ID'], "Empaque/Merma", 2, $Con);
+$Editar = TienePermiso($_SESSION['ID'], "Empaque/Merma", 3, $Con);
+$Eliminar = TienePermiso($_SESSION['ID'], "Empaque/Merma", 4, $Con);
 
 if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <link rel="shortcut icon" href="../../../Images/MiniLogo.png">
+    <?php $Ruta = "../../../"; include_once '../../../Complementos/Logo_movil.php'; ?>
+
     <script src="https://code.jquery.com/jquery-3.7.1.js" type="text/javascript"></script>
     <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js" ></script>
     <link href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css" rel="stylesheet">
@@ -39,8 +37,9 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="../../../js/script.js"></script>
     <script src="../../../js/eliminar.js"></script>
+    <script src="../../../js/session.js"></script>
     <link rel="stylesheet" href="DesignM.css">
-    <title>Empaque: Reporte</title>
+    <title>Merma: Reporte</title>
 </head>
 
 <body>
@@ -54,22 +53,22 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
         <main>
             <div style="background: #f9f9f9; padding: 12px 25px; border-bottom: 1px solid #ccc; font-size: 16px;">
                 <nav style="display: flex; flex-wrap: wrap; gap: 5px; align-items: center;">
-                    <a href="/RisingCore/Modulos/Empaque/index.php" style="color: #6c757d; text-decoration: none;">
+                    <a href="/RisingCore/Modulos/Empaque/Inicio.php" style="color: #6c757d; text-decoration: none;">
                         📦 Empaque
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <a href="/RisingCore/Modulos/Empaque/Merma/index.php" style="color: #6c757d; text-decoration: none;">
+                    <a href="/RisingCore/Modulos/Empaque/Merma/Inicio.php" style="color: #6c757d; text-decoration: none;">
                         ♻️ Merma
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
                     <a href="#" style="color: #6c757d; text-decoration: none;">
-                        📋 Registros
+                        📋 Reportes
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <strong style="color: #333;">📊 Registros de merma</strong>
+                    <strong style="color: #333;">📊 Reportes de merma</strong>
                 </nav>
             </div>
 
@@ -93,7 +92,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                             <th>Semana</th>
                             <th>Fecha</th>
                             <th>Hora</th>
-                            <?php if ($TipoRol=="ADMINISTRADOR" || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
+                            <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
                         </tr>
                     </thead>
                     
@@ -112,7 +111,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                             <th>Semana</th>
                             <th>Fecha</th>
                             <th>Hora</th>
-                            <?php if ($TipoRol=="ADMINISTRADOR" || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
+                            <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
                         </tr>
                     </tfoot>
                 </table>
@@ -135,6 +134,19 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
         ajax: {
             url: '../../Server_side/Merma/tabla_merma.php',
             type: 'POST',
+            dataFilter: function(data){
+                // Intentar parsear JSON
+                try {
+                    var json = JSON.parse(data);
+                    if(json.expired) {
+                        location.href = '../../../index.php';
+                        return JSON.stringify({ data: [] }); // evitar error en DataTables
+                    }
+                    return data;
+                } catch(e) {
+                    return data; // si no es JSON, seguir normal
+                }
+            }
         },
         columns: [
                   { data: 'no_serie_m' },

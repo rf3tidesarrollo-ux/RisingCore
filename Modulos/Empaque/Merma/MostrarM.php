@@ -8,7 +8,7 @@ if (!empty($_POST)) {
 
     $id = $_POST['id'];
 
-    $stmt = $Con->prepare("SELECT m.no_serie_m AS ns, cm.tipo_merma AS tm, cm.motivo AS m, tc.folio_carro AS tc, tt.nombre_tarima AS nt, m.cantidad_tarima AS ct, tb.tipo_caja AS tp, m.cantidad_caja AS cc, m.p_bruto AS pb, m.p_taraje AS pt, m.p_neto AS pn, m.semana_m AS sr, m.fecha_reg AS fr, m.hora_m AS hr FROM registro_merma m
+    $stmt = $Con->prepare("SELECT m.no_serie_m AS ns, cm.tipo_merma AS tm, cm.motivo AS m, tc.folio_carro AS tc, tt.nombre_tarima AS nt, m.cantidad_tarima AS ct, tb.tipo_caja AS c, m.cantidad_caja AS cc, m.p_bruto AS pb, m.p_taraje AS pt, m.p_neto AS pn, m.semana_m AS sr, m.fecha_reg AS fr, m.hora_m AS hr FROM registro_merma m
                     LEFT JOIN tipo_variaciones tv ON m.id_codigo_m = tv.id_variedad
                     LEFT JOIN tipos_cajas tb ON m.id_tipo_caja = tb.id_caja
                     LEFT JOIN tipos_tarimas tt ON m.id_tipo_tarima = tt.id_tarima

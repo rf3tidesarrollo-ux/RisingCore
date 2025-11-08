@@ -30,12 +30,16 @@
     $Folio="";
     $CajasP=0;
 
-    for ($i=1; $i <= 7; $i++) {
+    for ($i=1; $i <= 6; $i++) {
         ${"Error".$i}="";
     }
 
     for ($i=1; $i <= 2; $i++) { 
         ${"Precaucion".$i}="";
+    }
+
+    for ($i=1; $i <= 1; $i++) { 
+        ${"Informacion".$i}="";
     }
 
     class Val_Fecha {
@@ -245,7 +249,16 @@
         
         if ($Correcto==7) {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $stmt = $Con->prepare("SELECT COUNT(id_pallet) AS Suma FROM pallets WHERE id_Sede_p = ?");
+                $stmt = $Con->prepare("SELECT COUNT(DISTINCT p.id_pallet) AS Suma
+                                        FROM pallets p
+                                        LEFT JOIN pallet_mezclas pm ON p.id_pallet = pm.id_pallet_m
+                                        LEFT JOIN mezclas m ON pm.id_mezcla_m = m.id_mezcla
+                                        LEFT JOIN mezcla_lotes ml ON m.id_mezcla = ml.id_mezcla_l
+                                        LEFT JOIN registro_empaque re ON ml.id_lote_l = re.id_registro_r
+                                        LEFT JOIN tipo_variaciones tv ON re.id_codigo_r = tv.id_variedad
+                                        LEFT JOIN ciclos c ON tv.id_ciclo_v = c.id_ciclo
+                                        WHERE p.id_sede_p = ?
+                                        AND c.activo_c = 1");
                 $stmt->bind_param("i", $SedeVal);
                 $stmt->execute();
                 $resultSuma = $stmt->get_result();
@@ -272,6 +285,7 @@
 
                 $stmtInsert = $Con->prepare("INSERT INTO pallet_mezclas ( id_pallet_m, id_mezcla_m, cajas_m, id_linea_m, fecha_m, hora_m) VALUES (?, ?, ?, ?, ?, ?)");
                 $stmtUpdate = $Con->prepare("UPDATE mezclas SET estado_m = 1 WHERE id_mezcla = ?");
+                $stmtUpdate2 = $Con->prepare("UPDATE embarques_pallets SET cajas_emt = cajas_emt + ?, kilos_emt = kilos_emt + ? WHERE id_embarque = ?");
 
                 while ($row = $resultMezclas->fetch_assoc()) {
                     $stmtInsert->bind_param("iiiiss", $idPallet, $row['id_mezcla_t'], $row['cajas_t'], $row['id_linea_t'], $FechaVal, $HoraP);
@@ -279,6 +293,9 @@
 
                     $stmtUpdate->bind_param("i", $row['id_mezcla_t']);
                     $stmtUpdate->execute();
+
+                    $stmtUpdate2->bind_param("idi", $row['cajas_t'], $row['kilos_emt'], $Embarque);
+                    $stmtUpdate2->execute();
                 }
                 $stmtInsert->close();
                 $stmtUpdate->close();
