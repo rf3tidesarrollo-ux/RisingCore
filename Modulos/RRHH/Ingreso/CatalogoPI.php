@@ -5,10 +5,10 @@ $RutaSC = "../../../index.php";
 include_once "../../../Login/validar_sesion.php";
 // $Pagina=basename(__FILE__);
 // Historial($Pagina,$Con);
-$Ver = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 1, $Con);
-$Crear = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 2, $Con);
-$Editar = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 3, $Con);
-$Eliminar = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 4, $Con);
+$Ver = TienePermiso($_SESSION['ID'], "RRHH/Personal", 1, $Con);
+$Crear = TienePermiso($_SESSION['ID'], "RRHH/Personal", 2, $Con);
+$Editar = TienePermiso($_SESSION['ID'], "RRHH/Personal", 3, $Con);
+$Eliminar = TienePermiso($_SESSION['ID'], "RRHH/Personal", 4, $Con);
 
 if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 ?>
@@ -39,7 +39,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <script src="../../../js/eliminar.js"></script>
     <script src="../../../js/session.js"></script>
     <link rel="stylesheet" href="DesignNI.css">
-    <title>Ingresos: Reporte</title>
+    <title>Personal: Reporte</title>
 </head>
 
 <body>
@@ -59,7 +59,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                     <span style="color: #6c757d;">&raquo;</span>
 
                     <a href="/RisingCore/Modulos/RRHH/Ingreso/Inicio.php" style="color: #6c757d; text-decoration: none;">
-                        🙎🏻 Nuevo Ingreso
+                        🙎🏻 Personal
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
@@ -68,13 +68,12 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <strong style="color: #333;">👆🏻 Pendientes de huella</strong>
+                    <strong style="color: #333;">📊 Reporte de personal</strong>
                 </nav>
             </div>
 
             <div class="tabla">
-            <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true) { ?> <a title="Reporte" href="CatalogoPI.php"><div class="back"><i class="fa-solid fa-users-between-lines fa-xl"></i></div></a><?php } ?>       
-            
+
             <table id="basic-datatables" class="display table table-striped table-hover responsive nowrap" style="width:95%">
                     <thead>
                         <tr>
@@ -89,7 +88,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                             <th>Fecha ingreso</th>
                             <th>Fecha registro</th>
                             <th>Registró</th>
-                            <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
+                            <?php if ($TipoRol=="ADMINISTRADOR" || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
                         </tr>
                     </thead>
                     
@@ -106,7 +105,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                             <th>Fecha ingreso</th>
                             <th>Fecha registro</th>
                             <th>Registró</th>
-                            <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
+                            <?php if ($TipoRol=="ADMINISTRADOR" || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
                         </tr>
                     </tfoot>
                 </table>
@@ -127,7 +126,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     $('#basic-datatables').DataTable({
         serverSide: true,
         ajax: {
-            url: '../../Server_side/Personal/tabla_pendientes.php',
+            url: '../../Server_side/Personal/tabla_personal_ingreso.php',
             type: 'POST',
             dataFilter: function(data){
                 // Intentar parsear JSON
@@ -191,7 +190,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 
                         if (Ver || Editar || Eliminar) {
                             return `
-                                ${Ver ? `<a title="Mostrar" href="#${row.id_personal}" onclick="mostrarRegistroNI(${row.id_personal})"><i class="fa-solid fa-eye fa-xl" style="color: #16ac19;"></i></a>` : ''}
+                                ${Ver ? `<a title="Mostrar" href="#${row.id_personal}" onclick="mostrarRegistroPI(${row.id_personal})"><i class="fa-solid fa-eye fa-xl" style="color: #16ac19;"></i></a>` : ''}
                                 ${Editar ? `<a title="Editar" class="Edit" href="EditarNI.php?id=${row.id_personal}"><i class="fa-solid fa-pen-to-square fa-xl" style="color: #0a5ceb;"></i></a>` : ''}
                                 ${Eliminar ? `<a title="Eliminar" class="Delete" href="#${row.id_personal}" onclick="eliminarRegistro(${row.id_personal})"><i class="fa-solid fa-trash fa-xl" style="color: #ca1212;"></i></a>` : ''}
                             `;
@@ -283,11 +282,6 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                 '<i class="fa-solid fa-filter-circle-xmark fa-xl"></i> Limpiar</button>'
             );
 
-            $('.dt-buttons').append(
-                '<button id="actualizar" class="btn btn-sm btn-outline-secondary ms-2" title="Actualizar registros">' +
-                '<i class="fa-solid fa-arrows-rotate fa-xl"></i> Actualizar</button>'
-            );
-
             // Evento para limpiar filtros
             $('#limpiarFiltros').on('click', function () {
                 api.search('').draw();
@@ -301,27 +295,6 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                 api.draw();
             });
 
-            $('#actualizar').on('click', function () {
-                // Opcional: mostrar un mensaje mientras se procesa
-                swal("Actualizando...", "Por favor espera mientras se actualizan los registros.", "info");
-
-                $.ajax({
-                    url: '../../Server_side/Personal/actualizarRH.php', // ruta a tu script PHP
-                    type: 'POST',
-                    dataType: 'json', // si tu PHP devuelve JSON
-                    success: function(response) {
-                        if (response.success) {
-                            swal("¡Listo!", "Registros actualizados correctamente.", "success");
-                            api.ajax.reload(); // recarga la tabla después de actualizar
-                        } else {
-                            swal("Error", response.message || "Ocurrió un error al actualizar.", "error");
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        swal("Error", "No se pudo conectar con el servidor.", "error");
-                    }
-                });
-            });
         },
 
         drawCallback: function() {
