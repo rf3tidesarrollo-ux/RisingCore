@@ -36,6 +36,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="../../../js/script.js"></script>
     <script src="../../../js/eliminar.js"></script>
+    <script src="../../../js/config.js"></script>
     <script src="../../../js/session.js"></script>
     <link rel="stylesheet" href="DesignU.css">
     <title>Usuarios: Reporte</title>
@@ -175,7 +176,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 
                         if (Ver || Editar || Eliminar) {
                             return `
-                                ${Ver ? `<a title="Mostrar" href="#${row.id_usuario}" onclick="mostrarRegistroU(${row.id_usuario})"><i class="fa-solid fa-eye fa-xl" style="color: #16ac19;"></i></a>` : ''}
+                                ${Ver ? `<a title="Kick" href="#${row.id_usuario}" onclick="kickUser(${row.id_usuario})"><i class="fa-solid fa-land-mine-on fa-xl" style="color: #f0e116ff;"></i></a>` : ''}
                                 ${Editar ? `<a title="Editar" class="Edit" href="EditarU.php?id=${row.id_usuario}"><i class="fa-solid fa-pen-to-square fa-xl" style="color: #0a5ceb;"></i></a>` : ''}
                                 ${Eliminar ? `<a title="Eliminar" class="Delete" href="#${row.id_usuario}" onclick="eliminarRegistro(${row.id_usuario})"><i class="fa-solid fa-trash fa-xl" style="color: #ca1212;"></i></a>` : ''}
                             `;
