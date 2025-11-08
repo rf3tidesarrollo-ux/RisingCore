@@ -112,7 +112,7 @@ if ($TipoRol == "ADMINISTRADOR") {
         LEFT JOIN invernaderos i ON tv.id_modulo_v = i.id_invernadero
         LEFT JOIN sedes s ON i.id_sede_i = s.id_sede
         LEFT JOIN clasificacion_merma cm ON m.id_clasificacion = cm.id_merma
-        WHERE activo_m = 1 AND activo_c = 1 $whereSQL";
+        WHERE activo_m = 1 AND (c.activo_c = 1 OR m.id_codigo_m IS NULL) $whereSQL";
 
     $totalStmt = $Con->prepare($totalQuery);
     $totalStmt->execute();
@@ -130,7 +130,7 @@ if ($TipoRol == "ADMINISTRADOR") {
         LEFT JOIN invernaderos i ON tv.id_modulo_v = i.id_invernadero
         LEFT JOIN sedes s ON i.id_sede_i = s.id_sede
         LEFT JOIN clasificacion_merma cm ON m.id_clasificacion = cm.id_merma
-        WHERE activo_m = 1 AND activo_c = 1 $whereSQL
+        WHERE activo_m = 1 AND (c.activo_c = 1 OR m.id_codigo_m IS NULL) $whereSQL
         ORDER BY $orderColumn $orderDir
         LIMIT ?, ?";
 
@@ -152,7 +152,7 @@ if ($TipoRol == "ADMINISTRADOR") {
         LEFT JOIN invernaderos i ON tv.id_modulo_v = i.id_invernadero
         LEFT JOIN sedes s ON m.id_sede_m = s.id_sede
         LEFT JOIN clasificacion_merma cm ON m.id_clasificacion = cm.id_merma
-        WHERE id_sede_m = ? AND activo_m = 1 AND activo_c = 1 $whereSQL";
+        WHERE id_sede_m = ? AND activo_m = 1 AND (c.activo_c = 1 OR m.id_codigo_m IS NULL) $whereSQL";
 
     $totalStmt = $Con->prepare($totalQuery);
     $totalStmt->bind_param("s", $Sede);
@@ -171,7 +171,7 @@ if ($TipoRol == "ADMINISTRADOR") {
         LEFT JOIN invernaderos i ON tv.id_modulo_v = i.id_invernadero
         LEFT JOIN sedes s ON m.id_sede_m = s.id_sede
         LEFT JOIN clasificacion_merma cm ON m.id_clasificacion = cm.id_merma
-        WHERE id_sede_m = ? AND activo_m = 1 AND activo_c = 1 $whereSQL
+        WHERE id_sede_m = ? AND activo_m = 1 AND (c.activo_c = 1 OR m.id_codigo_m IS NULL) $whereSQL
         ORDER BY $orderColumn $orderDir
         LIMIT ?, ?";
 
