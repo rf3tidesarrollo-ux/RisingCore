@@ -6,14 +6,13 @@ if(isset($_GET['id']) && !empty($_GET['id'])) {
     $id = $_GET['id'];
     $id = $Con->real_escape_string($id);
     
-    //$stmt = $Con->prepare("DELETE FROM cp_requisiciones WHERE id_requisicion = ?");
-    $stmt = $Con->prepare("UPDATE cp_requisiciones SET activo_req = 0 WHERE id_requisicion = ?");
+    $stmt = $Con->prepare("UPDATE cp_productos SET activo_p = 0 WHERE id_producto = ?");
     $stmt->bind_param("i", $id);
    
     if ($stmt->execute()) {
         // $Pagina="EliminarArticulo";
         // Historial($Pagina,$Con);
-        header("Location: CatalogoRQ.php");
+        header("Location: CatalogoPD.php");
         exit();
     } else {
         echo '<script>swal("Error!", "¡Ha ocurrido un error!", "error");</script>';;
@@ -21,7 +20,7 @@ if(isset($_GET['id']) && !empty($_GET['id'])) {
     $stmt->close();
     $Con->close();
 } else {
-    header("Location: CatalogoRQ.php");
+    header("Location: CatalogoPD.php");
     exit();
 }
 ?>  

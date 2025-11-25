@@ -5,12 +5,45 @@
     include_once "../../../Login/validar_sesion.php";
     // $Pagina=basename(__FILE__);
     // Historial($Pagina,$Con);
-    $Ver = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 1, $Con);
-    $Crear = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 2, $Con);
-    $Editar = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 3, $Con);
-    $Eliminar = TienePermiso($_SESSION['ID'], "RRHH/Ingreso", 4, $Con);
-
+    $Ver = TienePermiso($_SESSION['ID'], "Compras/Requisiciones", 1, $Con);
+    $Crear = TienePermiso($_SESSION['ID'], "Compras/Requisiciones", 2, $Con);
+    $Editar = TienePermiso($_SESSION['ID'], "Compras/Requisiciones", 3, $Con);
+    $Eliminar = TienePermiso($_SESSION['ID'], "Compras/Requisiciones", 4, $Con);
+    
     $FechaR=date("Y-m-d");
+    $HoraR=date("H:i:s");
+    $diaSemana = date("N");
+
+    $diaSemana = date("N"); // 1=Lunes ... 7=Domingo
+
+    if ($TipoRol=="USUARIO" && $diaSemana != 3) { // Si NO es miércoles
+        echo '
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <link rel="shortcut icon" href="../../../Images/MiniLogo.png">
+            <meta charset="UTF-8">
+            <title>Acceso restringido</title>
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        </head>
+        <body>
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    swal({
+                        title: "Acceso restringido",
+                        text: "Esta sección solo está disponible los días miércoles.",
+                        icon: "warning",
+                        button: "Regresar"
+                    }).then(() => {
+                        window.location.href = "Inicio.php"; // Cambia por la página a donde rediriges
+                    });
+                });
+            </script>
+        </body>
+        </html>
+        ';
+        exit; // 🚫 Detiene la ejecución completamente
+    }
 
    if ($TipoRol=="ADMINISTRADOR" || $Crear==true) {
     $NumE=0;
@@ -19,203 +52,33 @@
     $Finalizado="";
     $Correcto=0;
     $Sede = isset($_POST['Sede']) ? $_POST['Sede'] : '';
-    $Nombre = isset($_POST['Nombre']) ? $_POST['Nombre'] : '';
-    $AM = isset($_POST['AM']) ? $_POST['AM'] : '';
-    $AP = isset($_POST['AP']) ? $_POST['AP'] : '';
-    $Genero = isset($_POST['Genero']) ? $_POST['Genero'] : '';
     $Departamento = isset($_POST['Departamento']) ? $_POST['Departamento'] : '';
-    $Tipo = isset($_POST['Tipo']) ? $_POST['Tipo'] : '';
-    $TipoP = isset($_POST['TipoPago']) ? $_POST['TipoPago'] : '';
-    $Horario = isset($_POST['Horarios']) ? $_POST['Horarios'] : '';
-    $Fecha = isset($_POST['Fecha']) ? $_POST['Fecha'] : '';
-    $Badge = "";
+    $Area = isset($_POST['Area']) ? $_POST['Area'] : '';
+    $Folio = isset($_POST['Folio']) ? $_POST['Folio'] : '';
+    $Producto = isset($_POST['Producto']) ? $_POST['Producto'] : '';
+    $Justificacion = "";
+    $Observacion = "";
+    $Estado="PENDIENTE";
 
-    for ($i=1; $i <= 10; $i++) {
+    for ($i=1; $i <= 4; $i++) {
         ${"Error".$i}="";
     }
 
-    for ($i=1; $i <= 3; $i++) { 
+    for ($i=1; $i <= 1; $i++) { 
         ${"Precaucion".$i}="";
     }
 
-    for ($i=1; $i <= 5; $i++) { 
+    for ($i=1; $i <= 1; $i++) { 
         ${"Informacion".$i}="";
     }
-
-    class Val_Nombre {
-        public $Nombre;
-    
-        function __Construct($N){
-            $this -> Nombre = $N;
-        }
-    
-        public function getNombre(){
-            return $this -> Nombre;
-        }
-    
-        public function setNombre($Nombre){
-            $this -> Nombre = $Nombre;
-            
-            if (!empty($Nombre)) {
-                $Nombre=filter_var($Nombre, FILTER_SANITIZE_SPECIAL_CHARS);
-                
-                if (!preg_match('/^[A-ZÁÉÍÓÚÑ.\s]*$/', $Nombre)){
-                    $Valor = 1;
-                    return $Valor;
-                }else{
-                    $Valor = 2;
-                    return $Valor;
-                }
-            }else{
-                    $Valor = 3;
-                    return $Valor;
-            }
-        }
-    }
-
-    class Val_ApellidoP {
-        public $ApellidoP;
-    
-        function __Construct($AP){
-            $this -> ApellidoP = $AP;
-        }
-    
-        public function getApellidoP(){
-            return $this -> ApellidoP;
-        }
-    
-        public function setApellidoP($ApellidoP){
-            $this -> ApellidoP = $ApellidoP;
-            
-            if (!empty($ApellidoP)) {
-                $ApellidoP=filter_var($ApellidoP, FILTER_SANITIZE_SPECIAL_CHARS);
-                
-                if (!preg_match('/^[A-ZÁÉÍÓÚÜÑ.\s]*$/', $ApellidoP)){
-                    $Valor = 1;
-                    return $Valor;
-                }else{
-                    $Valor = 2;
-                    return $Valor;
-                }
-            }else{
-                    $Valor = 3;
-                    return $Valor;
-            }
-        }
-    }
-
-    class Val_ApellidoM {
-        public $ApellidoM;
-    
-        function __Construct($AM){
-            $this -> ApellidoM = $AM;
-        }
-    
-        public function getApellidoM(){
-            return $this -> ApellidoM;
-        }
-    
-        public function setApellidoM($ApellidoM){
-            $this -> ApellidoM = $ApellidoM;
-            
-            if (!empty($ApellidoM)) {
-                $ApellidoM=filter_var($ApellidoM, FILTER_SANITIZE_SPECIAL_CHARS);
-                
-                if (!preg_match('/^[A-ZÁÉÍÓÚÜÑ.\s]*$/', $ApellidoM)){
-                    $Valor = 1;
-                    return $Valor;
-                }else{
-                    $Valor = 2;
-                    return $Valor;
-                }
-            }else{
-                    $Valor = 3;
-                    return $Valor;
-            }
-        }
-    }
-
-    class Val_Fecha {
-        public $Fecha;
-    
-        function __Construct($F){
-            $this -> Fecha = $F;
-        }
-    
-        public function getFecha(){
-            return $this -> Fecha;
-        }
-    
-        function setFecha($Fecha){
-            if (!empty($Fecha)) {
-                $Valores = explode('-', $Fecha);
-                $FechaMin="2000/01/01";
-
-                if (strtotime($Fecha) > strtotime($FechaMin)) {
-                    if(count($Valores) == 3){
-                        $Valor = 1;
-                        return $Valor;
-                    }else{
-                        $Valor = 2;
-                        return $Valor;
-                    }
-                }else{
-                    $Valor = 2;
-                    return $Valor;
-                }
-            }else{
-                $Valor = 3;
-                return $Valor;
-            }
-        }
-    }
-
-    // class Val_Hora {
-    //     public $Hora;
-
-    //     function __construct($H){
-    //         $this->Hora = $H;
-    //     }
-
-    //     public function getHora(){
-    //         return $this->Hora;
-    //     }
-
-    //     function setHora($Hora){
-    //         if (!empty($Hora)) {
-    //             // Validar formato con regex HH:MM o HH:MM:SS
-    //             if (preg_match('/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/', $Hora)) {
-    //                 $HoraMin = "08:00"; // Hora mínima permitida
-    //                 // Convertimos ambas a timestamp
-    //                 $horaIngresada = strtotime($Hora);
-    //                 $horaMinima = strtotime($HoraMin);
-
-    //                 if ($horaIngresada >= $horaMinima) {
-    //                     return 1; // Hora válida
-    //                 } else {
-    //                     return 2; // Hora anterior a la mínima
-    //                 }
-    //             } else {
-    //                 return 2; // Formato incorrecto
-    //             }
-    //         } else {
-    //             return 3; // Hora vacía
-    //         }
-    //     }
-    // }
 
     class Cleanner{
         public $Limpiar;
         public $Sede;
-        public $Nombre;
-        public $ApellidoP;
-        public $ApellidoM;
-        public $Genero;
         public $Departamento;
-        public $Tipo;
-        public $TipoP;
-        public $Horario;
-        public $Fecha;
+        public $Area;
+        public $Folio;
+        public $Producto;
 
         function __Construct($L){
             $this -> Limpiar = $L;
@@ -225,55 +88,30 @@
             return $this -> Sede="Seleccione la sede:";
         }
 
-        public function LimpiarNombre(){
-            return $this -> Nombre="";
-        }
-
-        public function LimpiarApellidoP(){
-            return $this -> ApellidoP="";
-        }
-
-        public function LimpiarApellidoM(){
-            return $this -> ApellidoM="";
-        }
-
-        public function LimpiarGenero(){
-            return $this -> Genero="Seleccione el género:";
-        }
-
         public function LimpiarDepartamento(){
             return $this -> Departamento="Seleccione el departamento:";
         }
 
-        public function LimpiarTipo(){
-            return $this -> Tipo="Seleccione el tipo de empleado:";
+        public function LimpiarArea(){
+            return $this -> Departamento="Seleccione el área:";
+        }
+        
+        public function LimpiarFolio(){
+            return $this -> Folio="";
         }
 
-        public function LimpiarPago(){
-            return $this -> TipoP="Seleccione el tipo de pago:";
-        }
-
-        public function LimpiarHorario(){
-            return $this -> Tipo="Seleccione el tipo de horario:";
-        }
-
-        public function LimpiarFecha(){
-            return $this -> Fecha="";
+        public function LimpiarProducto(){
+            return $this -> Producto="";
         }
     }
 
     if (isset($_POST['Insertar'])) {
         $Sede=$_POST['Sede'];
-        $Nombre=$_POST['Nombre'];
-        $AP=$_POST['AP'];
-        $AM=$_POST['AM'];
-        $Genero=$_POST['Genero'];
         $Departamento=$_POST['Departamento'];
-        $Tipo=$_POST['Tipo'];
-        $TipoP=$_POST['TipoPago'];
-        $Horario=$_POST['Horarios'];
-        $Fecha=$_POST['Fecha'];
-        
+        $Area=$_POST['Area'];
+        $Folio=$_POST['Folio'];
+        $Producto=$_POST['Producto'];
+
         if ($Sede == "0") {
             $Error1 = "Tienes que seleccionar una sede";
             $NumE += 1;
@@ -292,231 +130,75 @@
             $Correcto += 1;
         }
 
-        $ValidarNombre = new Val_Nombre($Nombre);
-        $Retorno = $ValidarNombre -> setNombre($Nombre);
-        $NombreVal = $ValidarNombre -> getNombre();
-        
-        switch ($Retorno) {
-            case '1':
-                $Precaucion1 = "El nombre solo lleva mayúsculas y letras";
-                $NumP += 1;
-                break;
-            case '2':
-                $Correcto += 1;
-                break;
-            case '3':
-                $Error2 = "El campo de nombre no puede ir vacío";
-                $NumE += 1;
-                break;    
-        }
-        
-        $ValidarApellidoP = new Val_ApellidoP($AP);
-        $Retorno = $ValidarApellidoP -> setApellidoP($AP);
-        $ApellidoPVal = $ValidarApellidoP -> getApellidoP();
-        
-        switch ($Retorno) {
-            case '1':
-                $Precaucion2 = "El apellido paterno solo lleva mayúsculas y letras";
-                $NumP += 1;
-                break;
-            case '2':
-                $Correcto += 1;
-                break;
-            case '3':
-                $Error3 = "El apellido paterno no puede ir vacío";
-                $NumE += 1;
-                break;    
-        }
-
-        $ValidarApellidoM = new Val_ApellidoM($AM);
-        $Retorno = $ValidarApellidoM -> setApellidoM($AM);
-        $ApellidoMVal = $ValidarApellidoM -> getApellidoM();
-        
-        switch ($Retorno) {
-            case '1':
-                $Precaucion3 = "El apellido materno solo lleva mayúsculas y letras";
-                $NumP += 1;
-                break;
-            case '2':
-                $Correcto += 1;
-                break;
-            case '3':
-                $ApellidoMVal="";
-                $Correcto += 1;
-                break;    
-        }
-
-        if ($Genero == "0") {
-            $Error5 = "Tienes que seleccionar un género";
-            $NumE += 1;
-        }else{
-            $Correcto += 1;
-        }
-       
         if ($Departamento == "0") {
-            $Error6 = "Tienes que seleccionar un departamento";
+            $Error2 = "Tienes que seleccionar un departamento";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
 
-        if ($Tipo == "0") {
-            $Error7 = "Tienes que seleccionar un tipo de empleado";
+        if ($Area == "0") {
+            $Error3 = "Tienes que seleccionar un área";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
 
-        if ($TipoP == "0") {
-            $Error8 = "Tienes que seleccionar un tipo de pago";
+        if ($Producto == "") {
+            $Error4 = "No has agregado ningún producto";
             $NumE += 1;
         }else{
             $Correcto += 1;
         }
 
-        if ($Horario == "0") {
-            $Error9 = "Tienes que seleccionar un tipo de horario";
-            $NumE += 1;
-        }else{
-            $Correcto += 1;
-        }
-
-        $ValidarFecha = new Val_Fecha($Fecha);
-        $Retorno = $ValidarFecha -> setFecha($Fecha);
-        $FechaVal = $ValidarFecha -> getFecha();
-
-        switch ($Retorno) {
-            case '1':
-                $Correcto += 1;
-                break;
-            case '2':
-                $Error10 = "La fecha ingresada es incorrecta";
-                $NumE += 1;
-                break;
-            case '3':
-                $Error10 = "El campo de fecha no puede ir vacío";
-                $NumE += 1;
-                break;    
-        }
-
-        if ($Correcto===10) {
-            // require_once '../../../Librerias/zkteco/zklib/ZKLib.php';
-            // include_once '../../../Conexion/BD.php';
-
-            // date_default_timezone_set('America/Mexico_City');
-            // $logFile = __DIR__ . '/log.txt'; // Archivo de log
-
-            // function logMessage($msg) {
-            //     global $logFile;
-            //     $timestamp = date('[Y-m-d H:i:s]');
-            //     file_put_contents($logFile, "$timestamp $msg\n", FILE_APPEND);
-            // }
-
-            // // =============================
-            // // 1️⃣ Calcular nuevo badge
-            // // =============================
-            // $stmt = $Con->prepare("SELECT MAX(CAST(badge AS UNSIGNED)) AS Ultimo FROM rh_personal WHERE badge REGEXP '^[0-9]+$'");
-            // $stmt->execute();
-            // $result = $stmt->get_result();
-            // $row = $result->fetch_assoc();
-            // $stmt->close();
-
-            // $Ultimo = $row['Ultimo'] ?? 0;
-            // $Badge = ($Ultimo == 0) ? '1001' : str_pad($Ultimo + 1, 4, "0", STR_PAD_LEFT);
-
-            // $user_id  = $Badge;
-            // $name     = $Badge; // badge como nombre
-            // $password = "";
-            // $role     = 0;
-
-            // // =============================
-            // // 2️⃣ Obtener dispositivos de la sede
-            // // =============================
-            // $stmt = $Con->prepare("SELECT ip, puerto, dispositivo FROM rh_dpbiometrico WHERE id_sede_dp = ?");
-            // $stmt->bind_param('i', $SedeVal);
-            // $stmt->execute();
-            // $dispositivos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-            // $stmt->close();
-
-            // // =============================
-            // // 3️⃣ Función ping rápido
-            // // =============================
-            // function puerto_abierto($host, $port, $timeout = 1) {
-            //     $conn = @fsockopen($host, $port, $errno, $errstr, $timeout);
-            //     if ($conn) { fclose($conn); return true; }
-            //     return false;
-            // }
-
-            // // =============================
-            // // 4️⃣ Enviar usuario a cada dispositivo
-            // // =============================
-            // $total = 0;
-            // foreach ($dispositivos as $disp) {
-            //     if (!puerto_abierto($disp['ip'], $disp['puerto'])) {
-            //         logMessage("❌ Dispositivo {$disp['dispositivo']} ({$disp['ip']}:{$disp['puerto']}) no responde.");
-            //         continue;
-            //     }
-
-            //     $zk = new ZKLib($disp['ip'], $disp['puerto']);
-            //     if (!$zk->connect()) {
-            //         logMessage("❌ No se pudo conectar a {$disp['dispositivo']} ({$disp['ip']}:{$disp['puerto']}).");
-            //         continue;
-            //     }
-
-            //     // Calcular nextUID individual por dispositivo
-            //     $users = $zk->getUser();
-            //     $nextUID = !empty($users) ? max(array_keys($users)) + 1 : 1;
-
-            //     $zk->disableDevice();
-            //     $zk->setUser($Badge, $user_id, $name, $password, $role);
-            //     $Correcto += 1;
-            //     $zk->enableDevice();
-            //     $zk->disconnect();
-
-            //     logMessage("✅ Usuario $user_id ($name) enviado a {$disp['dispositivo']} ({$disp['ip']}:{$disp['puerto']}) con UID $nextUID");
-            //     $total++;
-            // }
-
-            // logMessage("🚀 Proceso finalizado. Total de dispositivos actualizados: $total");
-            $Correcto += 1;
-
-        }
-        
-        if ($Correcto>=11) {
+        if ($Correcto==4) {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $stmt = $Con->prepare("SELECT MAX(CAST(badge AS UNSIGNED)) AS Ultimo FROM rh_personal WHERE badge REGEXP '^[0-9]+$'");
+                $stmt = $Con->prepare("SELECT * FROM cp_requisicion_temp WHERE id_usuario_t = ?");
+                $stmt->bind_param("i", $ID);
                 $stmt->execute();
                 $result = $stmt->get_result();
-                $row = $result->fetch_assoc();
 
-                $Ultimo = $row['Ultimo'] ?? 1000;
-                $Badge = str_pad($Ultimo + 1, 4, "0", STR_PAD_LEFT);
-                $stmt->close();
-
-                $stmt = $Con->prepare("INSERT INTO rh_personal (id_sede_pl, badge, nombre, apellido_p, apellido_m, id_genero_pl, id_te_pl, id_depto_pl, tipo_pago, id_tipo_h, fecha_ingreso, fecha_registro, id_user_p, status_pl) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)");
-                $stmt->bind_param('issssiiisissi', $SedeVal, $Badge, $NombreVal, $ApellidoPVal, $ApellidoMVal, $Genero, $Tipo, $Departamento, $TipoP, $Horario, $FechaVal, $FechaR, $ID);
-                $stmt->execute();
-                $stmt->close();
+                if ($result->num_rows === 0) {
+                    $Error4 = "No hay ningún producto registrado";
+                    $NumE += 1;
+                    exit;
+                }
                 
-                $Limpiar = new Cleanner($Sede,$Nombre,$AP,$AM,$Genero,$Departamento,$Tipo,$TipoP,$Fecha);
+                $stmtInsertRequi = $Con->prepare("INSERT INTO cp_requisiciones (folio_req, id_sede_req, id_area_req, cant_producto, solicitante, fecha_req, hora_req, id_usuario_req, estado_req, activo_req) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)");
+                $stmtInsertRequi->bind_param("siiisssis", $Folio, $SedeVal, $Area, $Producto, $Titular, $FechaR, $HoraR, $ID, $Estado);
+                $stmtInsertRequi->execute();
+                $idRequi = $stmtInsertRequi->insert_id;
+
+                // Insertar todas las requisiciones a tabla final
+                $stmtInsert = $Con->prepare("INSERT INTO cp_requisicion_pro (id_requi_p, folio_p, id_producto_p, cantidad_p, fecha_rp, fecha_p, hora_p, solicitante_p, prioridad_p, justificacion, observacion, estado_p, id_usuario_p) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                while ($row = $result->fetch_assoc()) {
+                    $stmtInsert->bind_param("isiissssisssi", $idRequi, $row['folio_t'], $row['id_producto_t'], $row['cantidad_t'], $row['fecha_rt'], $row['fecha_t'], $row['hora_t'], $Titular, $row['prioridad_t'], $row['justificacion'], $row['observacion'], $row['estado_t'], $row['id_usuario_t']);
+                    $stmtInsert->execute();
+                    $stmtInsert->close();
+                }
+
+                $stmtDel = $Con->prepare("DELETE FROM cp_requisicion_temp WHERE id_usuario_t = ?");
+                $stmtDel->bind_param("i", $ID);
+                $stmtDel->execute();
+                $stmtDel->close();
+
+                $Limpiar = new Cleanner($Sede,$Departamento,$Area,$Folio,$Producto);
                 $Sede = $Limpiar -> LimpiarSede();
-                $Nombre = $Limpiar -> LimpiarNombre();
-                $AP = $Limpiar -> LimpiarApellidoP();
-                $AM = $Limpiar -> LimpiarApellidoM();
-                $Genero = $Limpiar -> LimpiarGenero();
                 $Departamento = $Limpiar -> LimpiarDepartamento();
-                $Tipo = $Limpiar -> LimpiarTipo();
-                $TipoP = $Limpiar -> LimpiarPago();
-                $Fecha = $Limpiar -> LimpiarFecha();
-                
+                $Area = $Limpiar -> LimpiarArea();
+                $Folio = $Limpiar -> LimpiarFolio();
+                $Producto = $Limpiar -> LimpiarProducto();
+
                 session_start();
-                $_SESSION['correcto'] = "Nuevo ingreso registrado";
+                $_SESSION['idRequi'] = $idRequi;
+                $_SESSION['correcto'] = "Requisición registrada";
                 header("Location: ".$_SERVER['PHP_SELF']);
                 exit();
             }
         }
     }
 
-    include 'RegIngreso.php';
-    } else { header("Location: CatalogoNI.php"); }
+    include 'RegRequis.php';
+    } else { header("Location: CatalogoRQ.php"); }
+
 ?>

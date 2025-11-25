@@ -8,8 +8,13 @@ if (!empty($_POST)) {
 
     $id = $_POST['id'];
 
-    $stmt = $Con->prepare("SELECT codigo_s AS s, badge AS b, nombre_personal AS np, genero AS g, tipo_rh AS te, departamento AS d, tipo_pago AS tp, tipo_h AS th, fecha_ingreso AS fi, fecha_registro AS fr, nombre_completo AS nc 
-                    FROM vw_pendientes em WHERE id_personal=?");
+    $stmt = $Con->prepare("SELECT s.codigo_s AS s, r.folio_req AS f, p.dep AS d, d.departamento AS a, r.solicitante AS p, r.cant_producto AS t, r.fecha_req AS fr, r.estado_req AS e, u.username AS u
+                    FROM cp_requisiciones r
+                    LEFT JOIN usuarios u ON r.id_usuario_req = u.id_usuario
+                    LEFT JOIN rh_departamentos d ON r.id_area_req = d.id_departamento
+                    LEFT JOIN cp_departamentos p ON d.id_dep_d = p.id_dep
+                    LEFT JOIN sedes s ON r.id_sede_req = s.id_sede
+                    WHERE r.id_requisicion = ?");
     $stmt->bind_param("i",$id);
     $stmt->execute();
     $Registro = $stmt->get_result();
@@ -26,7 +31,7 @@ if (!empty($_POST)) {
     exit;
     
 }else{ 
-    header("Location: CatalogoNI.php"); 
+    header("Location: CatalogoRQ.php"); 
 }
 
 ?>

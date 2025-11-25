@@ -5,10 +5,10 @@ $RutaSC = "../../../index.php";
 include_once "../../../Login/validar_sesion.php";
 // $Pagina=basename(__FILE__);
 // Historial($Pagina,$Con);
-$Ver = TienePermiso($_SESSION['ID'], "Compras/Requsiciones", 1, $Con);
-$Crear = TienePermiso($_SESSION['ID'], "Compras/Requsiciones", 2, $Con);
-$Editar = TienePermiso($_SESSION['ID'], "Compras/Requsiciones", 3, $Con);
-$Eliminar = TienePermiso($_SESSION['ID'], "Compras/Requsiciones", 4, $Con);
+$Ver = TienePermiso($_SESSION['ID'], "Compras/Requisiciones", 1, $Con);
+$Crear = TienePermiso($_SESSION['ID'], "Compras/Requisiciones", 2, $Con);
+$Editar = TienePermiso($_SESSION['ID'], "Compras/Requisiciones", 3, $Con);
+$Eliminar = TienePermiso($_SESSION['ID'], "Compras/Requisiciones", 4, $Con);
 
 if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 ?>
@@ -20,7 +20,6 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <script src="https://kit.fontawesome.com/367278d2a4.js" crossorigin="anonymous"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script src="../../../js/script.js"></script>
     <script src="../../../js/session.js"></script>
     <link rel="stylesheet" href="DesignRQ.css">
     <title>Requisiciones: Inicio</title>

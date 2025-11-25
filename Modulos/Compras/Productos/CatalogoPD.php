@@ -5,10 +5,10 @@ $RutaSC = "../../../index.php";
 include_once "../../../Login/validar_sesion.php";
 // $Pagina=basename(__FILE__);
 // Historial($Pagina,$Con);
-$Ver = TienePermiso($_SESSION['ID'], "Compras/Requisiciones", 1, $Con);
-$Crear = TienePermiso($_SESSION['ID'], "Compras/Requisiciones", 2, $Con);
-$Editar = TienePermiso($_SESSION['ID'], "Compras/Requisiciones", 3, $Con);
-$Eliminar = TienePermiso($_SESSION['ID'], "Compras/Requisiciones", 4, $Con);
+$Ver = TienePermiso($_SESSION['ID'], "Compras/Productos", 1, $Con);
+$Crear = TienePermiso($_SESSION['ID'], "Compras/Productos", 2, $Con);
+$Editar = TienePermiso($_SESSION['ID'], "Compras/Productos", 3, $Con);
+$Eliminar = TienePermiso($_SESSION['ID'], "Compras/Productos", 4, $Con);
 
 if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 ?>
@@ -38,7 +38,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <script src="../../../js/script.js"></script>
     <script src="../../../js/eliminar.js"></script>
     <script src="../../../js/session.js"></script>
-    <link rel="stylesheet" href="DesignRQ.css">
+    <link rel="stylesheet" href="DesignPD.css">
     <title>Ingresos: Reporte</title>
 </head>
 
@@ -58,8 +58,8 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <a href="/RisingCore/Modulos/Compras/Requisiciones/Inicio.php" style="color: #6c757d; text-decoration: none;">
-                        🛍️ Requisiciones
+                    <a href="/RisingCore/Modulos/Compras/Productos/Inicio.php" style="color: #6c757d; text-decoration: none;">
+                        📦🆕 Productos
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
@@ -68,25 +68,24 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                     </a>
                     <span style="color: #6c757d;">&raquo;</span>
 
-                    <strong style="color: #333;"> 🙋🏽‍♂️ Requisiciones de la semana</strong>
+                    <strong style="color: #333;">📊 Catálogo de productos</strong>
                 </nav>
             </div>
 
             <div class="tabla">
-            <?php if ($TipoRol=="ADMINISTRADOR" || $Crear==true) { ?> <a title="Agregar" href="RegistrarNI.php"><div id="wizard" class="btn-up"><i class="fa-solid fa-fingerprint fa-2xl" style="color: #ffffff;"></i></div></a> <?php } ?>
-                    
             
             <table id="basic-datatables" class="display table table-striped table-hover responsive nowrap" style="width:95%">
                     <thead>
                         <tr>
-                            <th>Sede</th>
-                            <th>Folio</th>
-                            <th>Departamento</th>
-                            <th>Área</th>
-                            <th>Solicitante</th>
-                            <th>Total de productos</th>
-                            <th>Fecha de requisición</th>
-                            <th>Estado</th>
+                            <th>Producto</th>
+                            <th>Unidad</th>
+                            <th>Tipo</th>
+                            <th>Existencias</th>
+                            <th>Ultima entrada</th>
+                            <th>Ultima salida</th>
+                            <th>Ultimo proveedor</th>
+                            <th>Ultimo precio</th>
+                            <th>Agregado</th>
                             <th>Usuario</th>
                             <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
                         </tr>
@@ -94,14 +93,15 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                     
                     <tfoot>
                         <tr>
-                            <th>Sede</th>
-                            <th>Folio</th>
-                            <th>Departamento</th>
-                            <th>Área</th>
-                            <th>Solicitante</th>
-                            <th>Total de productos</th>
-                            <th>Fecha de requisición</th>
-                            <th>Estado</th>
+                            <th>Producto</th>
+                            <th>Unidad</th>
+                            <th>Tipo</th>
+                            <th>Existencias</th>
+                            <th>Ultima entrada</th>
+                            <th>Ultima salida</th>
+                            <th>Ultimo proveedor</th>
+                            <th>Ultimo precio</th>
+                            <th>Agregado</th>
                             <th>Usuario</th>
                             <?php if ($TipoRol=="ADMINISTRADOR" || $Ver=true || $Editar==true || $Eliminar==true) { ?> <th class="no-export">Acciones</th> <?php } ?> 
                         </tr>
@@ -124,7 +124,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     $('#basic-datatables').DataTable({
         serverSide: true,
         ajax: {
-            url: '../../Server_side/Requisiciones/tabla_requis.php',
+            url: '../../Server_side/Productos/tabla_productos.php',
             type: 'POST',
             dataFilter: function(data){
                 // Intentar parsear JSON
@@ -141,25 +141,70 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
             }
         },
         columns: [
-                  { data: 'codigo_s' },
-                  { data: 'folio_req' },
-                  { data: 'dep'}, 
-                  { data: 'departamento' },
-                  { data: 'solicitante' },
-                  { data: 'cant_producto' },
-                  { data: 'fecha_req',
-                    "render": function ( data, type, row ) {
+                  { data: 'producto'},
+                  { data: 'unidad' },
+                  { data: 'tipo_producto'},
+                  { data: 'existencias'}, 
+                  { data: 'u_entrada',
+                    render: function (data, type, row) {
+                        if (!row.u_entrada || row.u_entrada === null || row.u_entrada === "0000-00-00") {
+                            return "N/A";
+                        }
+
                         if(type === 'display'){
                             // Asumiendo que viene como "yyyy-mm-dd"
-                            let partes = row.fecha_req.split('-'); // [yyyy, mm, dd]
+                            let partes = row.u_entrada.split('-'); // [yyyy, mm, dd]
+                            return partes[2] + '/' + partes[1] + '/' + partes[0]; // dd/mm/yyyy
+                        }else{
+                            return data;
+                        }
+                    } 
+                  },
+                  { data: 'u_salida', 
+                    render: function (data, type, row) {
+                        if (!row.u_salida || row.u_salida === null || row.u_salida === "0000-00-00") {
+                            return "N/A";
+                        }
+
+                        if(type === 'display'){
+                            // Asumiendo que viene como "yyyy-mm-dd"
+                            let partes = row.u_salida.split('-'); // [yyyy, mm, dd]
+                            return partes[2] + '/' + partes[1] + '/' + partes[0]; // dd/mm/yyyy
+                        }else{
+                            return data;
+                        }
+                    } 
+                  },
+                  { data: 'u_proveedor', },
+                  { data: 'u_precio',
+                    render: function (data, type, row) {
+                        // Detectar precio vacío o inválido
+                        if (!row.u_precio || row.u_precio === "0" || row.u_precio === 0) {
+                            return "N/A";
+                        }
+                        // Mostrar con signo $
+                        if (type === 'display') {
+                            return '$' + parseFloat(row.u_precio).toFixed(2); 
+                        }
+                        return row.u_precio;
+                    } 
+                  },
+                  { data: 'fecha_a',
+                    "render": function ( data, type, row ) {
+                        if (!row.fecha_a || row.fecha_a === null || row.fecha_a === "0000-00-00") {
+                            return "N/A";
+                        }
+
+                        if(type === 'display'){
+                            // Asumiendo que viene como "yyyy-mm-dd"
+                            let partes = row.fecha_a.split('-'); // [yyyy, mm, dd]
                             return partes[2] + '/' + partes[1] + '/' + partes[0]; // dd/mm/yyyy
                         }else{
                             return data;
                         }
                     }
                    },
-                  { data: 'estado_req' },
-                  { data: 'username' },
+                  { data: 'nombre_completo' },
                   { 
                     data: null,
                     "render": function (data, type, row) {
@@ -167,38 +212,6 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                         var Ver = <?php echo json_encode($Ver); ?>;
                         var Editar = <?php echo json_encode($Editar); ?>;
                         var Eliminar = <?php echo json_encode($Eliminar); ?>;
-
-                        // ===== Validar semana y año =====
-                        const fechaReq = new Date(row.fecha_req); 
-                        const hoy = new Date();
-
-                        function semana(d) {
-                            const temp = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-                            const dia = temp.getUTCDay() || 7;
-                            temp.setUTCDate(temp.getUTCDate() + 4 - dia);
-                            const inicio = new Date(Date.UTC(temp.getUTCFullYear(), 0, 1));
-                            return Math.ceil((((temp - inicio) / 86400000) + 1) / 7);
-                        }
-
-                        const semanaHoy = semana(hoy);
-                        const semanaReq = semana(fechaReq);
-
-                        const añoHoy = hoy.getFullYear();
-                        const añoReq = fechaReq.getFullYear();
-
-                        const esMiercoles = hoy.getDay() === 3; // miércoles (0=domingo,3=miércoles)
-                        
-                        console.log(semanaHoy, semanaReq);
-                        console.log(añoHoy, añoReq);
-                        console.log(esMiercoles);
-                        // Solo permitir editar/eliminar si:
-                        // mismo año + misma semana + es miércoles
-                        const habilitado = (añoHoy === añoReq && semanaHoy === semanaReq && esMiercoles);
-
-                        if (!habilitado) {
-                            Editar = false;
-                            Eliminar = false;
-                        }
 
                         if (Rol === "ADMINISTRADOR") {
                             Ver = true;
@@ -208,9 +221,9 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 
                         if (Ver || Editar || Eliminar) {
                             return `
-                                ${Ver ? `<a title="Mostrar" href="#${row.id_requisicion}" onclick="mostrarRegistroRQ(${row.id_requisicion})"><i class="fa-solid fa-eye fa-xl" style="color: #16ac19;"></i></a>` : ''}
-                                ${Editar ? `<a title="Editar" class="Edit" href="EditarRQ.php?id=${row.id_requisicion}"><i class="fa-solid fa-pen-to-square fa-xl" style="color: #0a5ceb;"></i></a>` : ''}
-                                ${Eliminar ? `<a title="Eliminar" class="Delete" href="#${row.id_requisicion}" onclick="eliminarRegistro(${row.id_requisicion})"><i class="fa-solid fa-trash fa-xl" style="color: #ca1212;"></i></a>` : ''}
+                                ${Ver ? `<a title="Mostrar" href="#${row.id_producto}" onclick="mostrarProducto(${row.id_producto})"><i class="fa-solid fa-eye fa-xl" style="color: #16ac19;"></i></a>` : ''}
+                                ${Editar ? `<a title="Editar" class="Edit" href="EditarPD.php?id=${row.id_producto}"><i class="fa-solid fa-pen-to-square fa-xl" style="color: #0a5ceb;"></i></a>` : ''}
+                                ${Eliminar ? `<a title="Eliminar" class="Delete" href="#${row.id_producto}" onclick="eliminarRegistro(${row.id_producto})"><i class="fa-solid fa-trash fa-xl" style="color: #ca1212;"></i></a>` : ''}
                             `;
                         } else {
                             return '';
@@ -224,13 +237,14 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
         responsive: true,
         columnDefs: [
         <?php if ($TipoRol=="ADMINISTRADOR" || $Ver==true || $Editar==true || $Eliminar==true) { ?>
-                            { responsivePriority: 1, targets: 9 },
+                            { responsivePriority: 1, targets: 10 },
         <?php  } ?>
+                            { responsivePriority: 3, targets: 9 },
                             { responsivePriority: 3, targets: 8 },
                             { responsivePriority: 2, targets: 7 },
-                            { responsivePriority: 1, targets: 6 },
+                            { responsivePriority: 2, targets: 6 },
                             { responsivePriority: 1, targets: 5 },
-                            { responsivePriority: 3, targets: 4 },
+                            { responsivePriority: 1, targets: 4 },
                             { responsivePriority: 2, targets: 3 },
                             { responsivePriority: 2, targets: 2 },
                             { responsivePriority: 1, targets: 1 },
@@ -249,8 +263,8 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
                 if (title !== "Acciones") {
                     $(column.footer()).empty();
 
-                    const selectColumns = [0, 2, 3, 7]; // columnas con select
-                    const dateColumns = [6]; // columna fecha
+                    const selectColumns = [1, 2, 9]; // columnas con select
+                    const dateColumns = [4, 5, 8]; // columna fecha
 
                     if (selectColumns.includes(column.index())) {
                         const select = $('<select><option value="">Todos</option></select>')
@@ -262,7 +276,7 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
 
                         // 🔹 Llenar las opciones del select vía AJAX
                         $.ajax({
-                            url: '../../Server_side/Requisiciones/vuRequisP.php', // tu endpoint PHP
+                            url: '../../Server_side/Productos/vuProductos.php', // tu endpoint PHP
                             type: 'POST',
                             data: { columna: column.index() }, // le mandas qué columna quieres
                             dataType: 'json',

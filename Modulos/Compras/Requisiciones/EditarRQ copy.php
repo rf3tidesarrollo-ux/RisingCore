@@ -165,17 +165,67 @@
                     exit;
                 }
 
-                $stmtDel = $Con->prepare("DELETE FROM cp_requisicion_pro WHERE id_requi_p = ?");
-                $stmtDel->bind_param("i", $idRequi);
-                $stmtDel->execute();
-                $stmtDel->close();
-
-                $stmtInsert = $Con->prepare("INSERT INTO cp_requisicion_pro (id_requi_p, folio_p, id_producto_p, cantidad_p, fecha_rp, fecha_p, hora_p, solicitante_p, prioridad_p, justificacion, observacion, estado_p, id_usuario_p) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                while ($row = $result->fetch_assoc()) {
-                    $stmtInsert->bind_param("isiissssisssi", $idRequi, $row['folio_t'], $row['id_producto_t'], $row['cantidad_t'], $row['fecha_rt'], $row['fecha_t'], $row['hora_t'], $Titular, $row['prioridad_t'], $row['justificacion'], $row['observacion'], $row['estado_t'], $row['id_usuario_t']);
-                    $stmtInsert->execute();
+                $LotesActuales = [];
+                $stmt = $Con->prepare("SELECT * FROM cp_requisicion_pro WHERE id_requisicion_p = ?");
+                $stmt->bind_param("i", $idRequi);
+                $stmt->execute();
+                $res = $stmt->get_result();
+                while ($row = $res->fetch_assoc()) {
+                    $LotesActuales[$row['id_producto_p']] = ['folio' => $row['folio_p'], 'producto' => $row['id_producto_p'], 'total' => $row['cantidad_p'], 'fecha_rp' => $row['fecha_rp'], 'fecha' => $row['fecha_p'], 'hora' => $row['hora_p'], 'solicitante' => $row['solicitante_p'], 'prioridad' => $row['prioridad_p'], 'justificacion' => $row['justificacion'], 'observacion' => $row['observacion'], 'estado_p' => $row['estado_p'], 'usuario' => $row['id_usuario_p']];
                 }
-                $stmtInsert->close();
+                $stmt->close();
+
+                $LotesNuevos = [];
+                $stmt = $Con->prepare("SELECT * FROM cp_requisicion_temp WHERE id_usuario_t = ?");
+                $stmt->bind_param("i", $ID);
+                $stmt->execute();
+                $resTemp = $stmt->get_result();
+                while ($row = $resTemp->fetch_assoc()) {
+                    $LotesNuevos[$row['id_producto_t']] = ['folio' => $row['folio_t'], 'producto' => $row['id_producto_t'], 'total' => $row['cantidad_t'], 'fecha_rt' => $row['fecha_rt'], 'fecha' => $row['fecha_t'], 'hora' => $row['hora_t'], 'prioridad' => $row['prioridad_t'], 'justificacion' => $row['justificacion'], 'observacion' => $row['observacion'], 'estado_t' => $row['estado_t'], 'usuario' => $row['id_usuario_t']];
+                }
+                $stmt->close();
+
+                foreach ($LotesNuevos as $idTemp => $nuevo) {
+                        $idProducto = $nuevo['producto'];
+                    if (isset($LotesActuales[$idProducto])) {
+                        // Ya existía, revisamos si cambió
+                        $actual = $LotesActuales[$idTemp];
+                        if ($actual['producto'] != $nuevo['producto'] || $actual['total'] != $nuevo['total'] || $actual['prioridad'] != $nuevo['prioridad'] || $actual['justificacion'] != $nuevo['justificacion']) {
+                            // Actualiza si cambió
+                            $stmt = $Con->prepare("UPDATE cp_requisicion_pro SET cantidad_p=?, fecha_rp=?, fecha_p=?, hora_p=?, prioridad=?, justificacion=?, estado_p=?, usuario=? WHERE id_requisicion_p=? AND id_producto_p=?");
+                            $stmt->bind_param("isssissiii", $nuevo['total'], $nuevo['fecha_rt'], $FechaR, $HoraR, $nuevo['prioridad'], $nuevo['justificacion'], $Estado, $ID, $idRequi, $idProducto);
+                            $stmt->execute();
+                            $stmt->close();
+                        }
+                    } else {
+                        // No existía, insertamos
+                        $stmt = $Con->prepare("INSERT INTO cp_requisicion_pro (id_requi_p, folio_p, id_producto_p, cantidad_p, fecha_rp, fecha_p, hora_p, solicitante_p, prioridad_p, justificacion, observacion, estado_p, id_usuario_p) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");                   
+                        $stmt->bind_param("isiissssisssi", $idRequi, $nuevo['folio'], $nuevo['producto'], $nuevo['total'], $nuevo['fecha_rt'], $nuevo['fecha'], $nuevo['hora'], $Titular, $nuevo['prioridad'], $nuevo['justificacion'], $nuevo['observacion'], $nuevo['estado_t'], $nuevo['usuario']);
+                        $stmt->execute();
+                        $stmt->close();
+
+                        $stmtUpdate = $Con->prepare("UPDATE cp_requisiciones SET cant_producto = cant_producto + 1 WHERE id_requisicion = ?");
+                        $stmtUpdate->bind_param("i", $idRequi);
+                        $stmtUpdate->execute();
+                        $stmtUpdate->close();
+                    }
+                }
+
+                foreach ($LotesActuales as $idTemp => $actual) {
+                    $idProducto = $actual['producto'];
+                    if (!isset($LotesNuevos[$idProducto])) {
+                        // Ahora eliminar de requis
+                        $stmtDel = $Con->prepare("DELETE FROM cp_requisicion_pro WHERE id_requi_p = ? AND id_producto_p = ?");
+                        $stmtDel->bind_param("ii", $idRequi, $idProducto);
+                        $stmtDel->execute();
+                        $stmtDel->close();
+
+                        $stmtUpdate = $Con->prepare("UPDATE cp_requisiciones SET cant_producto = cant_producto - 1 WHERE id_requisicion = ?");
+                        $stmtUpdate->bind_param("i", $idRequi);
+                        $stmtUpdate->execute();
+                        $stmtUpdate->close();
+                    }
+                }
 
                 $stmt = $Con->prepare("SELECT folio_req, id_area_req, id_sede_req FROM cp_requisiciones WHERE id_requisicion=?");
                 $stmt->bind_param("i", $idRequi);
@@ -187,7 +237,7 @@
                 $SedeA = $row['id_sede_req'];
                 $stmt->close();   
 
-                if ($Sede == $SedeA && $Area == $AreaA) {
+                if ($Sede == $SedeA && $Cliente == $AreaA) {
                     $FolioVal = $FolioA;
                 }else{
                     $FolioVal = $Folio;
@@ -201,7 +251,7 @@
                 $stmtDel->bind_param("i", $ID);
                 if ($stmtDel->execute()) {
                     $_SESSION['idRequi'] = $idRequi;
-                }
+                } 
                 $stmtDel->close();
                 
                 $Limpiar = new Cleanner($Sede,$Departamento,$Area,$Folio,$Producto);
