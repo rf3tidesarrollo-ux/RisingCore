@@ -124,6 +124,13 @@
 
                     <div class="FAD">
                         <label class="FAL">
+                            <span class="FAS">Clave</span>
+                            <input class="FAI" id="Clave" type="Number" name="Clave" <?php if (isset($_POST['Clave']) != ''): ?> value="<?php echo $Clave; ?>"<?php endif; ?> size="5" maxLength="5">
+                        </label>
+                    </div>
+
+                    <div class="FAD">
+                        <label class="FAL">
                             <span class="FAS">NSS</span>
                             <input class="FAI" id="NSS" type="Text" name="NSS" <?php if (isset($_POST['NSS']) != ''): ?> value="<?php echo $NSS; ?>"<?php endif; ?> size="25" maxLength="50" onkeyup="mayus(this);">
                         </label>
@@ -275,10 +282,10 @@
                     </div>
                 </section>
 
-            <?php if ($Correcto < 21) {
+            <?php if ($Correcto < 22) {
                 $tipos = [
-                    'Error' => ['cantidad' => $NumE, 'max' => 21, 'title' => 'Error!', 'type' => 'error'],
-                    'Precaucion' => ['cantidad' => $NumP, 'max' => 10, 'title' => 'Precaución!', 'type' => 'warning'],
+                    'Error' => ['cantidad' => $NumE, 'max' => 22, 'title' => 'Error!', 'type' => 'error'],
+                    'Precaucion' => ['cantidad' => $NumP, 'max' => 12, 'title' => 'Precaución!', 'type' => 'warning'],
                     'Informacion' => ['cantidad' => $NumI, 'max' => 1, 'title' => 'Info!', 'type' => 'info']
                 ];
 

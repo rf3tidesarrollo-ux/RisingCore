@@ -126,6 +126,13 @@
 
                     <div class="FAD">
                         <label class="FAL">
+                            <span class="FAS">Clave</span>
+                            <input class="FAI" id="Clave" type="Number" name="Clave" value="<?php echo $Clave; ?>" size="5" maxLength="5">
+                        </label>
+                    </div>
+
+                    <div class="FAD">
+                        <label class="FAL">
                             <span class="FAS">NSS</span>
                             <input class="FAI" id="NSS" type="Text" name="NSS" value="<?php echo $NSS; ?>" size="25" maxLength="50" onkeyup="mayus(this);">
                         </label>
@@ -279,8 +286,8 @@
 
             <?php if ($Correcto < 21) {
                     $tipos = [
-                    'Error' => ['cantidad' => $NumE, 'max' => 21, 'title' => 'Error!', 'type' => 'error'],
-                    'Precaucion' => ['cantidad' => $NumP, 'max' => 10, 'title' => 'Precaución!', 'type' => 'warning'],
+                    'Error' => ['cantidad' => $NumE, 'max' => 22, 'title' => 'Error!', 'type' => 'error'],
+                    'Precaucion' => ['cantidad' => $NumP, 'max' => 12, 'title' => 'Precaución!', 'type' => 'warning'],
                     'Informacion' => ['cantidad' => $NumI, 'max' => 1, 'title' => 'Info!', 'type' => 'info']
                 ];
 

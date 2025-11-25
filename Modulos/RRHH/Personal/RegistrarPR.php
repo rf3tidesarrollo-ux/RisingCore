@@ -21,6 +21,7 @@
     $Nombre = isset($_POST['Nombre']) ? $_POST['Nombre'] : '';
     $FechaN = isset($_POST['FechaN']) ? $_POST['FechaN'] : '';
     $Lugar = isset($_POST['Lugar']) ? $_POST['Lugar'] : '';
+    $Clave = isset($_POST['Clave']) ? $_POST['Clave'] : '';
     $NSS = isset($_POST['NSS']) ? $_POST['NSS'] : '';
     $RFC = isset($_POST['RFC']) ? $_POST['RFC'] : '';
     $CURP = isset($_POST['CURP']) ? $_POST['CURP'] : '';
@@ -38,11 +39,11 @@
     $Parentesco = isset($_POST['Parentesco']) ? $_POST['Parentesco'] : '';
     $FechaTC = isset($_POST['FechaTC']) ? $_POST['FechaTC'] : '';
 
-    for ($i=1; $i <= 21; $i++) {
+    for ($i=1; $i <= 22; $i++) {
         ${"Error".$i}="";
     }
 
-    for ($i=1; $i <= 10; $i++) { 
+    for ($i=1; $i <= 12; $i++) { 
         ${"Precaucion".$i}="";
     }
 
@@ -221,6 +222,45 @@
         }
     }
 
+    class Val_Clave {
+        public $Clave;
+    
+        function __Construct($C){
+            $this -> Clave = $C;
+        }
+    
+        public function getClave(){
+            return $this -> Clave;
+        }
+    
+        public function setClave($Clave){
+            $this -> Clave = $Clave;
+            
+            if (!empty($Clave)) {
+                if (is_numeric($Clave)){
+                    if (strlen($Clave) >= 4 && strlen($Clave) <= 5) {
+                        if ($Clave >= 0001 && $Clave <= 99999) {
+                            $Valor = 1;
+                            return $Valor;
+                        }else{
+                            $Valor = 2;
+                            return $Valor; 
+                        }
+                    }else{
+                        $Valor = 3;
+                        return $Valor; 
+                    }
+                }else{
+                    $Valor = 4;
+                    return $Valor;
+                }
+            }else{
+                    $Valor = 5;
+                    return $Valor;
+            }
+        }
+    }
+
     class Val_Salario {
         public $Salario;
     
@@ -292,6 +332,7 @@
         public $Nombre;
         public $FechaN;
         public $Lugar;
+        public $Clave;
         public $NSS;
         public $RFC;
         public $CURP;
@@ -331,6 +372,10 @@
 
         public function LimpiarLugar(){
             return $this -> Lugar="";
+        }
+
+        public function LimpiarClave(){
+            return $this -> Clave="";
         }
 
         public function LimpiarNSS(){
@@ -404,6 +449,7 @@
         $Nombre=$_POST['Nombre'];
         $FechaN=$_POST['FechaN'];
         $Lugar=$_POST['Lugar'];
+        $Clave=$_POST['Clave'];
         $NSS=$_POST['NSS'];
         $RFC=$_POST['RFC'];
         $CURP=$_POST['CURP'];
@@ -487,6 +533,32 @@
                 $Error5 = "El lugar no puede ir vacío";
                 $NumE += 1;
                 break;    
+        }
+
+        $ValidarClave = new Val_Clave($Clave);
+        $Retorno = $ValidarClave -> setClave($Clave);
+        $ClaveVal = $ValidarClave -> getClave();
+
+        switch ($Retorno) {
+            case '1':
+                $Correcto += 1;
+                break;
+            case '2':
+                $Precaucion12 = "La clave debe estar entre 00001 y 99999";
+                $NumP += 1;
+                break;
+            case '3':
+                $Precaucion12 = "La clave debe ser de 4-5 dígitos";
+                $NumP += 1;
+                break;
+            case '4':
+                $Precaucion12 = "Tienes que ingresar solo números en la clave";
+                $NumP += 1;
+                break;
+            case '5':
+                $Error22 = "La clave no puede ir vacío";
+                $NumE += 1;
+                break;   
         }
 
         $ValidarNSS = new Val_NSS($NSS);
@@ -596,7 +668,7 @@
                 $Correcto += 1;
                 break;
             case '2':
-                $Precaucion6 = "El código postal debe estar entre 10000 y 99999";
+                $Precaucion6 = "El código postal debe estar entre 0001 y 99999";
                 $NumP += 1;
                 break;
             case '3':
@@ -759,11 +831,13 @@
                 $NumE += 1;
                 break;    
         }
-        
-        if ($Correcto==21) {
+
+        if ($Correcto==22) {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $stmt = $Con->prepare("INSERT INTO rh_personal_completo (id_registro_p, fecha_nacimiento, lugar_nacimiento, nss, rfc, curp, ine, codigo_postal, rol_p, puesto_p, salario_diario, id_escolaridad_p, id_estado_p, id_municipio_p, domicilio, id_ruta_p, beneficiario, parentesco, terminacion_contrato, activo_p) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)");
-                $stmt->bind_param('isssssssssdiiisisss', $Nombre, $FechaNVal, $LugarVal, $NSSVal, $RFCVal, $CURPVal, $INEVal, $CPVal, $Rol, $PuestoVal, $SalarioVal, $Escolaridad, $EstadoC, $Municipio, $DomicilioVal, $Camino, $BeneficiarioVal, $ParentescoVal, $FechaTCVal);
+                $ClaveV = str_pad($ClaveVal, 4, "0", STR_PAD_LEFT);
+
+                $stmt = $Con->prepare("INSERT INTO rh_personal_completo (id_registro_p, clave_nom, fecha_nacimiento, lugar_nacimiento, nss, rfc, curp, ine, codigo_postal, rol_p, puesto_p, salario_diario, id_escolaridad_p, id_estado_p, id_municipio_p, domicilio, id_ruta_p, beneficiario, parentesco, terminacion_contrato, activo_p) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)");
+                $stmt->bind_param('issssssssssdiiisisss', $Nombre, $ClaveV, $FechaNVal, $LugarVal, $NSSVal, $RFCVal, $CURPVal, $INEVal, $CPVal, $Rol, $PuestoVal, $SalarioVal, $Escolaridad, $EstadoC, $Municipio, $DomicilioVal, $Camino, $BeneficiarioVal, $ParentescoVal, $FechaTCVal);
                 $stmt->execute();
                 $stmt->close();
                 
@@ -773,6 +847,7 @@
                 $Nombre = $Limpiar -> LimpiarNombre();
                 $FechaN = $Limpiar -> LimpiarFechaN();
                 $Lugar = $Limpiar -> LimpiarLugar();
+                $Clave = $Limpiar -> LimpiarClave();
                 $NSS = $Limpiar -> LimpiarNSS();
                 $RFC = $Limpiar -> LimpiarRFC();
                 $CURP = $Limpiar -> LimpiarCURP();
