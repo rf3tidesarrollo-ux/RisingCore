@@ -17,7 +17,6 @@ if ($TipoRol=="ADMINISTRADOR" || $Acceso==true) {
     <script src="https://kit.fontawesome.com/367278d2a4.js" crossorigin="anonymous"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script src="../../js/script.js"></script>
     <script src="../../js/eliminar.js"></script>
     <link rel="stylesheet" href="Pesaje/DesignR.css">
     <title>Empaque: Inicio</title>

@@ -36,7 +36,7 @@ if (!empty($_POST)) {
     exit;
     
 }else{ 
-    header("Location: CatalogoR.php"); 
+    header("Location: CatalogoMz.php"); 
 }
 
 ?>
