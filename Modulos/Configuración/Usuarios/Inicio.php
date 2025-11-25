@@ -19,7 +19,6 @@ if ($TipoRol=="ADMINISTRADOR" || $Ver==true) {
     <script src="https://kit.fontawesome.com/367278d2a4.js" crossorigin="anonymous"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script src="../../../js/script.js"></script>
     <script src="../../../js/session.js"></script>
     <link rel="stylesheet" href="DesignU.css">
     <title>Usuarios: Inicio</title>
