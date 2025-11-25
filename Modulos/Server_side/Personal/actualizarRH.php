@@ -83,7 +83,7 @@ while ($dp = $dispositivos->fetch_object()) {
     if ($debug) { echo "<pre>"; var_dump($attendance); echo "</pre>"; }
 
     if (!empty($attendance)) {
-        $attendance = array_reverse($attendance, true); // asegurar orden cronológico
+        //$attendance = array_reverse($attendance, true); // asegurar orden cronológico
         $insertValues = [];
 
         foreach ($attendance as $att) {
