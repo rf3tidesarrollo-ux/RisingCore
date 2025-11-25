@@ -594,3 +594,126 @@ function mostrarRegistroPR(id){
     },
   });
 }
+
+function mostrarRegistroRQ(id){
+  $.ajax({
+    url: 'MostrarRQ.php',
+    type: 'POST',
+    async: true,
+    data: {id:id},
+    success: function(response){
+      if (response != 'error') {
+        var info = JSON.parse(response);
+        const sede = info.s || 'N/A';
+        const folio = info.f || 'N/A';
+        const departamento = info.d || 'N/A';
+        const area = info.a || 'N/A';
+        const solicitante = info.p || 'N/A';
+        const pTotal = info.t || 0;
+        const fechaReq = info.fr ? info.fr.split('-').reverse().join('/') : 'N/A';
+        const estado = info.e || 'N/A';
+        const usuario = info.u || 'N/A';
+
+        swal("Información:",
+        "SEDE: " +sede + "\n" +
+        "FOLIO: " + folio + "\n" +
+        "DEPARTAMENTO: " + departamento + "\n" +
+        "ÁREA: " + area + "\n" +
+        "TOTAL DE PRODUCTOS: " + pTotal + "\n" +
+        "SOLICITANTE: " + solicitante + "\n" +
+        "FECHA DE REQUESICIÓN: " + fechaReq + "\n" +
+        "ESTADO: " + estado + "\n" +
+        "USUARIO: " + usuario);
+      }
+    },
+    error: function(error){
+      swal("Error!", {
+        icon: "error",
+      });
+    },
+  });
+}
+
+function mostrarProducto(id){
+  $.ajax({
+    url: 'MostrarPD.php',
+    type: 'POST',
+    async: true,
+    data: {id:id},
+    success: function(response){
+      if (response != 'error') {
+        var info = JSON.parse(response);
+        const tipo = info.tp || 'N/A';
+        const producto = info.p || 'N/A';
+        const unidad = info.u || 'N/A';
+        const existencias = info.e || 0;
+        const UE = info.ue;
+        const US = info.us;
+        const uEntrada = UE ? UE.split('-').reverse().join('/') : 'N/A';
+        const uSalida  = US ? US.split('-').reverse().join('/') : 'N/A';
+        const uProve = info.up || 'N/A';
+        const uPrecio = (info.ud != null && info.ud !== "" && info.ud != 0)
+        ? '$' + info.ud
+        : 'N/A';
+        const F = info.fa;
+        const fecha = F ? F.split('-').reverse().join('/') : 'N/A';
+
+        swal("Información:", 
+        "PRODUCTO: " + producto + "\n" +
+        "UNIDAD: " + unidad + "\n" +
+         "TIPO DE PRODUCTO: " + tipo + "\n" +
+        "EXISTENCIAS: " + existencias + "\n" +
+        "ULTIMA ENTRADA: " + uEntrada + "\n" +
+        "ULTIMA SALIDA: " + uSalida + "\n" +
+        "ULTIMO PROVEEDOR: " + uProve + "\n" +
+        "ULTIMO PRECIO: " + uPrecio + "\n" +
+        "FECHA:" + fecha);
+      }
+    },
+    error: function(error){
+      swal("Error!", {
+        icon: "error",
+      });
+    },
+  });
+}
+
+function mostrarRegistroIC(id){
+  $.ajax({
+    url: 'MostrarIC.php',
+    type: 'POST',
+    async: true,
+    data: {id:id},
+    success: function(response){
+      if (response != 'error') {
+        var info = JSON.parse(response);
+        var sede = info.s;
+        var nombre = info.np;
+        var depto = info.d;
+        var incentivo = info.ti;
+        var F = info.f;
+        var fecha = F.split('-').reverse().join('/');
+        var cant = info.c;
+        var motivo = info.m;
+        var estado = info.e;
+        var user = info.u;
+
+        swal("Información:",
+        "SEDE: " + sede + "\n" +
+        "NOMBRE: " + nombre + "\n" +
+        "DEPARTAMENTO: " + depto + "\n" +
+        "TIPO DE INCENTIVO: " + incentivo + "\n" +
+        "FECHA DEL INCENTIVO: " + fecha + "\n" +
+        "CANTIDAD: " + cant + "\n" +
+        "MOTIVO: " + motivo + "\n" +
+        "Estado: " + estado + "\n" +
+        "USUARIO: " + user);
+      }
+    },
+    error: function(error){
+      swal("Error!", {
+        icon: "error",
+      });
+    },
+  });
+}

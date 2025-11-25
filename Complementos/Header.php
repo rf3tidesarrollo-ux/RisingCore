@@ -67,6 +67,9 @@ $modulosConfig = [
             "CatalogoLI"  => "Incidencia/CatalogoLI.php",
             "RegistrarH" => "Horarios/RegistrarH.php",
             "CatalogoH" => "Horarios/CatalogoH.php",
+            "RegistrarIC" => "Incentivos/RegistrarIC.php",
+            "CatalogoIC" => "Incentivos/CatalogoIC.php",
+            "CatalogoNS" => "Nominas/CatalogoNS.php",
         ],
         "iconos" => [
             "Ingreso" => "fa-solid fa-fingerprint",
@@ -76,6 +79,8 @@ $modulosConfig = [
             "Horarios" => "fa-solid fa-business-time",
             "Reingreso" => "fa-solid fa-person-walking-arrow-loop-left",
             "Contratos" => "fa-solid fa-file-contract",
+            "Incentivos" => "fa-solid fa-hand-holding-dollar",
+            "Nominas" => "fa-solid fa-money-bill-transfer",
         ]
     ],
     "Compras" => [
@@ -108,7 +113,7 @@ $modulosConfig = [
         ],
         "iconos" => [
             "Inventario" => "fa-solid fa-boxes-stacked",
-            "Consumos" => "fa-solid fa-cart-shopping",
+            "Consumos" => "fa-solid fa-hand-holding-dollar",
         ]
     ],
     // Agrega más módulos si quieres...
@@ -146,6 +151,8 @@ $claveMap = [
     'PV'  => 'Proveedores',
     'IN'  => 'Inventario',
     'PC'  => 'Consumos',
+    'IC'  => 'Incentivos',
+    'NS'  => 'Nominas',
 ];
 
 // Nombres personalizados por submódulo y tipo de menú
@@ -246,6 +253,14 @@ $nombreMenus = [
         'registrar' => 'Consumo',
         'catalogo'  => 'Consumos'
     ],
+    'Incentivos' => [
+        'registrar' => 'Nuevo incentivo',
+        'catalogo'  => 'Incentivos'
+    ],
+    'Nominas' => [
+        'registrar' => 'Nuevo nomina',
+        'catalogo'  => 'Nomina semanal'
+    ],
 ];
 
 $submodulos = [
@@ -273,6 +288,8 @@ $submodulos = [
     'Proveedores'   => "$modulo/Proveedores",
     'Inventario'    => "$modulo/Inventario",
     'Consumos'      => "$modulo/Consumo",
+    'Incentivos'      => "$modulo/Incentivos",
+    'Nominas'      => "$modulo/Nominas",
 ];
 
 // Función para generar ruta absoluta desde la raíz del sitio
